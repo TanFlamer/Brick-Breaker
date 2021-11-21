@@ -23,7 +23,6 @@ import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 
 
-
 public class GameBoard extends JComponent {
 
     private static final String CONTINUE = "Continue";
@@ -56,17 +55,13 @@ public class GameBoard extends JComponent {
 
     private DebugConsole debugConsole;
 
-
     public GameBoard(JFrame owner){
         super();
 
         strLen = 0; //initial string length is 0
         showPauseMenu = false; //initially do not show pause menu
 
-
-
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
-
 
         this.initialize(owner);
         message = "";
@@ -102,13 +97,10 @@ public class GameBoard extends JComponent {
                     gameTimer.stop(); //stop timer and action listener
                 }
             }
-
             repaint(); //repaint components
         });
 
     }
-
-
 
     private void initialize(JFrame owner){ //initialize JFrame
         this.setPreferredSize(new Dimension(DEF_WIDTH,DEF_HEIGHT)); //set frame size
@@ -193,7 +185,7 @@ public class GameBoard extends JComponent {
             }
         });
     }
-    
+
     public void paint(Graphics g){
 
         Graphics2D g2d = (Graphics2D) g;
@@ -218,27 +210,21 @@ public class GameBoard extends JComponent {
     }
 
     private void clear(Graphics2D g2d){ //clear colour
-        Color tmp = g2d.getColor(); //hold blue colour
+
         g2d.setColor(BG_COLOR); //get white colour
         g2d.fillRect(0,0,getWidth(),getHeight()); //fill frame with white colour
-        g2d.setColor(tmp); //reset blue colour
     }
 
     private void drawBrick(Brick brick,Graphics2D g2d){
-        Color tmp = g2d.getColor(); //hold blue colour
 
         g2d.setColor(brick.getInnerColor()); //get brick inner colour
         g2d.fill(brick.getBrick()); //fill brick with inner colour
 
         g2d.setColor(brick.getBorderColor()); //get brick border colour
         g2d.draw(brick.getBrick()); //draw brick border with colour
-
-
-        g2d.setColor(tmp); //reset blue colour
     }
 
     private void drawBall(Ball ball,Graphics2D g2d){
-        Color tmp = g2d.getColor(); //hold blue colour
 
         Shape s = ball.getBallFace(); //get ball face
 
@@ -247,24 +233,21 @@ public class GameBoard extends JComponent {
 
         g2d.setColor(ball.getBorderColor()); //set colour as border colour
         g2d.draw(s); //draw ball border with colour
-
-        g2d.setColor(tmp); //reset blue colour
     }
 
     private void drawPlayer(Player p,Graphics2D g2d){
-        Color tmp = g2d.getColor(); //hold blue colour
 
         Shape s = p.getPlayerFace(); //get player shape
+
         g2d.setColor(Player.INNER_COLOR); //get player inner colour
         g2d.fill(s); //fill player with inner colour
 
         g2d.setColor(Player.BORDER_COLOR); //get player border colour
         g2d.draw(s); //draw player border with colour
-
-        g2d.setColor(tmp); //reset blue colour
     }
 
     private void drawMenu(Graphics2D g2d){ //colour pause menu
+
         obscureGameBoard(g2d); //fill pause menu with black colour
         drawPauseMenu(g2d); //draw pause menu
     }
@@ -272,7 +255,6 @@ public class GameBoard extends JComponent {
     private void obscureGameBoard(Graphics2D g2d){ //fill pause menu with black colour
 
         Composite tmp = g2d.getComposite(); //hold current composite
-        Color tmpColor = g2d.getColor(); //hold blue colour
 
         AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.55f); //get alpha composite
         g2d.setComposite(ac); //set alpha composite
@@ -281,13 +263,11 @@ public class GameBoard extends JComponent {
         g2d.fillRect(0,0,DEF_WIDTH,DEF_HEIGHT); //fill frame with black colour
 
         g2d.setComposite(tmp); //reset composite
-        g2d.setColor(tmpColor); //reset blue colour
     }
 
     private void drawPauseMenu(Graphics2D g2d){
-        Font tmpFont = g2d.getFont(); //hold current font
-        Color tmpColor = g2d.getColor(); //hold blue colour
 
+        Font tmpFont = g2d.getFont(); //hold current font
 
         g2d.setFont(menuFont); //set menu font
         g2d.setColor(MENU_COLOR); //set menu colour
@@ -333,7 +313,6 @@ public class GameBoard extends JComponent {
         g2d.drawString(EXIT,x,y); //draw exit button
 
         g2d.setFont(tmpFont); //reset font
-        g2d.setColor(tmpColor); //reset blue colour
     }
 
     public void onLostFocus(){ //if game not in focus
