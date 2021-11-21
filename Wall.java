@@ -47,30 +47,30 @@ public class Wall {
 
     public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos){
 
-        this.startPoint = new Point(ballPos);
+        this.startPoint = new Point(ballPos); //start point = initial ball position
 
-        levels = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio);
-        level = 0;
+        levels = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //make levels
+        level = 0; //start at level 0
 
-        ballCount = 3;
-        ballLost = false;
+        ballCount = 3; //start with 3 balls
+        ballLost = false; //ball initially not lost
 
-        rnd = new Random();
+        rnd = new Random(); //get random number
 
-        makeBall(ballPos);
+        makeBall(ballPos); //make ball at position (300,430)
         int speedX,speedY;
         do{
-            speedX = rnd.nextInt(5) - 2;
-        }while(speedX == 0);
+            speedX = rnd.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
+        }while(speedX == 0); //continue loop if speed-X is 0
         do{
-            speedY = -rnd.nextInt(3);
-        }while(speedY == 0);
+            speedY = -rnd.nextInt(3); //random speed for ball in Y-axis, always - for up
+        }while(speedY == 0); //continue loop if speed-Y is 0
 
-        ball.setSpeed(speedX,speedY);
+        ball.setSpeed(speedX,speedY); //set ball speed
 
-        player = new Player((Point) ballPos.clone(),150,10, drawArea);
+        player = new Player((Point) ballPos.clone(),150,10, drawArea); //make new player
 
-        area = drawArea;
+        area = drawArea; //rectangle at (0,0) with 600 width and 450 height
 
 
     }
@@ -80,33 +80,39 @@ public class Wall {
           if brickCount is not divisible by line count,brickCount is adjusted to the biggest
           multiple of lineCount smaller then brickCount
          */
-        brickCnt -= brickCnt % lineCnt;
+        brickCnt -= brickCnt % lineCnt; //make brickCount divisible by lineCount
 
-        int brickOnLine = brickCnt / lineCnt;
+        int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
 
-        double brickLen = drawArea.getWidth() / brickOnLine;
-        double brickHgt = brickLen / brickSizeRatio;
+        double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
+        double brickHgt = brickLen / brickSizeRatio; //get brick height (brick length/brick size ratio)
 
-        brickCnt += lineCnt / 2;
+        //brickSizeRatio = brick Length/brick Height = 6/2
 
-        Brick[] tmp  = new Brick[brickCnt];
+        brickCnt += lineCnt / 2; //add half of lineCount to brickCount to account for extra brick in odd rows
 
-        Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt);
-        Point p = new Point();
+        Brick[] tmp  = new Brick[brickCnt]; //array of Bricks with size brickCount
+
+        Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
+        Point p = new Point(); //new point at (0,0)
 
         int i;
         for(i = 0; i < tmp.length; i++){
-            int line = i / brickOnLine;
-            if(line == lineCnt)
+            int line = i / brickOnLine; // line = i/number of bricks on single line
+
+            if(line == lineCnt) //break loop when each line has 10 bricks (holes at the end of odd rows)
                 break;
+
             double x = (i % brickOnLine) * brickLen;
-            x =(line % 2 == 0) ? x : (x - (brickLen / 2));
-            double y = (line) * brickHgt;
-            p.setLocation(x,y);
-            tmp[i] = makeBrick(p,brickSize,type);
+            x =(line % 2 == 0) ? x : (x - (brickLen / 2)); // x = get corner X-coordinate of brick
+            // if x is on even line, x = x, else move x half a brick length to the left
+            double y = (line) * brickHgt; // y = get corner Y-coordinate of brick
+            p.setLocation(x,y); //set corner coordinate of brick
+
+            tmp[i] = makeBrick(p,brickSize,type); //make new brick at point p with size and type
         }
 
-        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){
+        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){ //fill in empty bricks to the right at odd row
             double x = (brickOnLine * brickLen) - (brickLen / 2);
             p.setLocation(x,y);
             tmp[i] = new ClayBrick(p,brickSize);
@@ -120,39 +126,44 @@ public class Wall {
           if brickCount is not divisible by line count,brickCount is adjusted to the biggest
           multiple of lineCount smaller then brickCount
          */
-        brickCnt -= brickCnt % lineCnt;
+        brickCnt -= brickCnt % lineCnt; //make brickCount divisible by lineCount
 
-        int brickOnLine = brickCnt / lineCnt;
+        int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
 
-        int centerLeft = brickOnLine / 2 - 1;
-        int centerRight = brickOnLine / 2 + 1;
+        int centerLeft = brickOnLine / 2 - 1; // 10/2 - 1 = 5 - 1 = 4
+        int centerRight = brickOnLine / 2 + 1; // 10/2 + 1 = 5 + 1 = 6
 
-        double brickLen = drawArea.getWidth() / brickOnLine;
-        double brickHgt = brickLen / brickSizeRatio;
+        double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
+        double brickHgt = brickLen / brickSizeRatio; //get brick height (brick length/brick size ratio)
 
-        brickCnt += lineCnt / 2;
+        //brickSizeRatio = brick Length/brick Height = 6/2
 
-        Brick[] tmp  = new Brick[brickCnt];
+        brickCnt += lineCnt / 2; //add half of lineCount to brickCount to account for extra brick in odd rows
 
-        Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt);
-        Point p = new Point();
+        Brick[] tmp  = new Brick[brickCnt]; //array of Bricks with size brickCount
+
+        Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
+        Point p = new Point(); //new point at (0,0)
 
         int i;
         for(i = 0; i < tmp.length; i++){
-            int line = i / brickOnLine;
-            if(line == lineCnt)
+            int line = i / brickOnLine; // line = i/number of bricks on single line
+            if(line == lineCnt) //break loop when each line has 10 bricks (holes at the end of odd rows)
                 break;
-            int posX = i % brickOnLine;
-            double x = posX * brickLen;
-            x =(line % 2 == 0) ? x : (x - (brickLen / 2));
-            double y = (line) * brickHgt;
-            p.setLocation(x,y);
+            int posX = i % brickOnLine; //get number of brick of each line
+            double x = posX * brickLen; //get X-coordinate of brick of each line
+            x =(line % 2 == 0) ? x : (x - (brickLen / 2)); // x = get corner X-coordinate of brick
+            // if x is on even line, x = x, else move x half a brick length to the left
+            double y = (line) * brickHgt; // y = get corner Y-coordinate of brick
+            p.setLocation(x,y); //set corner coordinate of brick
 
             boolean b = ((line % 2 == 0 && i % 2 == 0) || (line % 2 != 0 && posX > centerLeft && posX <= centerRight));
+            // make typeA brick if line is even and brick is even OR line is odd and brick is between 4 and 6
+            // else make typeB brick
             tmp[i] = b ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
         }
 
-        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){
+        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){ //fill in empty bricks to the right at odd row with typeA bricks
             double x = (brickOnLine * brickLen) - (brickLen / 2);
             p.setLocation(x,y);
             tmp[i] = makeBrick(p,brickSize,typeA);
@@ -161,11 +172,12 @@ public class Wall {
     }
 
     private void makeBall(Point2D ballPos){
-        ball = new RubberBall(ballPos);
+        ball = new RubberBall(ballPos); //make ball at position (300,430)
     }
 
     private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
-        Brick[][] tmp = new Brick[LEVELS_COUNT][];
+        Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
+        //get column for each 2d-array
         tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY);
         tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
         tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
@@ -173,34 +185,34 @@ public class Wall {
         return tmp;
     }
 
-    public void move(){
-        player.move();
-        ball.move();
+    public void move(){ //define move function
+        player.move(); //move player
+        ball.move(); //move ball
     }
 
-    public void findImpacts(){
-        if(player.impact(ball)){
-            ball.reverseY();
+    public void findImpacts(){ //impact method
+        if(player.impact(ball)){ //if player hits ball
+            ball.reverseY(); //reverse Y-direction
         }
         else if(impactWall()){
             /*for efficiency reverse is done into method impactWall
             * because for every brick program checks for horizontal and vertical impacts
             */
-            brickCount--;
+            brickCount--; //minus brick count
         }
-        else if(impactBorder()) {
-            ball.reverseX();
+        else if(impactBorder()) { //if ball impacts border
+            ball.reverseX(); //reverse X-direction
         }
-        else if(ball.getPosition().getY() < area.getY()){
-            ball.reverseY();
+        else if(ball.getPosition().getY() < area.getY()){ //if ball hits top border
+            ball.reverseY(); //reverse Y-direction
         }
-        else if(ball.getPosition().getY() > area.getY() + area.getHeight()){
-            ballCount--;
-            ballLost = true;
+        else if(ball.getPosition().getY() > area.getY() + area.getHeight()){ //if ball hits bottom border
+            ballCount--; //ball lost
+            ballLost = true; //ball lost is true
         }
     }
 
-    private boolean impactWall(){
+    private boolean impactWall(){ //method to check impact with wall
         for(Brick b : bricks){
             switch(b.findImpact(ball)) {
                 //Vertical Impact
@@ -223,7 +235,7 @@ public class Wall {
         return false;
     }
 
-    private boolean impactBorder(){
+    private boolean impactBorder(){ //if ball impacts left or right border
         Point2D p = ball.getPosition();
         return ((p.getX() < area.getX()) ||(p.getX() > (area.getX() + area.getWidth())));
     }
@@ -236,13 +248,13 @@ public class Wall {
         return ballCount;
     }
 
-    public boolean isBallLost(){
+    public boolean isBallLost(){ //if ball leaves bottom border
         return ballLost;
     }
 
-    public void ballReset(){
-        player.moveTo(startPoint);
-        ball.moveTo(startPoint);
+    public void ballReset(){ //when ball is lost
+        player.moveTo(startPoint); //move player at position (300,430)
+        ball.moveTo(startPoint); //move ball at position (300,430)
         int speedX,speedY;
         do{
             speedX = rnd.nextInt(5) - 2;
@@ -251,31 +263,31 @@ public class Wall {
             speedY = -rnd.nextInt(3);
         }while(speedY == 0);
 
-        ball.setSpeed(speedX,speedY);
-        ballLost = false;
+        ball.setSpeed(speedX,speedY); //set random speed for new ball
+        ballLost = false; //ball is found
     }
 
     public void wallReset(){
         for(Brick b : bricks)
-            b.repair();
-        brickCount = bricks.length;
-        ballCount = 3;
+            b.repair(); //reset brick to full strength
+        brickCount = bricks.length; //reset brick count
+        ballCount = 3; //reset ball count
     }
 
-    public boolean ballEnd(){
+    public boolean ballEnd(){ //if all balls are used up
         return ballCount == 0;
     }
 
-    public boolean isDone(){
+    public boolean isDone(){ //if all bricks destroyed
         return brickCount == 0;
     }
 
     public void nextLevel(){
-        bricks = levels[level++];
-        this.brickCount = bricks.length;
+        bricks = levels[level++]; //load next level
+        this.brickCount = bricks.length; //reset brick count
     }
 
-    public boolean hasLevel(){
+    public boolean hasLevel(){ //if next level exists
         return level < levels.length;
     }
 
@@ -291,22 +303,22 @@ public class Wall {
         ballCount = 3;
     }
 
-    private Brick makeBrick(Point point, Dimension size, int type){
+    private Brick makeBrick(Point point, Dimension size, int type){ //make new bricks
         Brick out;
-        switch(type){
+        switch(type){ //get type of brick
             case CLAY:
-                out = new ClayBrick(point,size);
+                out = new ClayBrick(point,size); //make clay brick at given point and given size
                 break;
             case STEEL:
-                out = new SteelBrick(point,size);
+                out = new SteelBrick(point,size); //make steel brick at given point and given size
                 break;
             case CEMENT:
-                out = new CementBrick(point, size);
+                out = new CementBrick(point, size); //make cement brick at given point and given size
                 break;
-            default:
+            default: //brick type does not exist
                 throw  new IllegalArgumentException(String.format("Unknown Type:%d\n",type));
         }
-        return  out;
+        return  out; //return new brick
     }
 
 }

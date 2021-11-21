@@ -41,43 +41,43 @@ public class DebugPanel extends JPanel {
 
         this.wall = wall;
 
-        initialize();
+        initialize(); //initialize debug panel
 
-        skipLevel = makeButton("Skip Level",e -> wall.nextLevel());
+        skipLevel = makeButton("Skip Level",e -> wall.nextLevel()); //make new buttons
         resetBalls = makeButton("Reset Balls",e -> wall.resetBallCount());
 
-        ballXSpeed = makeSlider(-4,4,e -> wall.setBallXSpeed(ballXSpeed.getValue()));
-        ballYSpeed = makeSlider(-4,4,e -> wall.setBallYSpeed(ballYSpeed.getValue()));
+        ballXSpeed = makeSlider(-4,4,e -> wall.setBallXSpeed(ballXSpeed.getValue())); //make new sliders
+        ballYSpeed = makeSlider(-4,4,e -> wall.setBallYSpeed(ballYSpeed.getValue())); //show and set speed of ball
 
-        this.add(skipLevel);
+        this.add(skipLevel); //add buttons
         this.add(resetBalls);
 
-        this.add(ballXSpeed);
+        this.add(ballXSpeed); //add sliders
         this.add(ballYSpeed);
 
     }
 
-    private void initialize(){
-        this.setBackground(DEF_BKG);
-        this.setLayout(new GridLayout(2,2));
+    private void initialize(){ //initialize debug panel
+        this.setBackground(DEF_BKG); //set background colour
+        this.setLayout(new GridLayout(2,2)); //set layout
     }
 
-    private JButton makeButton(String title, ActionListener e){
+    private JButton makeButton(String title, ActionListener e){ //make buttons and add listener
         JButton out = new JButton(title);
         out.addActionListener(e);
         return  out;
     }
 
-    private JSlider makeSlider(int min, int max, ChangeListener e){
+    private JSlider makeSlider(int min, int max, ChangeListener e){ //make sliders and add listener
         JSlider out = new JSlider(min,max);
-        out.setMajorTickSpacing(1);
-        out.setSnapToTicks(true);
-        out.setPaintTicks(true);
+        out.setMajorTickSpacing(1); //set tick spacing
+        out.setSnapToTicks(true); //snap to tick
+        out.setPaintTicks(true); //paint ticks
         out.addChangeListener(e);
         return out;
     }
 
-    public void setValues(int x,int y){
+    public void setValues(int x,int y){ //show current ball speed on slider
         ballXSpeed.setValue(x);
         ballYSpeed.setValue(y);
     }

@@ -38,16 +38,16 @@ public class DebugConsole extends JDialog implements WindowListener{
         this.wall = wall;
         this.owner = owner;
         this.gameBoard = gameBoard;
-        initialize();
+        initialize(); //call debug console
 
         debugPanel = new DebugPanel(wall);
-        this.add(debugPanel,BorderLayout.CENTER);
+        this.add(debugPanel,BorderLayout.CENTER); //add debug panel to center
 
 
-        this.pack();
+        this.pack(); //resize debug console
     }
 
-    private void initialize(){
+    private void initialize(){ //call debug console
         this.setModal(true);
         this.setTitle(TITLE);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -57,7 +57,7 @@ public class DebugConsole extends JDialog implements WindowListener{
     }
 
 
-    private void setLocation(){
+    private void setLocation(){ //set debug console location
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);
@@ -90,10 +90,10 @@ public class DebugConsole extends JDialog implements WindowListener{
     }
 
     @Override
-    public void windowActivated(WindowEvent windowEvent) {
-        setLocation();
-        Ball b = wall.ball;
-        debugPanel.setValues(b.getSpeedX(),b.getSpeedY());
+    public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
+        setLocation(); //set debug console location
+        Ball b = wall.ball; //get ball
+        debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
     }
 
     @Override

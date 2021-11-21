@@ -38,49 +38,49 @@ public class Player {
 
 
     public Player(Point ballPoint,int width,int height,Rectangle container) {
-        this.ballPoint = ballPoint;
-        moveAmount = 0;
-        playerFace = makeRectangle(width, height);
-        min = container.x + (width / 2);
-        max = min + container.width - width;
+        this.ballPoint = ballPoint; //ball position
+        moveAmount = 0; //player has not moved
+        playerFace = makeRectangle(width, height); //make rectangle player
+        min = container.x + (width / 2); //set min position as half of width from left order
+        max = min + container.width - width; //set max position as half of width from right border
 
     }
 
     private Rectangle makeRectangle(int width,int height){
-        Point p = new Point((int)(ballPoint.getX() - (width / 2)),(int)ballPoint.getY());
-        return  new Rectangle(p,new Dimension(width,height));
+        Point p = new Point((int)(ballPoint.getX() - (width / 2)),(int)ballPoint.getY()); //get corner coordinate
+        return  new Rectangle(p,new Dimension(width,height)); //make rectangle player
     }
 
-    public boolean impact(Ball b){
+    public boolean impact(Ball b){ //scan to see if player contains down side of ball
         return playerFace.contains(b.getPosition()) && playerFace.contains(b.down) ;
     }
 
-    public void move(){
-        double x = ballPoint.getX() + moveAmount;
-        if(x < min || x > max)
-            return;
-        ballPoint.setLocation(x,ballPoint.getY());
-        playerFace.setLocation(ballPoint.x - (int)playerFace.getWidth()/2,ballPoint.y);
+    public void move(){ //move player
+        double x = ballPoint.getX() + moveAmount; //get player location after move
+        if(x < min || x > max) //if X-coordinate exceeds min or max value
+            return; //stop player from moving
+        ballPoint.setLocation(x,ballPoint.getY()); //else set new ball point
+        playerFace.setLocation(ballPoint.x - (int)playerFace.getWidth()/2,ballPoint.y); //set new player location
     }
 
-    public void moveLeft(){
+    public void moveLeft(){ //move player left by default amount
         moveAmount = -DEF_MOVE_AMOUNT;
     }
 
-    public void movRight(){
+    public void movRight(){ //move player right by default amount
         moveAmount = DEF_MOVE_AMOUNT;
     }
 
-    public void stop(){
+    public void stop(){ //player does not move
         moveAmount = 0;
     }
 
-    public Shape getPlayerFace(){
+    public Shape getPlayerFace(){ //get player face
         return  playerFace;
     }
 
-    public void moveTo(Point p){
-        ballPoint.setLocation(p);
-        playerFace.setLocation(ballPoint.x - (int)playerFace.getWidth()/2,ballPoint.y);
+    public void moveTo(Point p){ //teleport player to point p
+        ballPoint.setLocation(p); //set ball location at p
+        playerFace.setLocation(ballPoint.x - (int)playerFace.getWidth()/2,ballPoint.y); //set player location
     }
 }

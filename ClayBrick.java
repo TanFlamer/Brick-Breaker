@@ -20,19 +20,18 @@ public class ClayBrick extends Brick {
 
 
 
-
-    public ClayBrick(Point point, Dimension size){
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,CLAY_STRENGTH);
+    public ClayBrick(Point point, Dimension size){ //get point and size of clay brick
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,CLAY_STRENGTH); //get all basic information of clay brick
     }
 
     @Override
     protected Shape makeBrickFace(Point pos, Dimension size) {
-        return new Rectangle(pos,size);
+        return new Rectangle(pos,size); //make clay brick at given point and given size
     }
 
     @Override
     public Shape getBrick() {
-        return super.brickFace;
+        return super.brickFace; //get brick to be coloured
     }
 
 

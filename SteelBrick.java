@@ -34,32 +34,32 @@ public class SteelBrick extends Brick {
     private Shape brickFace;
 
     public SteelBrick(Point point, Dimension size){
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,STEEL_STRENGTH);
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,STEEL_STRENGTH); //get all basic information of clay brick
         rnd = new Random();
-        brickFace = super.brickFace;
+        brickFace = super.brickFace; //get brick face
     }
 
 
     @Override
     protected Shape makeBrickFace(Point pos, Dimension size) {
-        return new Rectangle(pos,size);
+        return new Rectangle(pos,size); //make steel brick at given point and given size
     }
 
     @Override
     public Shape getBrick() {
-        return brickFace;
+        return brickFace; //get brick to be coloured
     }
 
     public  boolean setImpact(Point2D point , int dir){
-        if(super.isBroken())
+        if(super.isBroken()) //if already broken then no impact
             return false;
-        impact();
-        return  super.isBroken();
+        impact(); //call impact function to determine if damage occurs
+        return  super.isBroken(); //retain same condition
     }
 
     public void impact(){
-        if(rnd.nextDouble() < STEEL_PROBABILITY){
-            super.impact();
+        if(rnd.nextDouble() < STEEL_PROBABILITY){ //if random probability less than STEEL_PROBABILITY
+            super.impact(); //signal impact and decrease brick strength
         }
     }
 

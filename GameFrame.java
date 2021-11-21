@@ -37,41 +37,41 @@ public class GameFrame extends JFrame implements WindowFocusListener {
     public GameFrame(){
         super();
 
-        gaming = false;
+        gaming = false; //game loses focus
 
-        this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout()); //set layout
 
-        gameBoard = new GameBoard(this);
+        gameBoard = new GameBoard(this); //call game board
 
-        homeMenu = new HomeMenu(this,new Dimension(450,300));
+        homeMenu = new HomeMenu(this,new Dimension(450,300)); //set main menu
 
-        this.add(homeMenu,BorderLayout.CENTER);
+        this.add(homeMenu,BorderLayout.CENTER); //add main menu to centre
 
-        this.setUndecorated(true);
+        this.setUndecorated(true); //set frame undecorated
 
 
     }
 
-    public void initialize(){
+    public void initialize(){ //initialize game
         this.setTitle(DEF_TITLE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
-        this.autoLocate();
+        this.autoLocate(); //reposition screen
         this.setVisible(true);
     }
 
-    public void enableGameBoard(){
+    public void enableGameBoard(){ //start game
         this.dispose();
-        this.remove(homeMenu);
-        this.add(gameBoard,BorderLayout.CENTER);
+        this.remove(homeMenu); //remove main menu
+        this.add(gameBoard,BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
-        initialize();
+        initialize(); //initialize game
         /*to avoid problems with graphics focus controller is added here*/
-        this.addWindowFocusListener(this);
+        this.addWindowFocusListener(this); //add listener
 
     }
 
-    private void autoLocate(){
+    private void autoLocate(){ //reposition screen
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (size.width - this.getWidth()) / 2;
         int y = (size.height - this.getHeight()) / 2;
@@ -80,7 +80,7 @@ public class GameFrame extends JFrame implements WindowFocusListener {
 
 
     @Override
-    public void windowGainedFocus(WindowEvent windowEvent) {
+    public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
         /*
             the first time the frame loses focus is because
             it has been disposed to install the GameBoard,
@@ -89,13 +89,13 @@ public class GameFrame extends JFrame implements WindowFocusListener {
             is useful only if the GameBoard as been displayed
             at least once
          */
-        gaming = true;
+        gaming = true; //set gaming flag true
     }
 
     @Override
-    public void windowLostFocus(WindowEvent windowEvent) {
-        if(gaming)
-            gameBoard.onLostFocus();
+    public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
+        if(gaming) //if gaming flag true
+            gameBoard.onLostFocus(); //stop timer and action listener
 
     }
 }

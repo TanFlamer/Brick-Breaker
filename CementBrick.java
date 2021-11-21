@@ -18,46 +18,47 @@ public class CementBrick extends Brick {
 
 
     public CementBrick(Point point, Dimension size){
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,CEMENT_STRENGTH);
-        crack = new Crack(DEF_CRACK_DEPTH,DEF_STEPS);
-        brickFace = super.brickFace;
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,CEMENT_STRENGTH); //get all basic information of clay brick
+        crack = new Crack(DEF_CRACK_DEPTH,DEF_STEPS); //define crack information
+        brickFace = super.brickFace; //get brick face
     }
 
     @Override
     protected Shape makeBrickFace(Point pos, Dimension size) {
-        return new Rectangle(pos,size);
+        return new Rectangle(pos,size); //make cement brick at given point and given size
     }
 
     @Override
-    public boolean setImpact(Point2D point, int dir) {
-        if(super.isBroken())
+    public boolean setImpact(Point2D point, int dir) { //get point of impact and impact direction
+        if(super.isBroken()) //if already broken then no impact
             return false;
-        super.impact();
-        if(!super.isBroken()){
-            crack.makeCrack(point,dir);
-            updateBrick();
-            return false;
+        super.impact(); //else signal impact to decrease strength
+
+        if(!super.isBroken()){ //if not broken
+            crack.makeCrack(point,dir); //make crack at point of impact and in given direction
+            updateBrick(); //update brick to show crack
+            return false; //signal not broken
         }
-        return true;
+        return true; //signal broken
     }
 
 
     @Override
     public Shape getBrick() {
-        return brickFace;
+        return brickFace; //get brick to be coloured
     }
 
     private void updateBrick(){
-        if(!super.isBroken()){
-            GeneralPath gp = crack.draw();
-            gp.append(super.brickFace,false);
-            brickFace = gp;
+        if(!super.isBroken()){ //if brick is not broken
+            GeneralPath gp = crack.draw(); //draw crack
+            gp.append(super.brickFace,false); //append crack to brick
+            brickFace = gp; //set new brick face with crack
         }
     }
 
-    public void repair(){
-        super.repair();
-        crack.reset();
-        brickFace = super.brickFace;
+    public void repair(){ //repair brick
+        super.repair(); //reset broken flag and reset strength
+        crack.reset(); //remove crack
+        brickFace = super.brickFace; //reset brick face
     }
 }
