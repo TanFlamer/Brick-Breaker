@@ -71,62 +71,10 @@ public class Wall {
         player = new Player((Point) ballPos.clone(),150,10, drawArea); //make new player
 
         area = drawArea; //rectangle at (0,0) with 600 width and 450 height
-
-
     }
 
-    private Brick[] makeSingleTypeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int type){
-        /*
-          if brickCount is not divisible by line count,brickCount is adjusted to the biggest
-          multiple of lineCount smaller then brickCount
-         */
-        brickCnt -= brickCnt % lineCnt; //make brickCount divisible by lineCount
-
-        int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
-
-        double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
-        double brickHgt = brickLen / brickSizeRatio; //get brick height (brick length/brick size ratio)
-
-        //brickSizeRatio = brick Length/brick Height = 6/2
-
-        brickCnt += lineCnt / 2; //add half of lineCount to brickCount to account for extra brick in odd rows
-
-        Brick[] tmp  = new Brick[brickCnt]; //array of Bricks with size brickCount
-
-        Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
-        Point p = new Point(); //new point at (0,0)
-
-        int i;
-        for(i = 0; i < tmp.length; i++){
-            int line = i / brickOnLine; // line = i/number of bricks on single line
-
-            if(line == lineCnt) //break loop when each line has 10 bricks (holes at the end of odd rows)
-                break;
-
-            double x = (i % brickOnLine) * brickLen;
-            x =(line % 2 == 0) ? x : (x - (brickLen / 2)); // x = get corner X-coordinate of brick
-            // if x is on even line, x = x, else move x half a brick length to the left
-            double y = (line) * brickHgt; // y = get corner Y-coordinate of brick
-            p.setLocation(x,y); //set corner coordinate of brick
-
-            tmp[i] = makeBrick(p,brickSize,type); //make new brick at point p with size and type
-        }
-
-        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){ //fill in empty bricks to the right at odd row
-            double x = (brickOnLine * brickLen) - (brickLen / 2);
-            p.setLocation(x,y);
-            tmp[i] = new ClayBrick(p,brickSize);
-        }
-        return tmp;
-
-    }
-
-    private Brick[] makeChessboardLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB){
-        /*
-          if brickCount is not divisible by line count,brickCount is adjusted to the biggest
-          multiple of lineCount smaller then brickCount
-         */
-        brickCnt -= brickCnt % lineCnt; //make brickCount divisible by lineCount
+    //rewrote level generation to make it easier to read
+    private Brick[] makeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB){
 
         int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
 
@@ -136,37 +84,35 @@ public class Wall {
         double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
         double brickHgt = brickLen / brickSizeRatio; //get brick height (brick length/brick size ratio)
 
-        //brickSizeRatio = brick Length/brick Height = 6/2
-
-        brickCnt += lineCnt / 2; //add half of lineCount to brickCount to account for extra brick in odd rows
-
-        Brick[] tmp  = new Brick[brickCnt]; //array of Bricks with size brickCount
+        Brick[] tmp  = new Brick[(brickCnt-(brickCnt % lineCnt))+(lineCnt / 2)]; //array of Bricks which account for extra brick in odd rows
 
         Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
         Point p = new Point(); //new point at (0,0)
 
-        int i;
-        for(i = 0; i < tmp.length; i++){
-            int line = i / brickOnLine; // line = i/number of bricks on single line
-            if(line == lineCnt) //break loop when each line has 10 bricks (holes at the end of odd rows)
-                break;
-            int posX = i % brickOnLine; //get number of brick of each line
-            double x = posX * brickLen; //get X-coordinate of brick of each line
-            x =(line % 2 == 0) ? x : (x - (brickLen / 2)); // x = get corner X-coordinate of brick
-            // if x is on even line, x = x, else move x half a brick length to the left
-            double y = (line) * brickHgt; // y = get corner Y-coordinate of brick
-            p.setLocation(x,y); //set corner coordinate of brick
+        int oddRow = tmp.length/((2*brickOnLine)+1); //get number of odd rows
 
-            boolean b = ((line % 2 == 0 && i % 2 == 0) || (line % 2 != 0 && posX > centerLeft && posX <= centerRight));
-            // make typeA brick if line is even and brick is even OR line is odd and brick is between 4 and 6
-            // else make typeB brick
-            tmp[i] = b ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
-        }
+        for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-        for(double y = brickHgt;i < tmp.length;i++, y += 2*brickHgt){ //fill in empty bricks to the right at odd row with typeA bricks
-            double x = (brickOnLine * brickLen) - (brickLen / 2);
-            p.setLocation(x,y);
-            tmp[i] = makeBrick(p,brickSize,typeA);
+            if(i < oddRow * (brickOnLine + 1)){ //make odd row bricks first
+
+                int posX = i % (brickOnLine + 1); //get position of brick of odd line
+
+                double x = (posX * brickLen) - (brickLen / 2); // x = get corner X-coordinate of brick
+                double y = (2 * (i / (brickOnLine + 1)) + 1) * brickHgt; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+                tmp[i] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+            }
+            else{ //make even row bricks next
+
+                int remainder = i - oddRow * (brickOnLine + 1);
+
+                double x = (remainder % brickOnLine) * brickLen; // x = get corner X-coordinate of brick
+                double y = (remainder / brickOnLine) * 2 * brickHgt; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+                tmp[i] = (remainder % 2 == 0) ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+            }
         }
         return tmp;
     }
@@ -178,10 +124,11 @@ public class Wall {
     private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
         Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
         //get column for each 2d-array
-        tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY);
-        tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
-        tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
-        tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
+        tmp[0] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CLAY);
+        //removed makeSingleTypeLevel function since it is redundant
+        tmp[1] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
+        tmp[2] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
+        tmp[3] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
         return tmp;
     }
 
