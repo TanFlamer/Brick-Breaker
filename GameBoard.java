@@ -24,7 +24,7 @@ import java.awt.font.FontRenderContext;
 
 
 
-public class GameBoard extends JComponent implements KeyListener,MouseListener,MouseMotionListener {
+public class GameBoard extends JComponent {
 
     private static final String CONTINUE = "Continue";
     private static final String RESTART = "Restart";
@@ -68,7 +68,7 @@ public class GameBoard extends JComponent implements KeyListener,MouseListener,M
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
 
 
-        this.initialize();
+        this.initialize(owner);
         message = "";
         //define all bricks, player and ball
         wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430));
@@ -110,16 +110,90 @@ public class GameBoard extends JComponent implements KeyListener,MouseListener,M
 
 
 
-    private void initialize(){ //initialize JFrame
+    private void initialize(JFrame owner){ //initialize JFrame
         this.setPreferredSize(new Dimension(DEF_WIDTH,DEF_HEIGHT)); //set frame size
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow(); //request focus
-        this.addKeyListener(this); //add listeners
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+
+                switch(keyEvent.getKeyCode()){
+                    case KeyEvent.VK_A: //press A
+                        wall.player.moveLeft(); //player moves left
+                        break;
+                    case KeyEvent.VK_D: //press D
+                        wall.player.movRight(); //player moves right
+                        break;
+                    case KeyEvent.VK_ESCAPE: //press esc
+                        showPauseMenu = !showPauseMenu; //show pause menu
+                        repaint(); //repaint components
+                        gameTimer.stop(); //stop timer and action listener
+                        break;
+                    case KeyEvent.VK_SPACE: //press space
+                        if(!showPauseMenu) //if game not paused
+                            if(gameTimer.isRunning()) //if timer is running
+                                gameTimer.stop(); //stop timer and action listener
+                            else //else if timer is stopped
+                                gameTimer.start(); //start timer and action listener
+                        break;
+                    case KeyEvent.VK_F1: //press f1 + alt + shift
+                        if(keyEvent.isAltDown() && keyEvent.isShiftDown())
+                            debugConsole.setVisible(true); //show debug console
+                    default: //press anything else
+                        wall.player.stop(); //stop player
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) { //if key released, stop player
+                wall.player.stop();
+            }
+        });
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
+
+                Point p = mouseEvent.getPoint(); //get mouse click point
+                if(!showPauseMenu) //if game not paused
+                    return; //return
+                if(continueButtonRect.contains(p)){ //if continue pressed
+                    showPauseMenu = false; //close pause menu
+                    repaint(); //repaint components
+                }
+                else if(restartButtonRect.contains(p)){ //if restart pressed
+                    message = "Restarting Game...";
+                    wall.ballReset(); //reset balls
+                    wall.wallReset(); //reset walls
+                    showPauseMenu = false; //close pause menu
+                    repaint(); //repaint components
+                }
+                else if(exitButtonRect.contains(p)){ //if exit pressed
+                    System.exit(0); //close game
+                }
+            }
+        });
+
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
+
+                Point p = mouseEvent.getPoint(); //get mouse position
+                if(exitButtonRect != null && showPauseMenu) { //if pause menu shown and exit button is drawn
+                    if (exitButtonRect.contains(p) || continueButtonRect.contains(p) || restartButtonRect.contains(p))
+                        owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //if mouse on button, show hand cursor
+                    else //else
+                        owner.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
+                }
+                else{ //if pause menu not shown
+                    owner.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
+                }
+            }
+        });
     }
-
-
+    
     public void paint(Graphics g){
 
         Graphics2D g2d = (Graphics2D) g;
@@ -258,109 +332,8 @@ public class GameBoard extends JComponent implements KeyListener,MouseListener,M
 
         g2d.drawString(EXIT,x,y); //draw exit button
 
-
-
         g2d.setFont(tmpFont); //reset font
         g2d.setColor(tmpColor); //reset blue colour
-    }
-
-    @Override
-    public void keyTyped(KeyEvent keyEvent) { //nothing
-    }
-
-    @Override
-    public void keyPressed(KeyEvent keyEvent) { //check keyboard input
-        switch(keyEvent.getKeyCode()){
-            case KeyEvent.VK_A: //press A
-                wall.player.moveLeft(); //player moves left
-                break;
-            case KeyEvent.VK_D: //press D
-                wall.player.movRight(); //player moves right
-                break;
-            case KeyEvent.VK_ESCAPE: //press esc
-                showPauseMenu = !showPauseMenu; //show pause menu
-                repaint(); //repaint components
-                gameTimer.stop(); //stop timer and action listener
-                break;
-            case KeyEvent.VK_SPACE: //press space
-                if(!showPauseMenu) //if game not paused
-                    if(gameTimer.isRunning()) //if timer is running
-                        gameTimer.stop(); //stop timer and action listener
-                    else //else if timer is stopped
-                        gameTimer.start(); //start timer and action listener
-                break;
-            case KeyEvent.VK_F1: //press f1 + alt + shift
-                if(keyEvent.isAltDown() && keyEvent.isShiftDown())
-                    debugConsole.setVisible(true); //show debug console
-            default: //press anything else
-                wall.player.stop(); //stop player
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent keyEvent) { //if key released, stop player
-        wall.player.stop();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
-        Point p = mouseEvent.getPoint(); //get mouse click point
-        if(!showPauseMenu) //if game not paused
-            return; //return
-        if(continueButtonRect.contains(p)){ //if continue pressed
-            showPauseMenu = false; //close pause menu
-            repaint(); //repaint components
-        }
-        else if(restartButtonRect.contains(p)){ //if restart pressed
-            message = "Restarting Game...";
-            wall.ballReset(); //reset balls
-            wall.wallReset(); //reset walls
-            showPauseMenu = false; //close pause menu
-            repaint(); //repaint components
-        }
-        else if(exitButtonRect.contains(p)){ //if exit pressed
-            System.exit(0); //close game
-        }
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
-        Point p = mouseEvent.getPoint(); //get mouse position
-        if(exitButtonRect != null && showPauseMenu) { //if pause menu shown and exit button is drawn
-            if (exitButtonRect.contains(p) || continueButtonRect.contains(p) || restartButtonRect.contains(p))
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //if mouse on button, show hand cursor
-            else //else
-                this.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
-        }
-        else{ //if pause menu not shown
-            this.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
-        }
     }
 
     public void onLostFocus(){ //if game not in focus
@@ -368,5 +341,4 @@ public class GameBoard extends JComponent implements KeyListener,MouseListener,M
         message = "Focus Lost";
         repaint(); //repaint components
     }
-
 }
