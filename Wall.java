@@ -161,22 +161,24 @@ public class Wall {
 
     private boolean impactWall(){ //method to check impact with wall
         for(Brick b : bricks){
-            switch(b.findImpact(ball)) {
-                //Vertical Impact
-                case Brick.UP_IMPACT:
+            //Vertical Impact
+            switch (b.findImpact(ball)) {
+                case Brick.UP_IMPACT -> {
                     ball.reverseY();
                     return b.setImpact(ball.down, Brick.Crack.UP);
-                case Brick.DOWN_IMPACT:
+                }
+                case Brick.DOWN_IMPACT -> {
                     ball.reverseY();
-                    return b.setImpact(ball.up,Brick.Crack.DOWN);
-
-                //Horizontal Impact
-                case Brick.LEFT_IMPACT:
+                    return b.setImpact(ball.up, Brick.Crack.DOWN);
+                } //Horizontal Impact
+                case Brick.LEFT_IMPACT -> {
                     ball.reverseX();
-                    return b.setImpact(ball.right,Brick.Crack.RIGHT);
-                case Brick.RIGHT_IMPACT:
+                    return b.setImpact(ball.right, Brick.Crack.RIGHT);
+                }
+                case Brick.RIGHT_IMPACT -> {
                     ball.reverseX();
-                    return b.setImpact(ball.left,Brick.Crack.LEFT);
+                    return b.setImpact(ball.left, Brick.Crack.LEFT);
+                }
             }
         }
         return false;
@@ -251,21 +253,11 @@ public class Wall {
     }
 
     private Brick makeBrick(Point point, Dimension size, int type){ //make new bricks
-        Brick out;
-        switch(type){ //get type of brick
-            case CLAY:
-                out = new ClayBrick(point,size); //make clay brick at given point and given size
-                break;
-            case STEEL:
-                out = new SteelBrick(point,size); //make steel brick at given point and given size
-                break;
-            case CEMENT:
-                out = new CementBrick(point, size); //make cement brick at given point and given size
-                break;
-            default: //brick type does not exist
-                throw  new IllegalArgumentException(String.format("Unknown Type:%d\n",type));
-        }
-        return  out; //return new brick
+        return switch (type) {
+            case CLAY -> new ClayBrick(point, size);
+            case STEEL -> new SteelBrick(point, size);
+            case CEMENT -> new CementBrick(point, size);
+            default -> throw new IllegalArgumentException(String.format("Unknown Type:%d\n", type));
+        }; //return new brick
     }
-
 }
