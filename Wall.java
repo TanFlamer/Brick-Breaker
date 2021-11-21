@@ -73,8 +73,13 @@ public class Wall {
         area = drawArea; //rectangle at (0,0) with 600 width and 450 height
     }
 
+    //makeSingleTypeLevel is just makeChessboardLevel with same brick type
+    private Brick[] makeSingleTypeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int type){
+        return makeChessboardLevel(drawArea,brickCnt,lineCnt,brickSizeRatio,type,type);
+    }
+
     //rewrote level generation to make it easier to read
-    private Brick[] makeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB){
+    private Brick[] makeChessboardLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB){
 
         int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
 
@@ -124,11 +129,10 @@ public class Wall {
     private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
         Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
         //get column for each 2d-array
-        tmp[0] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CLAY);
-        //removed makeSingleTypeLevel function since it is redundant
-        tmp[1] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
-        tmp[2] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
-        tmp[3] = makeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
+        tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY);
+        tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
+        tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
+        tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
         return tmp;
     }
 
