@@ -19,14 +19,12 @@ package test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
 
-public class HomeMenu extends JComponent implements MouseListener, MouseMotionListener {
+public class HomeMenu extends JComponent {
 
     private static final String GREETINGS = "Welcome to:";
     private static final String GAME_TITLE = "Brick Destroy";
@@ -67,12 +65,61 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow();
 
-        this.addMouseListener(this); //add listeners
-        this.addMouseMotionListener(this);
+        this.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
+                Point p = mouseEvent.getPoint(); //get mouse coordinate
+                if(startButton.contains(p)){ //if mouse inside start button
+                    owner.enableGameBoard(); //start game
+
+                }
+                else if(menuButton.contains(p)){ //if mouse inside exit button
+                    System.out.println("Goodbye " + System.getProperty("user.name"));
+                    System.exit(0); //exit game
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
+                Point p = mouseEvent.getPoint(); //get mouse coordinate
+                if(startButton.contains(p)){ //if mouse inside start button
+                    startClicked = true; //save start input
+                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
+
+                }
+                else if(menuButton.contains(p)){ //if mouse inside exit button
+                    menuClicked = true; //save exit input
+                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
+                if(startClicked ){ //if start button clicked
+                    startClicked = false; //reset flag
+                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
+                } //buttons will turn normal for a second before game starts
+                else if(menuClicked){ //if exit button clicked
+                    menuClicked = false; //reset flag
+                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
+                }
+            }
+        });
+
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
+                Point p = mouseEvent.getPoint(); //get mouse coordinates
+                if(startButton.contains(p) || menuButton.contains(p)) //if mouse inside either button
+                    owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
+                else
+                    owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
+            }
+        });
 
         this.owner = owner;
-
-
 
         menuFace = new Rectangle(new Point(0,0),area); //make menu face
         this.setPreferredSize(area);
@@ -88,21 +135,15 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
         gameTitleFont = new Font("Noto Mono",Font.BOLD,40);
         creditsFont = new Font("Monospaced",Font.PLAIN,10);
         buttonFont = new Font("Monospaced",Font.PLAIN,startButton.height-2);
-
-
-
     }
-
 
     public void paint(Graphics g){ //draw main menu
         drawMenu((Graphics2D)g);
     }
 
-
     public void drawMenu(Graphics2D g2d){
 
         drawContainer(g2d); //draw main menu
-
         /*
         all the following method calls need a relative
         painting directly into the HomeMenu rectangle,
@@ -127,6 +168,7 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
     }
 
     private void drawContainer(Graphics2D g2d){
+
         Color prev = g2d.getColor(); //save previous colour
 
         g2d.setColor(BG_COLOR); //get background colour
@@ -176,8 +218,6 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
 
         g2d.setFont(creditsFont); //get text font
         g2d.drawString(CREDITS,sX,sY); //draw credits
-
-
     }
 
     private void drawButton(Graphics2D g2d){ //draw menu buttons
@@ -200,9 +240,6 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
         x += startButton.x;
         y += startButton.y + (startButton.height * 0.9);
 
-
-
-
         if(startClicked){ //if start button clicked
             Color tmp = g2d.getColor(); //save current colour
             g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
@@ -223,9 +260,6 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
 
         menuButton.setLocation(x,y); //set exit button location
 
-
-
-
         x = (int)(menuButton.getWidth() - mTxtRect.getWidth()) / 2; //get exit text location
         y = (int)(menuButton.getHeight() - mTxtRect.getHeight()) / 2;
 
@@ -245,71 +279,5 @@ public class HomeMenu extends JComponent implements MouseListener, MouseMotionLi
             g2d.draw(menuButton); //draw default exit button
             g2d.drawString(MENU_TEXT,x,y); //draw default exit text
         }
-
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
-        Point p = mouseEvent.getPoint(); //get mouse coordinate
-        if(startButton.contains(p)){ //if mouse inside start button
-           owner.enableGameBoard(); //start game
-
-        }
-        else if(menuButton.contains(p)){ //if mouse inside exit button
-            System.out.println("Goodbye " + System.getProperty("user.name"));
-            System.exit(0); //exit game
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
-        Point p = mouseEvent.getPoint(); //get mouse coordinate
-        if(startButton.contains(p)){ //if mouse inside start button
-            startClicked = true; //save start input
-            repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
-
-        }
-        else if(menuButton.contains(p)){ //if mouse inside exit button
-            menuClicked = true; //save exit input
-            repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
-        if(startClicked ){ //if start button clicked
-            startClicked = false; //reset flag
-            repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
-        } //buttons will turn normal for a second before game starts
-        else if(menuClicked){ //if exit button clicked
-            menuClicked = false; //reset flag
-            repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) { //nothing
-
-    }
-
-
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) { //nothing
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
-        Point p = mouseEvent.getPoint(); //get mouse coordinates
-        if(startButton.contains(p) || menuButton.contains(p)) //if mouse inside either button
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
-        else
-            this.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
-
     }
 }
