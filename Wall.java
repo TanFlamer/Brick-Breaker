@@ -94,29 +94,27 @@ public class Wall {
         Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
         Point p = new Point(); //new point at (0,0)
 
-        int oddRow = tmp.length/((2*brickOnLine)+1); //get number of odd rows
+        int twoRows = 2 * brickOnLine + 1;
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-            if(i < oddRow * (brickOnLine + 1)){ //make odd row bricks first
+            if(i % twoRows < brickOnLine){ //even row
 
-                int posX = i % (brickOnLine + 1); //get position of brick of odd line
+                double x = i % twoRows * brickLen; // x = get corner X-coordinate of brick
+                double y = i / twoRows * 2 * brickHgt; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+                tmp[i] = ((i % twoRows) % 2 == 0) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+            }
+            else{ //odd row
+
+                int posX = i % twoRows - brickOnLine; //get position of brick on odd row
 
                 double x = (posX * brickLen) - (brickLen / 2); // x = get corner X-coordinate of brick
-                double y = (2 * (i / (brickOnLine + 1)) + 1) * brickHgt; // y = get corner Y-coordinate of brick
+                double y = (i / twoRows * 2 + 1) * brickHgt; // y = get corner Y-coordinate of brick
 
                 p.setLocation(x,y); //set corner coordinate of brick
-                tmp[i] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
-            }
-            else{ //make even row bricks next
-
-                int remainder = i - oddRow * (brickOnLine + 1);
-
-                double x = (remainder % brickOnLine) * brickLen; // x = get corner X-coordinate of brick
-                double y = (remainder / brickOnLine) * 2 * brickHgt; // y = get corner Y-coordinate of brick
-
-                p.setLocation(x,y); //set corner coordinate of brick
-                tmp[i] = (remainder % 2 == 0) ?  makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+                tmp[i] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
             }
         }
         return tmp;
