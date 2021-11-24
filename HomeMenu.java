@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 
 public class HomeMenu extends JComponent {
@@ -31,6 +32,9 @@ public class HomeMenu extends JComponent {
     private static final String CREDITS = "Version 0.1";
     private static final String START_TEXT = "Start";
     private static final String MENU_TEXT = "Exit";
+
+    private static final String SCORE_TEXT = "HighScores";
+    private static final String CUSTOM_TEXT = "Customise";
 
     private static final Color BG_COLOR = Color.GREEN.darker();
     private static final Color BORDER_COLOR = new Color(200,8,21); //Venetian Red
@@ -45,7 +49,6 @@ public class HomeMenu extends JComponent {
     private Rectangle startButton;
     private Rectangle menuButton;
 
-
     private BasicStroke borderStoke;
     private BasicStroke borderStoke_noDashes;
 
@@ -54,11 +57,16 @@ public class HomeMenu extends JComponent {
     private Font creditsFont;
     private Font buttonFont;
 
+    private Rectangle scoreButton;
+    private Rectangle customButton;
+
     private GameFrame owner;
 
     private boolean startClicked;
     private boolean menuClicked;
 
+    private boolean scoreClicked;
+    private boolean customClicked;
 
     public HomeMenu(GameFrame owner,Dimension area){
 
@@ -71,12 +79,21 @@ public class HomeMenu extends JComponent {
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
                 if(startButton.contains(p)){ //if mouse inside start button
-                    owner.enableGameBoard(); //start game
-
+                    try {
+                        owner.enableGameBoard(); //start game
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(menuButton.contains(p)){ //if mouse inside exit button
                     System.out.println("Goodbye " + System.getProperty("user.name"));
                     System.exit(0); //exit game
+                }
+                else if(customButton.contains(p)){ //if mouse inside exit button
+                    owner.enableCustomConsole();
+                }
+                else if(scoreButton.contains(p)){ //if mouse inside exit button
+                    owner.enableScoreBoard();
                 }
             }
 
@@ -92,6 +109,14 @@ public class HomeMenu extends JComponent {
                     menuClicked = true; //save exit input
                     repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
                 }
+                else if(customButton.contains(p)){ //if mouse inside exit button
+                    customClicked = true; //save exit input
+                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1); //redraw exit button
+                }
+                else if(scoreButton.contains(p)){ //if mouse inside exit button
+                    scoreClicked = true; //save exit input
+                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
+                }
             }
 
             @Override
@@ -104,6 +129,14 @@ public class HomeMenu extends JComponent {
                     menuClicked = false; //reset flag
                     repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
                 }
+                else if(customClicked){ //if exit button clicked
+                    customClicked = false; //reset flag
+                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1); //redraw exit button
+                }
+                else if(scoreClicked){ //if exit button clicked
+                    scoreClicked = false; //reset flag
+                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
+                }
             }
         });
 
@@ -112,7 +145,7 @@ public class HomeMenu extends JComponent {
             @Override
             public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
                 Point p = mouseEvent.getPoint(); //get mouse coordinates
-                if(startButton.contains(p) || menuButton.contains(p)) //if mouse inside either button
+                if(startButton.contains(p) || menuButton.contains(p) || customButton.contains(p) || scoreButton.contains(p)) //if mouse inside either button
                     owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
                 else
                     owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
@@ -127,6 +160,9 @@ public class HomeMenu extends JComponent {
         Dimension btnDim = new Dimension(area.width / 3, area.height / 12);
         startButton = new Rectangle(btnDim); //makes buttons
         menuButton = new Rectangle(btnDim);
+
+        customButton = new Rectangle(btnDim);
+        scoreButton = new Rectangle(btnDim);
         //border stroke lines
         borderStoke = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,0,DASHES,0);
         borderStoke_noDashes = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
@@ -227,10 +263,14 @@ public class HomeMenu extends JComponent {
         Rectangle2D txtRect = buttonFont.getStringBounds(START_TEXT,frc); //get bounds of menu buttons
         Rectangle2D mTxtRect = buttonFont.getStringBounds(MENU_TEXT,frc);
 
+        Rectangle2D hTxtRect = buttonFont.getStringBounds(SCORE_TEXT,frc);
+        Rectangle2D cTxtRect = buttonFont.getStringBounds(CUSTOM_TEXT,frc);
+
         g2d.setFont(buttonFont); //set button font
 
         int x = (menuFace.width - startButton.width) / 2; //get coordinates of text start point
-        int y =(int) ((menuFace.height - startButton.height) * 0.8);
+        //int y =(int) ((menuFace.height - startButton.height) * 0.8);
+        int y =(int) ((menuFace.height - startButton.height) * 0.6);
 
         startButton.setLocation(x,y); //set start button location
 
@@ -257,6 +297,60 @@ public class HomeMenu extends JComponent {
         y = startButton.y;
 
         y *= 1.2;
+
+        customButton.setLocation(x,y); //set exit button location
+
+        x = (int)(customButton.getWidth() - cTxtRect.getWidth()) / 2; //get custom text location
+        y = (int)(customButton.getHeight() - cTxtRect.getHeight()) / 2;
+
+        x += customButton.x;
+        y += customButton.y + (startButton.height * 0.9);
+
+        if(customClicked){ //if exit button clicked
+            Color tmp = g2d.getColor(); //save current colour
+
+            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
+            g2d.draw(customButton); //draw button border to make it look brighter
+            g2d.setColor(CLICKED_TEXT); //get text clicked colour
+            g2d.drawString(CUSTOM_TEXT,x,y); //draw exit text to make it look brighter
+            g2d.setColor(tmp); //get previous colour
+        }
+        else{
+            g2d.draw(customButton); //draw default exit button
+            g2d.drawString(CUSTOM_TEXT,x,y); //draw default exit text
+        }
+
+        x = customButton.x;
+        y = customButton.y;
+
+        y *= 1.18;
+
+        scoreButton.setLocation(x,y); //set exit button location
+
+        x = (int)(scoreButton.getWidth() - hTxtRect.getWidth()) / 2; //get exit text location
+        y = (int)(scoreButton.getHeight() - hTxtRect.getHeight()) / 2;
+
+        x += scoreButton.x;
+        y += scoreButton.y + (startButton.height * 0.9);
+
+        if(scoreClicked){ //if exit button clicked
+            Color tmp = g2d.getColor(); //save current colour
+
+            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
+            g2d.draw(scoreButton); //draw button border to make it look brighter
+            g2d.setColor(CLICKED_TEXT); //get text clicked colour
+            g2d.drawString(SCORE_TEXT,x,y); //draw exit text to make it look brighter
+            g2d.setColor(tmp); //get previous colour
+        }
+        else{
+            g2d.draw(scoreButton); //draw default exit button
+            g2d.drawString(SCORE_TEXT,x,y); //draw default exit text
+        }
+
+        x = scoreButton.x;
+        y = scoreButton.y;
+
+        y *= 1.15;
 
         menuButton.setLocation(x,y); //set exit button location
 
