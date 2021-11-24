@@ -19,6 +19,7 @@ package test;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.Random;
 
 
@@ -29,6 +30,7 @@ public class Wall {
     private static final int CLAY = 1;
     private static final int STEEL = 2;
     private static final int CEMENT = 3;
+    private static final int CONCRETE = 4;
 
     private Random rnd;
     private Rectangle area;
@@ -45,11 +47,13 @@ public class Wall {
     private int ballCount;
     private boolean ballLost;
 
-    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos){
+    int[][] choice = new int[4][8];
+
+    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos) throws IOException {
 
         this.startPoint = new Point(ballPos); //start point = initial ball position
 
-        levels = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //make levels
+        levels = makeCustomLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //make levels
         level = 0; //start at level 0
 
         ballCount = 3; //start with 3 balls
@@ -71,6 +75,127 @@ public class Wall {
         player = new Player((Point) ballPos.clone(),150,10, drawArea); //make new player
 
         area = drawArea; //rectangle at (0,0) with 600 width and 450 height
+    }
+
+    private Brick[] makeRandomLevel(int row, int brickRow){
+
+        int brickLength = 600 / brickRow;
+        int brickHeight = 20;
+
+        Brick[] tmp  = new Brick[(row * brickRow) + (row / 2)];
+
+        Dimension brickSize = new Dimension(brickLength, brickHeight); //get dimensions of brickSize
+        Point p = new Point(); //new point at (0,0)
+        rnd = new Random(); //get random number
+
+        int twoRows = 2 * brickRow + 1;
+
+        for(int i = 0; i < tmp.length; i++){ //loop through whole array
+
+            if(i % twoRows < brickRow){ //even row
+
+                double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
+                double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+            }
+            else{ //odd row
+
+                int posX = i % twoRows - brickRow; //get position of brick on odd row
+
+                double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
+                double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+            }
+
+            if(rnd.nextDouble()>=0&&rnd.nextDouble()<0.25){
+                tmp[i] = makeBrick(p,brickSize,CLAY);
+            }
+            else if(rnd.nextDouble()>=0.25&&rnd.nextDouble()<0.5){
+                tmp[i] = makeBrick(p,brickSize,STEEL);
+            }
+            else if(rnd.nextDouble()>=0.5&&rnd.nextDouble()<0.75){
+                tmp[i] = makeBrick(p,brickSize,CEMENT);
+            }
+            else{
+                tmp[i] = makeBrick(p,brickSize,CONCRETE);
+            }
+        }
+        return tmp;
+    }
+
+    private Brick[] makeCustomLevel(int row, int brickRow, int brickType, int brick1, int brick2, int brick3, int brick4){
+
+        int brickLength = 600 / brickRow;
+        int brickHeight = 20;
+
+        Brick[] tmp  = new Brick[(row * brickRow) + (row / 2)];
+
+        Dimension brickSize = new Dimension(brickLength, brickHeight); //get dimensions of brickSize
+        Point p = new Point(); //new point at (0,0)
+
+        int twoRows = 2 * brickRow + 1;
+
+        for(int i = 0; i < tmp.length; i++){ //loop through whole array
+
+            if(i % twoRows < brickRow){ //even row
+
+                double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
+                double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+            }
+            else{ //odd row
+
+                int posX = i % twoRows - brickRow; //get position of brick on odd row
+
+                double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
+                double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+
+                p.setLocation(x,y); //set corner coordinate of brick
+            }
+
+            if(brickType == 0){
+                tmp[i] = makeBrick(p,brickSize,brick1+1);
+            }
+            else if(brickType == 1){
+
+                if(i%2==0){
+                    tmp[i] = makeBrick(p,brickSize,brick1+1);
+                }
+                else{
+                    tmp[i] = makeBrick(p,brickSize,brick2+1);
+                }
+            }
+            else if(brickType == 2){
+
+                if(i%3==0){
+                    tmp[i] = makeBrick(p,brickSize,brick1+1);
+                }
+                else if(i%3==1){
+                    tmp[i] = makeBrick(p,brickSize,brick2+1);
+                }
+                else{
+                    tmp[i] = makeBrick(p,brickSize,brick3+1);
+                }
+            }
+            else{
+                if(i%4==0){
+                    tmp[i] = makeBrick(p,brickSize,brick1+1);
+                }
+                else if(i%4==1){
+                    tmp[i] = makeBrick(p,brickSize,brick2+1);
+                }
+                else if(i%4==2){
+                    tmp[i] = makeBrick(p,brickSize,brick3+1);
+                }
+                else{
+                    tmp[i] = makeBrick(p,brickSize,brick4+1);
+                }
+            }
+        }
+        return tmp;
     }
 
     //makeSingleTypeLevel is just makeChessboardLevel with same brick type
@@ -122,6 +247,40 @@ public class Wall {
 
     private void makeBall(Point2D ballPos){
         ball = new RubberBall(ballPos); //make ball at position (300,430)
+    }
+
+    private Brick[][] makeCustomLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
+
+        Brick[][] tmp = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //get default levels
+        int brickRow = 0;
+        choice = CustomPanel.choice;
+
+        for(int i = 0;i < 4;i++){
+
+            if(choice[i][2]>=0&&choice[i][2]<6){
+                brickRow = choice[i][2] + 1;
+            }
+            else if(choice[i][2]==6){
+                brickRow = 8;
+            }
+            else if(choice[i][2]==7){
+                brickRow = 10;
+            }
+            else if(choice[i][2]==8){
+                brickRow = 12;
+            }
+            else if(choice[i][2]==9){
+                brickRow = 15;
+            }
+
+            if(choice[i][0]==1){
+                tmp[i] = makeRandomLevel(choice[i][1]+1,brickRow);
+            }
+            else if(choice[i][0]==2){
+                tmp[i] = makeCustomLevel(choice[i][1]+1,brickRow,choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7]);
+            }
+        }
+        return tmp;
     }
 
     private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
@@ -259,6 +418,7 @@ public class Wall {
             case CLAY -> new ClayBrick(point, size);
             case STEEL -> new SteelBrick(point, size);
             case CEMENT -> new CementBrick(point, size);
+            case CONCRETE -> new ConcreteBrick(point, size);
             default -> throw new IllegalArgumentException(String.format("Unknown Type:%d\n", type));
         }; //return new brick
     }
