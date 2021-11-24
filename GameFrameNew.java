@@ -26,36 +26,35 @@ import java.io.IOException;
 public class GameFrameNew extends GameFrame {
 
     private GameBoard gameBoard;
-    private HomeMenu homeMenu;
+    private HomeMenuNew homeMenu;
 
     private Highscore highscore;
+    private CustomConsole customConsole;
 
     private boolean gaming;
 
     public GameFrameNew() throws IOException {
 
         super();
-        gameBoard = new GameBoard(this); //call game board
         highscore = new Highscore(this,new Dimension(450,300)); //get highscore
         homeMenu = new HomeMenuNew(this,new Dimension(450,300)); //set main menu
+        customConsole = new CustomConsole(this,homeMenu);
         this.add(homeMenu,BorderLayout.CENTER); //add main menu to centre
     }
 
-    public void enableGameBoard(){ //start game
+    public void enableGameBoard() throws IOException { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
+        gameBoard = new GameBoard(this); //call game board
         this.add(gameBoard,BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
-        /*to avoid problems with graphics focus controller is added here*/
+
         this.addWindowFocusListener(new WindowAdapter() {
 
             @Override
             public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
                 gaming = true; //set gaming flag true
-                /*the first time the frame loses focus is because it has been disposed to install the GameBoard,
-                  so went it regains the focus it's ready to play. of course calling a method such as 'onLostFocus'
-                  is useful only if the GameBoard as been displayed at least once*/
             }
 
             @Override
@@ -80,5 +79,9 @@ public class GameFrameNew extends GameFrame {
         this.add(homeMenu,BorderLayout.CENTER); //add main game
         this.setUndecorated(true);
         this.setVisible(true);
+    }
+
+    public void enableCustomConsole(){
+        customConsole.setVisible(true);
     }
 }

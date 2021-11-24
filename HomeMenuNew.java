@@ -23,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
 
 public class HomeMenuNew extends HomeMenu {
@@ -46,14 +47,14 @@ public class HomeMenuNew extends HomeMenu {
 
     private Font buttonFont;
 
-    private GameFrame owner;
+    private GameFrameNew owner;
 
     private boolean startClicked;
     private boolean menuClicked;
     private boolean scoreClicked;
     private boolean customClicked;
 
-    public HomeMenuNew(GameFrameNew owner,Dimension area){
+    public HomeMenuNew(GameFrameNew owner,Dimension area) {
 
         super(owner,area);
 
@@ -63,12 +64,14 @@ public class HomeMenuNew extends HomeMenu {
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
                 if(startButton.contains(p)){ //if mouse inside start button
-                    owner.enableGameBoard(); //start game
-
+                    try {
+                        owner.enableGameBoard(); //start game
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(customButton.contains(p)){ //if mouse inside exit button
-                    System.out.println("Goodbye " + System.getProperty("user.name"));
-                    System.exit(0); //exit game
+                    owner.enableCustomConsole();
                 }
                 else if(scoreButton.contains(p)){ //if mouse inside exit button
                     owner.enableScoreBoard();
@@ -153,7 +156,7 @@ public class HomeMenuNew extends HomeMenu {
 
     public void drawMenu(Graphics2D g2d){
 
-        drawContainer(g2d); //draw main menu
+        //drawContainer(g2d); //draw main menu
 
         Color prevColor = g2d.getColor(); //save previous colour
         Font prevFont = g2d.getFont(); //save previous font
@@ -164,7 +167,7 @@ public class HomeMenuNew extends HomeMenu {
         g2d.translate(x,y); //move all points for processing
 
         //methods calls
-        drawText(g2d); //draw menu text
+        //drawText(g2d); //draw menu text
         drawButton(g2d); //draw menu button
         //end of methods calls
 
