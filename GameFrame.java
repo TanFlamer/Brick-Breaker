@@ -20,36 +20,38 @@ package test;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 
 
-public class GameFrame extends JFrame implements WindowFocusListener {
+public class GameFrame extends JFrame {
 
     private static final String DEF_TITLE = "Brick Destroy";
 
     private GameBoard gameBoard;
     private HomeMenu homeMenu;
 
+    private Highscore highscore;
+    private CustomConsole customConsole;
+
     private boolean gaming;
 
-    public GameFrame(){
+    public GameFrame() throws IOException {
         super();
 
         gaming = false; //game loses focus
 
         this.setLayout(new BorderLayout()); //set layout
 
-        gameBoard = new GameBoard(this); //call game board
-
+        highscore = new Highscore(this,new Dimension(450,300)); //get highscore
         homeMenu = new HomeMenu(this,new Dimension(450,300)); //set main menu
-
+        customConsole = new CustomConsole(this,homeMenu);
         this.add(homeMenu,BorderLayout.CENTER); //add main menu to centre
 
         this.setUndecorated(true); //set frame undecorated
-
-
     }
 
     public void initialize(){ //initialize game
@@ -60,42 +62,56 @@ public class GameFrame extends JFrame implements WindowFocusListener {
         this.setVisible(true);
     }
 
-    public void enableGameBoard(){ //start game
+    public void enableGameBoard() throws IOException { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
+        gameBoard = new GameBoard(this); //call game board
         this.add(gameBoard,BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
-        /*to avoid problems with graphics focus controller is added here*/
-        this.addWindowFocusListener(this); //add listener
+        //to avoid problems with graphics focus controller is added here
+        this.addWindowFocusListener(new WindowAdapter() {
 
+            @Override
+            public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
+                gaming = true; //set gaming flag true
+                /*the first time the frame loses focus is because it has been disposed to install the GameBoard,
+                  so went it regains the focus it's ready to play. of course calling a method such as 'onLostFocus'
+                  is useful only if the GameBoard as been displayed at least once*/
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
+                if(gaming) //if gaming flag true
+                    gameBoard.onLostFocus(); //stop timer and action listener
+            }
+        }); //add listener
     }
 
-    private void autoLocate(){ //reposition screen
+    void autoLocate(){ //reposition screen
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (size.width - this.getWidth()) / 2;
         int y = (size.height - this.getHeight()) / 2;
         this.setLocation(x,y);
     }
 
-
-    @Override
-    public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
-        /*
-            the first time the frame loses focus is because
-            it has been disposed to install the GameBoard,
-            so went it regains the focus it's ready to play.
-            of course calling a method such as 'onLostFocus'
-            is useful only if the GameBoard as been displayed
-            at least once
-         */
-        gaming = true; //set gaming flag true
+    public void enableScoreBoard(){
+        this.dispose();
+        this.remove(homeMenu); //remove main menu
+        this.add(highscore,BorderLayout.CENTER); //add main game
+        this.setUndecorated(true);
+        this.setVisible(true);
     }
 
-    @Override
-    public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
-        if(gaming) //if gaming flag true
-            gameBoard.onLostFocus(); //stop timer and action listener
+    public void enableHomeMenu(){
+        this.dispose();
+        this.remove(highscore); //remove main menu
+        this.add(homeMenu,BorderLayout.CENTER); //add main game
+        this.setUndecorated(true);
+        this.setVisible(true);
+    }
 
+    public void enableCustomConsole(){
+        customConsole.setVisible(true);
     }
 }
