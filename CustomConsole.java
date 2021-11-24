@@ -11,17 +11,18 @@ public class CustomConsole extends JDialog {
 
     private JFrame owner;
     private CustomPanel customPanel;
-    private HomeMenuNew homeMenuNew;
+    private HomeMenu homeMenu;
 
-    public CustomConsole(JFrame owner,HomeMenuNew homeMenuNew){
+    public CustomConsole(JFrame owner,HomeMenu homeMenu) {
 
         this.owner = owner;
-        this.homeMenuNew = homeMenuNew;
+        this.homeMenu = homeMenu;
 
         initialize();
         customPanel = new CustomPanel();
         this.add(customPanel,BorderLayout.CENTER);
         this.setSize(300,300);
+        this.pack();
     }
 
     private void initialize() {
@@ -34,7 +35,7 @@ public class CustomConsole extends JDialog {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                homeMenuNew.repaint();
+                homeMenu.repaint();
             }
 
             @Override
@@ -52,3 +53,4 @@ public class CustomConsole extends JDialog {
         this.setLocation(x,y);
     }
 }
+
