@@ -40,6 +40,8 @@ public class Wall {
     Player player;
 
     private Brick[][] levels;
+
+    private int[][] choice;
     private int level;
 
     private Point startPoint;
@@ -47,21 +49,28 @@ public class Wall {
     private int ballCount;
     private boolean ballLost;
 
-    int[][] choice = new int[4][8];
-
-    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos) throws IOException {
+    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos, int[][] choice) throws IOException {
 
         this.startPoint = new Point(ballPos); //start point = initial ball position
+        this.choice = choice;
 
-        levels = makeCustomLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //make levels
+        levels = makeCustomLevels(drawArea,brickCount,lineCount,brickDimensionRatio,choice); //make levels
         level = 0; //start at level 0
 
-        ballCount = 3; //start with 3 balls
+        if(choice[level][8]!=0){
+            ballCount = choice[level][8];
+        }
+        else {
+            ballCount = 3; //start with 3 balls
+        }
         ballLost = false; //ball initially not lost
 
         rnd = new Random(); //get random number
 
-        makeBall(ballPos); //make ball at position (300,430)
+        for(int i = ballCount; i > 0; i--) {
+            makeBall(ballPos); //make ball at position (300,430)
+        }
+
         int speedX,speedY;
         do{
             speedX = rnd.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
@@ -77,22 +86,43 @@ public class Wall {
         area = drawArea; //rectangle at (0,0) with 600 width and 450 height
     }
 
-    private Brick[] makeRandomLevel(int row, int brickRow){
+    private Brick[] makeRandomLevel(Rectangle drawArea, int row, int brickRow, int randType, int brickType){
 
-        int brickLength = 600 / brickRow;
-        int brickHeight = 20;
-
-        Brick[] tmp  = new Brick[(row * brickRow) + (row / 2)];
-
-        Dimension brickSize = new Dimension(brickLength, brickHeight); //get dimensions of brickSize
-        Point p = new Point(); //new point at (0,0)
         rnd = new Random(); //get random number
+        int randRow = 0,randBrickRow = 0;
 
-        int twoRows = 2 * brickRow + 1;
+        int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
+        int [] brickRand = {1,2,3,4};
+
+        for (int i = 0; i < brickRand.length; i++) {
+            int randomIndexToSwap = rnd.nextInt(brickRand.length);
+            int temp = brickRand[randomIndexToSwap];
+            brickRand[randomIndexToSwap] = brickRand[i];
+            brickRand[i] = temp;
+        }
+
+        if(randType==1){
+            randRow = row;
+            randBrickRow = brickRow;
+        }
+        else if(randType==3){
+            randRow = rnd.nextInt(10) + 1;
+            randBrickRow = brickNum[rnd.nextInt(10)];
+        }
+
+        double brickLength = drawArea.getWidth() / randBrickRow;
+        double brickHeight = 20;
+
+        Brick[] tmp  = new Brick[(randRow * randBrickRow) + (randRow / 2)];
+
+        Dimension brickSize = new Dimension((int) brickLength, (int) brickHeight); //get dimensions of brickSize
+        Point p = new Point(); //new point at (0,0)
+
+        int twoRows = 2 * randBrickRow + 1;
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-            if(i % twoRows < brickRow){ //even row
+            if(i % twoRows < randBrickRow){ //even row
 
                 double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
                 double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
@@ -101,7 +131,7 @@ public class Wall {
             }
             else{ //odd row
 
-                int posX = i % twoRows - brickRow; //get position of brick on odd row
+                int posX = i % twoRows - randBrickRow; //get position of brick on odd row
 
                 double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
                 double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
@@ -109,30 +139,26 @@ public class Wall {
                 p.setLocation(x,y); //set corner coordinate of brick
             }
 
-            if(rnd.nextDouble()>=0&&rnd.nextDouble()<0.25){
-                tmp[i] = makeBrick(p,brickSize,CLAY);
+            if(randType==1){
+                tmp[i] = makeBrick(p,brickSize,brickRand[rnd.nextInt(brickType+1)]);
             }
-            else if(rnd.nextDouble()>=0.25&&rnd.nextDouble()<0.5){
-                tmp[i] = makeBrick(p,brickSize,STEEL);
-            }
-            else if(rnd.nextDouble()>=0.5&&rnd.nextDouble()<0.75){
-                tmp[i] = makeBrick(p,brickSize,CEMENT);
-            }
-            else{
-                tmp[i] = makeBrick(p,brickSize,CONCRETE);
+            else if(randType==3){
+                tmp[i] = makeBrick(p,brickSize,rnd.nextInt(4)+1);
             }
         }
         return tmp;
     }
 
-    private Brick[] makeCustomLevel(int row, int brickRow, int brickType, int brick1, int brick2, int brick3, int brick4){
+    private Brick[] makeCustomLevel(Rectangle drawArea, int row, int brickRow, int brickType, int brick1, int brick2, int brick3, int brick4){
 
-        int brickLength = 600 / brickRow;
-        int brickHeight = 20;
+        double brickLength = drawArea.getWidth() / brickRow;
+        double brickHeight = 20;
 
         Brick[] tmp  = new Brick[(row * brickRow) + (row / 2)];
 
-        Dimension brickSize = new Dimension(brickLength, brickHeight); //get dimensions of brickSize
+        int [] brickChoice = {brick1,brick2,brick3,brick4};
+
+        Dimension brickSize = new Dimension((int) brickLength, (int) brickHeight); //get dimensions of brickSize
         Point p = new Point(); //new point at (0,0)
 
         int twoRows = 2 * brickRow + 1;
@@ -155,45 +181,7 @@ public class Wall {
 
                 p.setLocation(x,y); //set corner coordinate of brick
             }
-
-            if(brickType == 0){
-                tmp[i] = makeBrick(p,brickSize,brick1+1);
-            }
-            else if(brickType == 1){
-
-                if(i%2==0){
-                    tmp[i] = makeBrick(p,brickSize,brick1+1);
-                }
-                else{
-                    tmp[i] = makeBrick(p,brickSize,brick2+1);
-                }
-            }
-            else if(brickType == 2){
-
-                if(i%3==0){
-                    tmp[i] = makeBrick(p,brickSize,brick1+1);
-                }
-                else if(i%3==1){
-                    tmp[i] = makeBrick(p,brickSize,brick2+1);
-                }
-                else{
-                    tmp[i] = makeBrick(p,brickSize,brick3+1);
-                }
-            }
-            else{
-                if(i%4==0){
-                    tmp[i] = makeBrick(p,brickSize,brick1+1);
-                }
-                else if(i%4==1){
-                    tmp[i] = makeBrick(p,brickSize,brick2+1);
-                }
-                else if(i%4==2){
-                    tmp[i] = makeBrick(p,brickSize,brick3+1);
-                }
-                else{
-                    tmp[i] = makeBrick(p,brickSize,brick4+1);
-                }
-            }
+            tmp[i] = makeBrick(p,brickSize,brickChoice[i%(brickType+1)]+1);
         }
         return tmp;
     }
@@ -249,35 +237,22 @@ public class Wall {
         ball = new RubberBall(ballPos); //make ball at position (300,430)
     }
 
-    private Brick[][] makeCustomLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
+    private Brick[][] makeCustomLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio,int[][] choice){
 
         Brick[][] tmp = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //get default levels
+
+        int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
         int brickRow = 0;
-        choice = CustomPanel.choice;
 
         for(int i = 0;i < 4;i++){
 
-            if(choice[i][2]>=0&&choice[i][2]<6){
-                brickRow = choice[i][2] + 1;
-            }
-            else if(choice[i][2]==6){
-                brickRow = 8;
-            }
-            else if(choice[i][2]==7){
-                brickRow = 10;
-            }
-            else if(choice[i][2]==8){
-                brickRow = 12;
-            }
-            else if(choice[i][2]==9){
-                brickRow = 15;
-            }
+            brickRow = brickNum[choice[i][2]];
 
-            if(choice[i][0]==1){
-                tmp[i] = makeRandomLevel(choice[i][1]+1,brickRow);
+            if(choice[i][0]==1||choice[i][0]==3){
+                tmp[i] = makeRandomLevel(drawArea,choice[i][1]+1,brickRow,choice[i][0],choice[i][3]);
             }
             else if(choice[i][0]==2){
-                tmp[i] = makeCustomLevel(choice[i][1]+1,brickRow,choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7]);
+                tmp[i] = makeCustomLevel(drawArea,choice[i][1]+1,brickRow,choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7]);
             }
         }
         return tmp;
@@ -377,11 +352,17 @@ public class Wall {
         ballLost = false; //ball is found
     }
 
-    public void wallReset(){
+    public void wallReset(int level){
         for(Brick b : bricks)
             b.repair(); //reset brick to full strength
         brickCount = bricks.length; //reset brick count
-        ballCount = 3; //reset ball count
+
+        if(choice[level][8]!=0) {
+            ballCount = choice[level][8]; //reset ball count
+        }
+        else{
+            ballCount = 3;
+        }
     }
 
     public boolean ballEnd(){ //if all balls are used up
@@ -395,10 +376,34 @@ public class Wall {
     public void nextLevel(){
         bricks = levels[level++]; //load next level
         this.brickCount = bricks.length; //reset brick count
+
+        if(choice[level-1][8]!=0) {
+            ballCount = choice[level-1][8]; //reset ball count
+        }
+        else{
+            ballCount = 3;
+        }
+    }
+
+    public void previousLevel(){
+        level -= 2;
+        bricks = levels[level++]; //load previous level
+        this.brickCount = bricks.length; //reset brick count
+
+        if(choice[level-1][8]!=0) {
+            ballCount = choice[level-1][8]; //reset ball count
+        }
+        else{
+            ballCount = 3;
+        }
     }
 
     public boolean hasLevel(){ //if next level exists
         return level < levels.length;
+    }
+
+    public int getLevel(){
+        return level;
     }
 
     public void setBallXSpeed(int s){
