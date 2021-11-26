@@ -21,7 +21,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class GameBoard extends JComponent {
 
@@ -31,7 +32,6 @@ public class GameBoard extends JComponent {
     private static final String PAUSE = "Pause Menu";
     private static final int TEXT_SIZE = 30;
     private static final Color MENU_COLOR = new Color(0,255,0);
-
 
     private static final int DEF_WIDTH = 600;
     private static final int DEF_HEIGHT = 450;
@@ -44,6 +44,11 @@ public class GameBoard extends JComponent {
 
     private String message;
 
+    private String totalScore;
+    private String levelScore;
+
+    private ScoreBoard scoreboard;
+
     private boolean showPauseMenu;
 
     private Font menuFont;
@@ -55,7 +60,9 @@ public class GameBoard extends JComponent {
 
     private DebugConsole debugConsole;
 
-    public GameBoard(JFrame owner){
+    private int[] scoreLevel = new int[5];
+
+    public GameBoard(JFrame owner, int[][] choice) throws IOException {
         super();
 
         strLen = 0; //initial string length is 0
@@ -65,41 +72,65 @@ public class GameBoard extends JComponent {
 
         this.initialize(owner);
         message = "";
+        totalScore = "";
+        levelScore = "";
         //define all bricks, player and ball
-        wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430));
+        wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430),choice);
 
         debugConsole = new DebugConsole(owner,wall,this);
         //initialize the first level
         wall.nextLevel(); //move to next level
 
-        gameTimer = new Timer(10,e ->{ //10 millisecond delay between action and action listener
+        gameTimer = new Timer(10,e ->{ //10-millisecond delay between action and action listener
             wall.move(); //move player and ball every 10 millisecond
             wall.findImpacts(); //detect impact of ball
-            message = String.format("Bricks: %d Balls %d",wall.getBrickCount(),wall.getBallCount()); //show brick and ball count
+            message = String.format("Bricks: %d  Balls %d",wall.getBrickCount(),wall.getBallCount()); //show brick and ball count
+
+            scoreLevel[0] = returnPreviousLevelsScore(wall.getLevel());
+            for(Brick b: wall.bricks){
+                if(b.isBroken()){
+                    scoreLevel[0] += b.getScore();
+                }
+            }
+            totalScore = String.format("Total Score %d",scoreLevel[0]);
+            levelScore = String.format("Level %d Score %d",wall.getLevel(),scoreLevel[0]-returnPreviousLevelsScore(wall.getLevel()));
+
             if(wall.isBallLost()){ //if ball leaves bottom border
                 if(wall.ballEnd()){ //if all balls are used up
-                    wall.wallReset(); //reset wall
+                    wall.wallReset(wall.getLevel()-1); //reset wall
                     message = "Game over"; //show game over message
                 }
                 wall.ballReset(); //reset player and ball position
                 gameTimer.stop(); //stop timer and action listener
             }
             else if(wall.isDone()){ //if all bricks destroyed
+
+                storeLevelScore(wall.getLevel());
+                try {
+                    scoreboard = new ScoreBoard(owner,this,wall.getLevel(),scoreLevel,choice);
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                }
+
                 if(wall.hasLevel()){ //if next level exists
                     message = "Go to Next Level";
                     gameTimer.stop(); //stop timer and action listener
                     wall.ballReset(); //reset player and ball position
-                    wall.wallReset(); //reset wall
+                    wall.wallReset(wall.getLevel()); //reset wall
                     wall.nextLevel(); //move to next level
                 }
                 else{ //if no levels left
+                    try {
+                        scoreboard = new ScoreBoard(owner,this,0,scoreLevel,choice);
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
                     message = "ALL WALLS DESTROYED";
                     gameTimer.stop(); //stop timer and action listener
                 }
             }
             repaint(); //repaint components
         });
-
     }
 
     private void initialize(JFrame owner){ //initialize JFrame
@@ -158,7 +189,7 @@ public class GameBoard extends JComponent {
                 else if(restartButtonRect.contains(p)){ //if restart pressed
                     message = "Restarting Game...";
                     wall.ballReset(); //reset balls
-                    wall.wallReset(); //reset walls
+                    wall.wallReset(wall.getLevel()-1); //reset walls
                     showPauseMenu = false; //close pause menu
                     repaint(); //repaint components
                 }
@@ -194,11 +225,13 @@ public class GameBoard extends JComponent {
 
         g2d.setColor(Color.BLUE); //set blue colour
         g2d.drawString(message,250,225); //set message colour as blue
+        g2d.drawString(totalScore,250,240); //set message colour as blue
+        g2d.drawString(levelScore,250,255); //set message colour as blue
 
         drawBall(wall.ball,g2d); //draw ball with inner and border colours
 
         for(Brick b : wall.bricks) //loop through bricks
-            if(!b.isBroken()) //if brick is not broken
+            if (!b.isBroken()) //if brick is not broken
                 drawBrick(b,g2d); //colour brick
 
         drawPlayer(wall.player,g2d); //colour player
@@ -319,5 +352,17 @@ public class GameBoard extends JComponent {
         gameTimer.stop(); //stop timer and action listener
         message = "Focus Lost";
         repaint(); //repaint components
+    }
+
+    public void storeLevelScore(int level){
+        scoreLevel[level] = scoreLevel[0]- returnPreviousLevelsScore(level);
+    }
+
+    public int returnPreviousLevelsScore(int level){
+        int total = 0;
+        for(int i = level;i > 1; i--){
+            total += scoreLevel[i-1];
+        }
+        return total;
     }
 }
