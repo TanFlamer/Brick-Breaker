@@ -112,9 +112,7 @@ public class HomeMenu extends JComponent {
                 }
                 else if(imageButton.contains(p)) {
                     popupmenu.show(owner, -150, -150);
-                    rand++;
                     repaint();
-                    popupmenu.remove(0);
                 }
                 else if(infoButton.contains(p)) {
                     owner.enableInfoScreen();
@@ -480,11 +478,20 @@ public class HomeMenu extends JComponent {
 
     private void drawImage(Graphics2D g2d) throws IOException {
 
-        BufferedImage myPicture = ImageIO.read(new File("image/BrickDestroy"+rand%2+".png"));
-        Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);
+        Random rnd = new Random();
+        rand = rnd.nextInt(12);
 
-        JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/BrickDestroy"+rand%2+".png"));
-        popupmenu.add(jMenuItem);
+        try{
+            popupmenu.remove(0);
+        } catch (Exception e){
+            //do nothing
+        } finally {
+            JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/ImageShowcase/BrickDestroy"+rand+".png"));
+            popupmenu.add(jMenuItem);
+        }
+
+        BufferedImage myPicture = ImageIO.read(new File("image/ImageShowcase/BrickDestroy"+rand+".png"));
+        Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);
 
         int x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
         int y =(int) ((menuFace.height - startButton.height) * 0.6);
