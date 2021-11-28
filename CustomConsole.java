@@ -13,6 +13,8 @@ public class CustomConsole extends JDialog {
     private CustomPanel customPanel;
     private HomeMenu homeMenu;
 
+    int[][] choice;
+
     public CustomConsole(JFrame owner,HomeMenu homeMenu) {
 
         this.owner = owner;
@@ -20,6 +22,7 @@ public class CustomConsole extends JDialog {
 
         initialize();
         customPanel = new CustomPanel();
+        this.choice = customPanel.getChoice();
         this.add(customPanel,BorderLayout.CENTER);
         this.setSize(300,300);
         this.pack();
@@ -51,6 +54,10 @@ public class CustomConsole extends JDialog {
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);
+    }
+
+    public int[][] getChoice(){
+        return choice;
     }
 }
 

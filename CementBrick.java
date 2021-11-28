@@ -13,12 +13,14 @@ public class CementBrick extends Brick {
     private static final Color DEF_BORDER = new Color(217, 199, 175);
     private static final int CEMENT_STRENGTH = 2;
 
+    private static final int SCORE_MULTIPLIER = 40;
+
     private Crack crack;
     private Shape brickFace;
 
 
     public CementBrick(Point point, Dimension size){
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,CEMENT_STRENGTH); //get all basic information of clay brick
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,CEMENT_STRENGTH,SCORE_MULTIPLIER); //get all basic information of clay brick
         crack = new Crack(DEF_CRACK_DEPTH,DEF_STEPS); //define crack information
         brickFace = super.brickFace; //get brick face
     }

@@ -36,14 +36,12 @@ public class Player {
     private int min;
     private int max;
 
-
     public Player(Point ballPoint,int width,int height,Rectangle container) {
         this.ballPoint = ballPoint; //ball position
         moveAmount = 0; //player has not moved
         playerFace = makeRectangle(width, height); //make rectangle player
         min = container.x + (width / 2); //set min position as half of width from left order
         max = min + container.width - width; //set max position as half of width from right border
-
     }
 
     private Rectangle makeRectangle(int width,int height){

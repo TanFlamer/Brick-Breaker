@@ -17,12 +17,16 @@
  */
 package test;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 
 public class HomeMenu extends JComponent {
@@ -35,6 +39,7 @@ public class HomeMenu extends JComponent {
 
     private static final String SCORE_TEXT = "HighScores";
     private static final String CUSTOM_TEXT = "Customise";
+    private static final String INFO_TEXT = "INFO";
 
     private static final Color BG_COLOR = Color.GREEN.darker();
     private static final Color BORDER_COLOR = new Color(200,8,21); //Venetian Red
@@ -49,6 +54,11 @@ public class HomeMenu extends JComponent {
     private Rectangle startButton;
     private Rectangle menuButton;
 
+    private Rectangle scoreButton;
+    private Rectangle customButton;
+    private Rectangle imageButton;
+    private Rectangle infoButton;
+
     private BasicStroke borderStoke;
     private BasicStroke borderStoke_noDashes;
 
@@ -57,8 +67,9 @@ public class HomeMenu extends JComponent {
     private Font creditsFont;
     private Font buttonFont;
 
-    private Rectangle scoreButton;
-    private Rectangle customButton;
+    private Font textFont;
+
+    private JPopupMenu popupmenu = new JPopupMenu();
 
     private GameFrame owner;
 
@@ -67,6 +78,10 @@ public class HomeMenu extends JComponent {
 
     private boolean scoreClicked;
     private boolean customClicked;
+    private boolean infoClicked;
+    private boolean imageClicked;
+
+    private int rand = 0;
 
     public HomeMenu(GameFrame owner,Dimension area){
 
@@ -93,7 +108,16 @@ public class HomeMenu extends JComponent {
                     owner.enableCustomConsole();
                 }
                 else if(scoreButton.contains(p)){ //if mouse inside exit button
-                    owner.enableScoreBoard();
+                    owner.enableHighscoreBoard();
+                }
+                else if(imageButton.contains(p)) {
+                    popupmenu.show(owner, -150, -150);
+                    rand++;
+                    repaint();
+                    popupmenu.remove(0);
+                }
+                else if(infoButton.contains(p)) {
+                    owner.enableInfoScreen();
                 }
             }
 
@@ -103,7 +127,6 @@ public class HomeMenu extends JComponent {
                 if(startButton.contains(p)){ //if mouse inside start button
                     startClicked = true; //save start input
                     repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
-
                 }
                 else if(menuButton.contains(p)){ //if mouse inside exit button
                     menuClicked = true; //save exit input
@@ -117,11 +140,18 @@ public class HomeMenu extends JComponent {
                     scoreClicked = true; //save exit input
                     repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
                 }
+                else if(infoButton.contains(p)){ //if mouse inside exit button
+                    infoClicked = true; //save exit input
+                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1); //redraw exit button
+                }
+                else if(imageButton.contains(p)){
+                    imageClicked = true;
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
-                if(startClicked ){ //if start button clicked
+                if(startClicked){ //if start button clicked
                     startClicked = false; //reset flag
                     repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
                 } //buttons will turn normal for a second before game starts
@@ -137,6 +167,13 @@ public class HomeMenu extends JComponent {
                     scoreClicked = false; //reset flag
                     repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
                 }
+                else if(infoClicked){ //if exit button clicked
+                    infoClicked = false; //reset flag
+                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1); //redraw exit button
+                }
+                else if(imageClicked){
+                    imageClicked = false;
+                }
             }
         });
 
@@ -145,7 +182,7 @@ public class HomeMenu extends JComponent {
             @Override
             public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
                 Point p = mouseEvent.getPoint(); //get mouse coordinates
-                if(startButton.contains(p) || menuButton.contains(p) || customButton.contains(p) || scoreButton.contains(p)) //if mouse inside either button
+                if(startButton.contains(p) || menuButton.contains(p) || customButton.contains(p) || scoreButton.contains(p) || imageButton.contains(p) || infoButton.contains(p)) //if mouse inside either button
                     owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
                 else
                     owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
@@ -163,6 +200,10 @@ public class HomeMenu extends JComponent {
 
         customButton = new Rectangle(btnDim);
         scoreButton = new Rectangle(btnDim);
+
+        imageButton = new Rectangle(new Dimension(90,90));
+        infoButton = new Rectangle( new Dimension(area.width / 4, area.height / 6));
+
         //border stroke lines
         borderStoke = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,0,DASHES,0);
         borderStoke_noDashes = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
@@ -171,13 +212,18 @@ public class HomeMenu extends JComponent {
         gameTitleFont = new Font("Noto Mono",Font.BOLD,40);
         creditsFont = new Font("Monospaced",Font.PLAIN,10);
         buttonFont = new Font("Monospaced",Font.PLAIN,startButton.height-2);
+        textFont = new Font("Noto Mono",Font.PLAIN,19);
     }
 
     public void paint(Graphics g){ //draw main menu
-        drawMenu((Graphics2D)g);
+        try {
+            drawMenu((Graphics2D)g);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void drawMenu(Graphics2D g2d){
+    public void drawMenu(Graphics2D g2d) throws IOException {
 
         drawContainer(g2d); //draw main menu
         /*
@@ -196,6 +242,7 @@ public class HomeMenu extends JComponent {
         //methods calls
         drawText(g2d); //draw menu text
         drawButton(g2d); //draw menu button
+        drawImage(g2d);
         //end of methods calls
 
         g2d.translate(-x,-y); //move points back
@@ -254,6 +301,28 @@ public class HomeMenu extends JComponent {
 
         g2d.setFont(creditsFont); //get text font
         g2d.drawString(CREDITS,sX,sY); //draw credits
+
+        //left side
+        g2d.setFont(textFont); //get text font
+
+        sX = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        sY =(int) ((menuFace.height - startButton.height) * 0.6);
+
+        sX = sX - 15;
+        sY += imageButton.height + 18;
+        g2d.drawString("Random Level",sX,sY); //draw credits
+
+        sX = sX + 18;
+        sY += 15;
+        g2d.drawString("Showcase",sX,sY); //draw credits
+
+        sX = (menuFace.width - startButton.width) / 12 + 5; //get coordinates of text start point
+        sY =(int) ((menuFace.height - startButton.height) * 0.6) - 5;
+        g2d.drawString("Click me!",sX,sY); //draw credits
+
+        sX = (menuFace.width - startButton.width) / 12 + 2 * startButton.width + 10; //get coordinates of text start point
+        sY =(int) ((menuFace.height - startButton.height) * 0.6) + startButton.height + 8;
+        g2d.drawString("Click me!",sX,sY); //draw credits
     }
 
     private void drawButton(Graphics2D g2d){ //draw menu buttons
@@ -265,6 +334,7 @@ public class HomeMenu extends JComponent {
 
         Rectangle2D hTxtRect = buttonFont.getStringBounds(SCORE_TEXT,frc);
         Rectangle2D cTxtRect = buttonFont.getStringBounds(CUSTOM_TEXT,frc);
+        Rectangle2D iTxtRect = buttonFont.getStringBounds(INFO_TEXT,frc);
 
         g2d.setFont(buttonFont); //set button font
 
@@ -373,5 +443,52 @@ public class HomeMenu extends JComponent {
             g2d.draw(menuButton); //draw default exit button
             g2d.drawString(MENU_TEXT,x,y); //draw default exit text
         }
+
+        x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        y =(int) ((menuFace.height - startButton.height) * 0.6);
+
+        x += 2 * startButton.width - 5;
+        y += 2 * startButton.height - 12;
+
+        infoButton.setLocation(x,y); //set exit button location
+
+        x = (int)(infoButton.getWidth() - iTxtRect.getWidth()) / 2; //get exit text location
+        y = (int)(infoButton.getHeight() - iTxtRect.getHeight()) / 2;
+
+        x += infoButton.x;
+        y += infoButton.y + (startButton.height * 0.9);
+
+        if(infoClicked){ //if exit button clicked
+            Color tmp = g2d.getColor(); //save current colour
+
+            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
+            g2d.draw(infoButton); //draw button border to make it look brighter
+            g2d.setColor(CLICKED_TEXT); //get text clicked colour
+            g2d.drawString(INFO_TEXT,x,y); //draw exit text to make it look brighter
+            g2d.setColor(tmp); //get previous colour
+        }
+        else{
+            g2d.draw(infoButton); //draw default exit button
+            g2d.drawString(INFO_TEXT,x,y); //draw default exit text
+        }
+
+        x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        y =(int) ((menuFace.height - startButton.height) * 0.6);
+
+        imageButton.setLocation(x,y); //set exit button location
+    }
+
+    private void drawImage(Graphics2D g2d) throws IOException {
+
+        BufferedImage myPicture = ImageIO.read(new File("image/BrickDestroy"+rand%2+".png"));
+        Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);
+
+        JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/BrickDestroy"+rand%2+".png"));
+        popupmenu.add(jMenuItem);
+
+        int x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        int y =(int) ((menuFace.height - startButton.height) * 0.6);
+
+        g2d.drawImage(newImage,x,y,this);
     }
 }

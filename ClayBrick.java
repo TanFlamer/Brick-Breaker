@@ -16,12 +16,10 @@ public class ClayBrick extends Brick {
     private static final Color DEF_BORDER = Color.GRAY;
     private static final int CLAY_STRENGTH = 1;
 
-
-
-
+    private static final int SCORE_MULTIPLIER = 10;
 
     public ClayBrick(Point point, Dimension size){ //get point and size of clay brick
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,CLAY_STRENGTH); //get all basic information of clay brick
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,CLAY_STRENGTH,SCORE_MULTIPLIER); //get all basic information of clay brick
     }
 
     @Override
@@ -33,6 +31,5 @@ public class ClayBrick extends Brick {
     public Shape getBrick() {
         return super.brickFace; //get brick to be coloured
     }
-
 
 }

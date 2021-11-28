@@ -22,15 +22,15 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-
-
 public class DebugPanel extends JPanel {
 
     private static final Color DEF_BKG = Color.WHITE;
 
-
     private JButton skipLevel;
     private JButton resetBalls;
+
+    private JButton previousLevel;
+    private JButton resetPosition;
 
     private JSlider ballXSpeed;
     private JSlider ballYSpeed;
@@ -46,20 +46,25 @@ public class DebugPanel extends JPanel {
         skipLevel = makeButton("Skip Level",e -> wall.nextLevel()); //make new buttons
         resetBalls = makeButton("Reset Balls",e -> wall.resetBallCount());
 
+        previousLevel = makeButton("Previous Level",e -> wall.previousLevel());
+        resetPosition = makeButton("Reset Position",e -> wall.ballReset());
+
         ballXSpeed = makeSlider(-4,4,e -> wall.setBallXSpeed(ballXSpeed.getValue())); //make new sliders
         ballYSpeed = makeSlider(-4,4,e -> wall.setBallYSpeed(ballYSpeed.getValue())); //show and set speed of ball
 
         this.add(skipLevel); //add buttons
         this.add(resetBalls);
 
+        this.add(previousLevel);
+        this.add(resetPosition);
+
         this.add(ballXSpeed); //add sliders
         this.add(ballYSpeed);
-
     }
 
     private void initialize(){ //initialize debug panel
         this.setBackground(DEF_BKG); //set background colour
-        this.setLayout(new GridLayout(2,2)); //set layout
+        this.setLayout(new GridLayout(3,2)); //set layout
     }
 
     private JButton makeButton(String title, ActionListener e){ //make buttons and add listener
@@ -81,5 +86,4 @@ public class DebugPanel extends JPanel {
         ballXSpeed.setValue(x);
         ballYSpeed.setValue(y);
     }
-
 }

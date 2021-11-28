@@ -19,11 +19,8 @@ package test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 
 
@@ -36,6 +33,7 @@ public class GameFrame extends JFrame {
 
     private Highscore highscore;
     private CustomConsole customConsole;
+    private InfoScreen infoScreen;
 
     private boolean gaming;
 
@@ -49,6 +47,7 @@ public class GameFrame extends JFrame {
         highscore = new Highscore(this,new Dimension(450,300)); //get highscore
         homeMenu = new HomeMenu(this,new Dimension(450,300)); //set main menu
         customConsole = new CustomConsole(this,homeMenu);
+        infoScreen = new InfoScreen(this,homeMenu);
         this.add(homeMenu,BorderLayout.CENTER); //add main menu to centre
 
         this.setUndecorated(true); //set frame undecorated
@@ -65,7 +64,7 @@ public class GameFrame extends JFrame {
     public void enableGameBoard() throws IOException { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        gameBoard = new GameBoard(this); //call game board
+        gameBoard = new GameBoard(this,customConsole.getChoice()); //call game board
         this.add(gameBoard,BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
@@ -95,7 +94,7 @@ public class GameFrame extends JFrame {
         this.setLocation(x,y);
     }
 
-    public void enableScoreBoard(){
+    public void enableHighscoreBoard(){
         this.dispose();
         this.remove(homeMenu); //remove main menu
         this.add(highscore,BorderLayout.CENTER); //add main game
@@ -113,5 +112,9 @@ public class GameFrame extends JFrame {
 
     public void enableCustomConsole(){
         customConsole.setVisible(true);
+    }
+
+    public void enableInfoScreen(){
+        infoScreen.setVisible(true);
     }
 }

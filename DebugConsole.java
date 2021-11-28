@@ -21,7 +21,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class DebugConsole extends JDialog {
 
@@ -31,7 +30,6 @@ public class DebugConsole extends JDialog {
     private DebugPanel debugPanel;
     private GameBoard gameBoard;
     private Wall wall;
-
 
     public DebugConsole(JFrame owner,Wall wall,GameBoard gameBoard){
 
@@ -66,7 +64,6 @@ public class DebugConsole extends JDialog {
                 debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
             }
         });
-
         this.setFocusable(true);
     }
 

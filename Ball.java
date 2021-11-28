@@ -39,7 +39,6 @@ abstract public class Ball {
         left.setLocation(center.getX()-(radiusA /2),center.getY()); //left point half a radius left of centre point
         right.setLocation(center.getX()+(radiusA /2),center.getY()); //right point half a radius rigth of centre point
 
-
         ballFace = makeBall(center,radiusA,radiusB);
         this.border = border; //ball border colour
         this.inner  = inner; //ball inner colour
@@ -57,7 +56,6 @@ abstract public class Ball {
 
         tmp.setFrame((center.getX() -(w / 2)),(center.getY() - (h / 2)),w,h); //make rectangle shape
         setPoints(w,h); //set new locations of up, down, left, right of ball
-
 
         ballFace = tmp; //set ball face as rectangle shape
     }
@@ -125,6 +123,5 @@ abstract public class Ball {
     public int getSpeedY(){
         return speedY;
     }
-
 
 }

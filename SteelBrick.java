@@ -30,15 +30,16 @@ public class SteelBrick extends Brick {
     private static final int STEEL_STRENGTH = 1;
     private static final double STEEL_PROBABILITY = 0.4;
 
+    private static final int SCORE_MULTIPLIER = 40;
+
     private Random rnd;
     private Shape brickFace;
 
     public SteelBrick(Point point, Dimension size){
-        super(NAME,point,size,DEF_BORDER,DEF_INNER,STEEL_STRENGTH); //get all basic information of clay brick
+        super(NAME,point,size,DEF_BORDER,DEF_INNER,STEEL_STRENGTH,SCORE_MULTIPLIER); //get all basic information of clay brick
         rnd = new Random();
         brickFace = super.brickFace; //get brick face
     }
-
 
     @Override
     protected Shape makeBrickFace(Point pos, Dimension size) {
@@ -62,5 +63,4 @@ public class SteelBrick extends Brick {
             super.impact(); //signal impact and decrease brick strength
         }
     }
-
 }

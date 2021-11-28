@@ -46,10 +46,12 @@ public class GameBoard extends JComponent {
 
     private String totalScore;
     private String levelScore;
-
-    private ScoreBoard scoreboard;
+    private String totalTime;
+    private String levelTime;
 
     private boolean showPauseMenu;
+
+    public int startTime = (int) java.time.Instant.now().getEpochSecond();
 
     private Font menuFont;
 
@@ -60,7 +62,7 @@ public class GameBoard extends JComponent {
 
     private DebugConsole debugConsole;
 
-    private int[] scoreLevel = new int[5];
+    private int[][] scoreLevel = new int[5][2];
 
     public GameBoard(JFrame owner, int[][] choice) throws IOException {
         super();
@@ -74,6 +76,8 @@ public class GameBoard extends JComponent {
         message = "";
         totalScore = "";
         levelScore = "";
+        totalTime = "";
+        levelTime = "";
         //define all bricks, player and ball
         wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430),choice);
 
@@ -86,47 +90,70 @@ public class GameBoard extends JComponent {
             wall.findImpacts(); //detect impact of ball
             message = String.format("Bricks: %d  Balls %d",wall.getBrickCount(),wall.getBallCount()); //show brick and ball count
 
-            scoreLevel[0] = returnPreviousLevelsScore(wall.getLevel());
+            if(wall.flag==1){
+                scoreLevel[0][1] = returnPreviousLevelsTime(wall.getLevel());
+                wall.flag = 0;
+            }
+
+            scoreLevel[0][0] = returnPreviousLevelsScore(wall.getLevel());
             for(Brick b: wall.bricks){
                 if(b.isBroken()){
-                    scoreLevel[0] += b.getScore();
+                    scoreLevel[0][0] += b.getScore();
                 }
             }
-            totalScore = String.format("Total Score %d",scoreLevel[0]);
-            levelScore = String.format("Level %d Score %d",wall.getLevel(),scoreLevel[0]-returnPreviousLevelsScore(wall.getLevel()));
+
+            totalScore = String.format("Total Score %d",scoreLevel[0][0]);
+            levelScore = String.format("Level %d Score %d",wall.getLevel(),scoreLevel[0][0]-returnPreviousLevelsScore(wall.getLevel()));
+
+            int totalMinutes = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1])/60;
+            int totalSeconds = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1])%60;
+            int levelMinutes = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1] - returnPreviousLevelsTime(wall.getLevel()))/60;
+            int levelSeconds = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1] - returnPreviousLevelsTime(wall.getLevel()))%60;
+
+            totalTime = String.format("Total Time %02d:%02d",totalMinutes,totalSeconds);
+            levelTime = String.format("Level %d Time %02d:%02d",wall.getLevel(),levelMinutes,levelSeconds);
 
             if(wall.isBallLost()){ //if ball leaves bottom border
+
+                gameTimer.stop(); //stop timer and action listener
+                saveElapsedTime();
+
                 if(wall.ballEnd()){ //if all balls are used up
                     wall.wallReset(wall.getLevel()-1); //reset wall
                     message = "Game over"; //show game over message
+                    wall.ballReset(); //reset player and ball position
+                    scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
                 }
-                wall.ballReset(); //reset player and ball position
-                gameTimer.stop(); //stop timer and action listener
+                else {
+                    wall.ballReset(); //reset player and ball position
+                }
             }
             else if(wall.isDone()){ //if all bricks destroyed
 
                 storeLevelScore(wall.getLevel());
+                gameTimer.stop(); //stop timer and action listener
+                saveElapsedTime();
+                storeLevelTime(wall.getLevel());
+
                 try {
-                    scoreboard = new ScoreBoard(owner,this,wall.getLevel(),scoreLevel,choice);
+                    new ScoreBoard(owner,this,wall.getLevel(),scoreLevel,choice);
                 } catch (FileNotFoundException fileNotFoundException) {
                     fileNotFoundException.printStackTrace();
                 }
 
                 if(wall.hasLevel()){ //if next level exists
                     message = "Go to Next Level";
-                    gameTimer.stop(); //stop timer and action listener
                     wall.ballReset(); //reset player and ball position
-                    wall.wallReset(wall.getLevel()); //reset wall
+                    wall.wallReset(wall.getLevel()-1); //reset wall
                     wall.nextLevel(); //move to next level
                 }
                 else{ //if no levels left
                     try {
-                        scoreboard = new ScoreBoard(owner,this,0,scoreLevel,choice);
+                        new ScoreBoard(owner,this,0,scoreLevel,choice);
                     } catch (FileNotFoundException ex) {
                         ex.printStackTrace();
                     }
                     message = "ALL WALLS DESTROYED";
-                    gameTimer.stop(); //stop timer and action listener
                 }
             }
             repaint(); //repaint components
@@ -152,18 +179,31 @@ public class GameBoard extends JComponent {
                     case KeyEvent.VK_ESCAPE: //press esc
                         showPauseMenu = !showPauseMenu; //show pause menu
                         repaint(); //repaint components
-                        gameTimer.stop(); //stop timer and action listener
+                        if(gameTimer.isRunning()) {
+                            gameTimer.stop(); //stop timer and action listener
+                            saveElapsedTime();
+                        }
                         break;
                     case KeyEvent.VK_SPACE: //press space
-                        if(!showPauseMenu) //if game not paused
-                            if(gameTimer.isRunning()) //if timer is running
+                        if(!showPauseMenu) { //if game not paused
+                            if (gameTimer.isRunning()) { //if timer is running
                                 gameTimer.stop(); //stop timer and action listener
-                            else //else if timer is stopped
+                                saveElapsedTime();
+                            }
+                            else { //else if timer is stopped
                                 gameTimer.start(); //start timer and action listener
+                                startTime = (int) java.time.Instant.now().getEpochSecond();
+                            }
+                        }
                         break;
                     case KeyEvent.VK_F1: //press f1 + alt + shift
-                        if(keyEvent.isAltDown() && keyEvent.isShiftDown())
+                        if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
+                            if(gameTimer.isRunning()) {
+                                gameTimer.stop();
+                                saveElapsedTime();
+                            }
                             debugConsole.setVisible(true); //show debug console
+                        }
                     default: //press anything else
                         wall.player.stop(); //stop player
                 }
@@ -190,6 +230,7 @@ public class GameBoard extends JComponent {
                     message = "Restarting Game...";
                     wall.ballReset(); //reset balls
                     wall.wallReset(wall.getLevel()-1); //reset walls
+                    scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
                     showPauseMenu = false; //close pause menu
                     repaint(); //repaint components
                 }
@@ -227,6 +268,8 @@ public class GameBoard extends JComponent {
         g2d.drawString(message,250,225); //set message colour as blue
         g2d.drawString(totalScore,250,240); //set message colour as blue
         g2d.drawString(levelScore,250,255); //set message colour as blue
+        g2d.drawString(totalTime,250,270); //set message colour as blue
+        g2d.drawString(levelTime,250,285); //set message colour as blue
 
         drawBall(wall.ball,g2d); //draw ball with inner and border colours
 
@@ -349,20 +392,39 @@ public class GameBoard extends JComponent {
     }
 
     public void onLostFocus(){ //if game not in focus
-        gameTimer.stop(); //stop timer and action listener
+        if(gameTimer.isRunning()) {
+            gameTimer.stop(); //stop timer and action listener
+            saveElapsedTime();
+        }
         message = "Focus Lost";
         repaint(); //repaint components
     }
 
     public void storeLevelScore(int level){
-        scoreLevel[level] = scoreLevel[0]- returnPreviousLevelsScore(level);
+        scoreLevel[level][0] = scoreLevel[0][0]- returnPreviousLevelsScore(level);
+    }
+
+    public void storeLevelTime(int level){
+        scoreLevel[level][1] = scoreLevel[0][1]- returnPreviousLevelsTime(level);
     }
 
     public int returnPreviousLevelsScore(int level){
         int total = 0;
         for(int i = level;i > 1; i--){
-            total += scoreLevel[i-1];
+            total += scoreLevel[i-1][0];
         }
         return total;
+    }
+
+    public int returnPreviousLevelsTime(int level){
+        int total = 0;
+        for(int i = level;i > 1; i--){
+            total += scoreLevel[i-1][1];
+        }
+        return total;
+    }
+
+    public void saveElapsedTime(){
+        scoreLevel[0][1] += (int) java.time.Instant.now().getEpochSecond() - startTime;
     }
 }

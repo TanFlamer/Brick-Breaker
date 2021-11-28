@@ -22,7 +22,7 @@ abstract public class Brick  {
     public static final int LEFT_IMPACT = 300;
     public static final int RIGHT_IMPACT = 400;
 
-
+    private static final int DEF_WIDTH = 600;
 
     public class Crack{
 
@@ -36,8 +36,6 @@ abstract public class Brick  {
         public static final int VERTICAL = 100;
         public static final int HORIZONTAL = 200;
 
-
-
         private GeneralPath crack; //crack trajectory
 
         private int crackDepth;
@@ -49,10 +47,7 @@ abstract public class Brick  {
             crack = new GeneralPath();
             this.crackDepth = crackDepth;
             this.steps = steps;
-
         }
-
-
 
         public GeneralPath draw(){
 
@@ -185,10 +180,11 @@ abstract public class Brick  {
     private int fullStrength;
     private int strength;
 
+    private int score;
+
     private boolean broken;
 
-
-    public Brick(String name, Point pos,Dimension size,Color border,Color inner,int strength){ //define basic brick to be overridden
+    public Brick(String name, Point pos,Dimension size,Color border,Color inner,int strength,int multiplier){ //define basic brick to be overridden
         rnd = new Random();
         broken = false; //condition of brick
         this.name = name; //name of brick
@@ -197,6 +193,7 @@ abstract public class Brick  {
         this.inner = inner;
         this.fullStrength = this.strength = strength; //strength of brick
 
+        this.score = (int) (DEF_WIDTH / size.getWidth()) * multiplier;
     }
 
     protected abstract Shape makeBrickFace(Point pos,Dimension size); //override in subclass
@@ -205,12 +202,10 @@ abstract public class Brick  {
         if(broken) //if already broken then no impact
             return false;
         impact(); //else signal impact
-        return  broken; //signal broken
+        return broken; //return flag from impact()
     }
 
     public abstract Shape getBrick(); //override in subclass
-
-
 
     public Color getBorderColor(){ //get border colour of brick
         return  border;
@@ -250,8 +245,9 @@ abstract public class Brick  {
         broken = (strength == 0); //if strength = 0, signal brick broken
     }
 
-
-
+    public int getScore(){
+        return score;
+    }
 }
 
 
