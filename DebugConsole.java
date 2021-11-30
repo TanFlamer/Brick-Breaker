@@ -22,15 +22,46 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Public class DebugConsole is the container for the DebugPanel. Window listeners are added to this public class
+ * to repaint GameBoard when DebugConsole closes or set DebugPanel JSlider values and centers the screen when
+ * DebugConsole opens.
+ *
+ * @author TanZhunXian, Filippo Ranza
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class DebugConsole extends JDialog {
 
+    /**
+     * Title for the DebugConsole.
+     */
     private static final String TITLE = "Debug Console";
 
+    /**
+     * JFrame which is used to center the DebugConsole.
+     */
     private JFrame owner;
+    /**
+     * The DebugPanel which is contained within DebugConsole.
+     */
     private DebugPanel debugPanel;
+    /**
+     * GameBoard which is repainted when DebugConsole closes.
+     */
     private GameBoard gameBoard;
+    /**
+     * Wall to get ball speed so that DebugPanel JSlider can be set.
+     */
     private Wall wall;
 
+    /**
+     * This constructor is used to load the DebugPanel into the DebugConsole and to add in window listeners.
+     *
+     * @param owner JFrame which is used to center the DebugConsole.
+     * @param wall Wall to get ball speed so that DebugPanel JSlider can be set.
+     * @param gameBoard GameBoard which is repainted when DebugConsole closes.
+     */
     public DebugConsole(JFrame owner,Wall wall,GameBoard gameBoard){
 
         this.wall = wall;
@@ -44,6 +75,9 @@ public class DebugConsole extends JDialog {
         this.pack(); //resize debug console
     }
 
+    /**
+     * This method is used to set the DebugConsole title and to add in window listeners.
+     */
     private void initialize(){ //call debug console
 
         this.setModal(true);
@@ -52,11 +86,21 @@ public class DebugConsole extends JDialog {
         this.setLayout(new BorderLayout());
 
         this.addWindowListener(new WindowAdapter() {
+            /**
+             * This window listener is called when the DebugConsole is closing and repaints the GameBoard.
+             * @param windowEvent This parameter is used to track the DebugConsole window.
+             */
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 gameBoard.repaint();
             }
 
+            /**
+             * This window listener is called when the DebugConsole is activated and centers the DebugConsole on
+             * the screen and sets the JSlider values in the DebugPanel.
+             *
+             * @param windowEvent This parameter is used to track the DebugConsole window.
+             */
             @Override
             public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
                 setLocation(); //set debug console location
@@ -67,6 +111,9 @@ public class DebugConsole extends JDialog {
         this.setFocusable(true);
     }
 
+    /**
+     * This method is used to center the DebugConsole by using the JFrame location.
+     */
     private void setLocation(){ //set debug console location
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();

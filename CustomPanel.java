@@ -6,28 +6,120 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+/**
+ * Public class CustomPanel is used customise the levels based on the player choice such as level type, number of
+ * balls, number of rows of bricks, number of bricks in a row, number of brick types and brick types that spawn.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class CustomPanel extends JPanel implements ActionListener {
 
+    /**
+     * Background colour of white for the CustomPanel.
+     */
     private static final Color DEF_BKG = Color.WHITE;
 
-    private JComboBox level,ballCount,levelGen,row,brickRow,brickType,brick1,brick2,brick3,brick4;
-    private JButton reset,save,trueRandom,minimalOrdered,allDefault,randomise;
-    private JLabel levelNum,levelChoice;
+    /**
+     * JComboBox for the level number.
+     */
+    private JComboBox level;
+    /**
+     * JComboBox for the ball count.
+     */
+    private JComboBox ballCount;
+    /**
+     * JComboBox for the level type.
+     */
+    private JComboBox levelGen;
+    /**
+     * JComboBox for the number of rows of bricks.
+     */
+    private JComboBox row;
+    /**
+     * JComboBox for the bricks in a row.
+     */
+    private JComboBox brickRow;
+    /**
+     * JComboBox for the number of brick types.
+     */
+    private JComboBox brickType;
+    /**
+     * JComboBox for the first brick type to spawn.
+     */
+    private JComboBox brick1;
+    /**
+     * JComboBox for the second brick type to spawn.
+     */
+    private JComboBox brick2;
+    /**
+     * JComboBox for the third brick type to spawn.
+     */
+    private JComboBox brick3;
+    /**
+     * JComboBox for the fourth brick type to spawn.
+     */
+    private JComboBox brick4;
 
+    /**
+     * JButton to reset settings to default.
+     */
+    private JButton reset;
+    /**
+     * JButton to save current settings.
+     */
+    private JButton save;
+    /**
+     * JButton to set all levels to True Random level type.
+     */
+    private JButton trueRandom;
+    /**
+     * JButton to set all levels to Ordered (Min) level type.
+     */
+    private JButton minimalOrdered;
+    /**
+     * JButton to set all levels to Default level type.
+     */
+    private JButton allDefault;
+    /**
+     * JButton to randomise all settings.
+     */
+    private JButton randomise;
+
+    /**
+     * JLabel to show current level number.
+     */
+    private JLabel levelNum;
+    /**
+     * JLabel to show current level type.
+     */
+    private JLabel levelChoice;
+
+    /**
+     * Randomizer to get randomised settings when JButton randomise is pressed.
+     */
     private Random rnd;
 
-    String[] balls = {"Default","1","2","3","4","5","6","7","8","9","10"};
-    String[] levelType = {"Default","True Ordered","Ordered (Maximal)","Ordered (Moderate)","Ordered (Minimal)","Random (Minimal)","Random (Moderate)","Random (Maximal)","True Random"};
-    String[] brickRows = {"1","2","3","4","5","6","7","8","9","10"};
-    String[] brickInRow = {"1","2","3","4","5","6","8","10","12","15"};
-    String[] Num = {"1","2","3","4"};
-    String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
-    String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4"};
-    String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
-
+    /**
+     * Double array of Integer to hold all player choices to send to GameBoard for level generation.
+     */
     private int[][] choice = new int[4][9];
 
+    /**
+     * This constructor is used to generate all the JComboBoxes, JButtons and JLabels on the CustomPanel for
+     * the player to customise the levels.
+     */
     public CustomPanel(){
+
+        String[] balls = {"Default","1","2","3","4","5","6","7","8","9","10"};
+        String[] levelType = {"Default","True Ordered","Ordered (Maximal)","Ordered (Moderate)","Ordered (Minimal)","Random (Minimal)","Random (Moderate)","Random (Maximal)","True Random"};
+        String[] brickRows = {"1","2","3","4","5","6","7","8","9","10"};
+        String[] brickInRow = {"1","2","3","4","5","6","8","10","12","15"};
+        String[] Num = {"1","2","3","4"};
+        String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
+        String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4"};
+        String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
 
         initialize();
 
@@ -114,32 +206,63 @@ public class CustomPanel extends JPanel implements ActionListener {
         this.add(levelChoice);
     }
 
+    /**
+     * This method sets the CustomPanel background to white and sets the layout to GridLayout.
+     */
     private void initialize(){ //initialize debug panel
         this.setBackground(DEF_BKG); //set background colour
         this.setLayout(new GridLayout(14,2)); //set layout
     }
 
+    /**
+     * This method is used to make JComboBoxes with the given array of strings as their options.
+     * @param choice This array of strings are the choices for the JComboBoxes.
+     * @return This method returns a JComboBox with the given array of strings as their options.
+     */
     private JComboBox makeComboBox(String[] choice){ //make buttons and add listener
         return new JComboBox(choice);
     }
 
+    /**
+     * This method is used to make JLabels with the given string as their label and adds it to the CustomPanel.
+     * @param label This string is the label for the JLabel.
+     */
     private void makeJLabels(String label){ //make buttons and add listener
         JLabel out = new JLabel(label);
         this.add(out);
     }
 
+    /**
+     * This method is used to make JLabels with the given string as their label which will change according to
+     * the choices by the player.
+     *
+     * @param label This string is the initial label for the JLabel.
+     * @return This method returns a JLabel with the given string as the initial label.
+     */
     private JLabel makeLabels(String label){ //make buttons and add listener
         return new JLabel(label);
     }
 
+    /**
+     * This method is used to make JButtons with the given string as their label.
+     * @param label This string is the label for the JButton.
+     * @return This method returns a JButton with the given string as the label.
+     */
     private JButton makeJButton(String label){ //make buttons and add listener
         return new JButton(label);
     }
 
+    /**
+     * This method returns the player choices as a double array of integers.
+     * @return The player choices as a double array of integers is returned.
+     */
     public int[][] getChoice(){
         return choice;
     }
 
+    /**
+     * The JComboBox brick types available for selection are reset every time the number of brick types is changed.
+     */
     private void manageBrick(){
         if(brickType.getSelectedIndex()==0){
             brick2.setEnabled(false);
@@ -164,6 +287,9 @@ public class CustomPanel extends JPanel implements ActionListener {
         brick1.setEnabled(true);
     }
 
+    /**
+     * The brick types are all disabled and are not available for selection.
+     */
     private void brickFalse(){
         brick1.setEnabled(false);
         brick2.setEnabled(false);
@@ -171,6 +297,10 @@ public class CustomPanel extends JPanel implements ActionListener {
         brick4.setEnabled(false);
     }
 
+    /**
+     * The choices made by a player for a specific level are loaded into the JComboBoxes every time that level is
+     * selected in the JComboBox.
+     */
     private void setIndex(){
         row.setSelectedIndex(choice[level.getSelectedIndex()][1]);
         brickRow.setSelectedIndex(choice[level.getSelectedIndex()][2]);
@@ -183,11 +313,21 @@ public class CustomPanel extends JPanel implements ActionListener {
         ballCount.setSelectedIndex(choice[level.getSelectedIndex()][8]);
     }
 
+    /**
+     * The message showing the player level and level type is reset every time a new level is selected in the
+     * JComboBox or when the player saves the current choices.
+     */
     private void resetMessage(){
         levelNum.setText("Level "+ level.getSelectedItem() +":");
         levelChoice.setText((String)levelGen.getSelectedItem());
     }
 
+    /**
+     * This action listener tracks all actions performed in the CustomPanel such as JComboBoxes use and JButton
+     * presses and loads the relevant responses.
+     *
+     * @param e This parameter is used to track the sections performed in the CustomPanel.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 

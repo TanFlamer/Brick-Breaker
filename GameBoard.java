@@ -22,49 +22,137 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
+/**
+ * Public class GameBoard is responsible for loading the game and keeping track of all the gam inputs and recording
+ * the scores and times of the player. Fist, the bricks for each level are created and the debug console is loaded.
+ * The game then moves to the first level and the timer is started and keeps track of all inputs, scores and times
+ * of the player.
+ */
 public class GameBoard extends JComponent {
 
+    /**
+     * Continue string.
+     */
     private static final String CONTINUE = "Continue";
+    /**
+     * Restart string
+     */
     private static final String RESTART = "Restart";
+    /**
+     * Exit string.
+     */
     private static final String EXIT = "Exit";
+    /**
+     * Pause Menu String
+     */
     private static final String PAUSE = "Pause Menu";
+    /**
+     * Text size of 30.
+     */
     private static final int TEXT_SIZE = 30;
+    /**
+     * Menu colour of green.
+     */
     private static final Color MENU_COLOR = new Color(0,255,0);
 
+    /**
+     * Screen width of 600.
+     */
     private static final int DEF_WIDTH = 600;
+    /**
+     * Screen height of 450.
+     */
     private static final int DEF_HEIGHT = 450;
 
+    /**
+     * White colour to clear the background.
+     */
     private static final Color BG_COLOR = Color.WHITE;
 
+    /**
+     * Timer to scan for player inputs, scores and times.
+     */
     private Timer gameTimer;
 
+    /**
+     * Public class Wall to load the bricks for the 4 levels.
+     */
     private Wall wall;
 
+    /**
+     * Message to show current game condition, brick count and ball count.
+     */
     private String message;
 
+    /**
+     * String to display total score of player.
+     */
     private String totalScore;
+    /**
+     * String to display level score of player.
+     */
     private String levelScore;
+    /**
+     * String to display total time of player.
+     */
     private String totalTime;
+    /**
+     * String to display level time of player.
+     */
     private String levelTime;
 
+    /**
+     * Boolean to show if pause menu is activated.
+     */
     private boolean showPauseMenu;
 
+    /**
+     * Integer to record the time clock resumes.
+     */
     public int startTime = (int) java.time.Instant.now().getEpochSecond();
 
+    /**
+     * Font for menu.
+     */
     private Font menuFont;
 
+    /**
+     * Continue button area.
+     */
     private Rectangle continueButtonRect;
+    /**
+     * Exit button area.
+     */
     private Rectangle exitButtonRect;
+    /**
+     * Restart button area.
+     */
     private Rectangle restartButtonRect;
+    /**
+     * Integer to record length of string "Pause Menu".
+     */
     private int strLen;
 
+    /**
+     * Used to set debug console visible when Shift+Alt+F1 is pressed.
+     */
     private DebugConsole debugConsole;
 
+    /**
+     * Double array of integer to record player scores and times.
+     */
     private int[][] scoreLevel = new int[5][2];
 
-    public GameBoard(JFrame owner, int[][] choice) throws IOException {
+    /**
+     * This constructor is used to initialize the game by adding listeners, loading the bricks for all levels and the
+     * debug console and to start the timer to record all player inputs, scores and times.
+     *
+     * @param owner This parameter is used to add listeners to the JFrame and center the debug console.
+     * @param choice This parameter is used to send the player choices from the custom console to public class Wall
+     *               for brick generation and to Scoreboard to load the categories for the ScoreBoard.
+     */
+    public GameBoard(JFrame owner, int[][] choice) {
         super();
 
         strLen = 0; //initial string length is 0
@@ -160,12 +248,22 @@ public class GameBoard extends JComponent {
         });
     }
 
+    /**
+     * This method is used to add listeners to the JFrame to receive player inputs for the game.
+     * @param owner This parameter is used to set the mouse cursor to hand cursor when pause menu is opened and
+     *              mouse cursor is inside a button.
+     */
     private void initialize(JFrame owner){ //initialize JFrame
         this.setPreferredSize(new Dimension(DEF_WIDTH,DEF_HEIGHT)); //set frame size
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow(); //request focus
 
         this.addKeyListener(new KeyAdapter() {
+            /**
+             * This key listener is called when a key is pressed and the relevant event is processed in the game
+             * if the key binding exists.
+             * @param keyEvent This parameter is used to track the key presses.
+             */
             @Override
             public void keyPressed(KeyEvent keyEvent) {
 
@@ -209,6 +307,10 @@ public class GameBoard extends JComponent {
                 }
             }
 
+            /**
+             * This key listener is called when a key is released and the player is stopped.
+             * @param keyEvent This parameter is used to track the key releases.
+             */
             @Override
             public void keyReleased(KeyEvent keyEvent) { //if key released, stop player
                 wall.player.stop();
@@ -216,6 +318,11 @@ public class GameBoard extends JComponent {
         });
 
         this.addMouseListener(new MouseAdapter() {
+            /**
+             * This mouse listener is called when the mouse is clicked and relevant events are loaded if the pause
+             * menu is loaded and the mouse is inside a button.
+             * @param mouseEvent This parameter is used to track mouse clicks.
+             */
             @Override
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
 
@@ -241,6 +348,11 @@ public class GameBoard extends JComponent {
         });
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
+            /**
+             * This mouse motion listener is called when the mouse is moved and the mouse cursor is changed to
+             * hand cursor if the mouse cursor is inside a button in the pause menu.
+             * @param mouseEvent This parameter is used to track mouse movement.
+             */
             @Override
             public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
 
@@ -258,11 +370,22 @@ public class GameBoard extends JComponent {
         });
     }
 
+    /**
+     * This method is used to draw the graphics for the entire game screen. The game screen is first cleared with a
+     * white background. Then, a gray background is loaded. The game condition, score and time strings are drawn in
+     * blue and then the ball, bricks and player are drawn. Finally, if the pause menu is loaded,the pause menu is
+     * drawn with its buttons.
+     *
+     * @param g This parameter is used to control the graphics such as colour, composite and font.
+     */
     public void paint(Graphics g){
 
         Graphics2D g2d = (Graphics2D) g;
 
         clear(g2d);
+
+        g2d.setColor(Color.LIGHT_GRAY); //set blue colour
+        g2d.fillRect(0,0,this.getWidth(),this.getHeight());
 
         g2d.setColor(Color.BLUE); //set blue colour
         g2d.drawString(message,250,225); //set message colour as blue
@@ -285,12 +408,21 @@ public class GameBoard extends JComponent {
         Toolkit.getDefaultToolkit().sync(); //sync toolkit graphics
     }
 
+    /**
+     * This method is used to clear the background by filling it with white colour.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void clear(Graphics2D g2d){ //clear colour
 
         g2d.setColor(BG_COLOR); //get white colour
         g2d.fillRect(0,0,getWidth(),getHeight()); //fill frame with white colour
     }
 
+    /**
+     * This method is used to draw the bricks by filling inner colour and drawing outer colour.
+     * @param brick This parameter tells the method what colour to use for the bricks.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawBrick(Brick brick,Graphics2D g2d){
 
         g2d.setColor(brick.getInnerColor()); //get brick inner colour
@@ -300,6 +432,11 @@ public class GameBoard extends JComponent {
         g2d.draw(brick.getBrick()); //draw brick border with colour
     }
 
+    /**
+     * This method is used to draw the ball by filling inner colour and drawing outer colour.
+     * @param ball This parameter tells the method what colour to use for the ball.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawBall(Ball ball,Graphics2D g2d){
 
         Shape s = ball.getBallFace(); //get ball face
@@ -311,6 +448,11 @@ public class GameBoard extends JComponent {
         g2d.draw(s); //draw ball border with colour
     }
 
+    /**
+     * This method is used to draw the player by filling inner colour and drawing outer colour.
+     * @param p This parameter tells the method what colour to use for the player.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawPlayer(Player p,Graphics2D g2d){
 
         Shape s = p.getPlayerFace(); //get player shape
@@ -322,12 +464,20 @@ public class GameBoard extends JComponent {
         g2d.draw(s); //draw player border with colour
     }
 
+    /**
+     * This method is used to draw the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour, composite and font.
+     */
     private void drawMenu(Graphics2D g2d){ //colour pause menu
 
         obscureGameBoard(g2d); //fill pause menu with black colour
         drawPauseMenu(g2d); //draw pause menu
     }
 
+    /**
+     * This method is used to add black composite to the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour, composite and font.
+     */
     private void obscureGameBoard(Graphics2D g2d){ //fill pause menu with black colour
 
         Composite tmp = g2d.getComposite(); //hold current composite
@@ -341,6 +491,10 @@ public class GameBoard extends JComponent {
         g2d.setComposite(tmp); //reset composite
     }
 
+    /**
+     * This method is used to draw the strings and buttons of the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour and font.
+     */
     private void drawPauseMenu(Graphics2D g2d){
 
         Font tmpFont = g2d.getFont(); //hold current font
@@ -391,6 +545,10 @@ public class GameBoard extends JComponent {
         g2d.setFont(tmpFont); //reset font
     }
 
+    /**
+     * This method is used to signal to the game that the focus is lost and to show the message and save elapsed
+     * time for the game clock.
+     */
     public void onLostFocus(){ //if game not in focus
         if(gameTimer.isRunning()) {
             gameTimer.stop(); //stop timer and action listener
@@ -400,14 +558,27 @@ public class GameBoard extends JComponent {
         repaint(); //repaint components
     }
 
+    /**
+     * This method is used to store current level score.
+     * @param level This integer tells the method which level score to save.
+     */
     public void storeLevelScore(int level){
         scoreLevel[level][0] = scoreLevel[0][0]- returnPreviousLevelsScore(level);
     }
 
+    /**
+     * This method is used to store current level time.
+     * @param level This integer tells the method which level time to save.
+     */
     public void storeLevelTime(int level){
         scoreLevel[level][1] = scoreLevel[0][1]- returnPreviousLevelsTime(level);
     }
 
+    /**
+     * This method returns the combined scores for all previous levels.
+     * @param level This integer tells the method which level the game is currently on.
+     * @return This method returns the combined scores for all previous levels.
+     */
     public int returnPreviousLevelsScore(int level){
         int total = 0;
         for(int i = level;i > 1; i--){
@@ -416,6 +587,11 @@ public class GameBoard extends JComponent {
         return total;
     }
 
+    /**
+     * This method returns the combined time for all previous levels.
+     * @param level This integer tells the method which level the game is currently on.
+     * @return This method returns the combined time for all previous levels.
+     */
     public int returnPreviousLevelsTime(int level){
         int total = 0;
         for(int i = level;i > 1; i--){
@@ -424,6 +600,9 @@ public class GameBoard extends JComponent {
         return total;
     }
 
+    /**
+     * This method saves the time elapsed between the game resuming and the game stopping.
+     */
     public void saveElapsedTime(){
         scoreLevel[0][1] += (int) java.time.Instant.now().getEpochSecond() - startTime;
     }
