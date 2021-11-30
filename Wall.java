@@ -422,11 +422,11 @@ public class Wall {
      * If impact occurs with the top page border, vertical direction of ball is reversed. Finally, if ball leaves the
      * bottom page border, ball is lost, ball count decreases and player nad ball position are reset.
      */
-    public void findImpacts(){ //impact method
+    public void findImpacts(boolean collected){ //impact method
         if(player.impact(ball)){ //if player hits ball
             ball.reverseY(); //reverse Y-direction
         }
-        else if(impactWall()){
+        else if(impactWall(collected)){
             /*for efficiency reverse is done into method impactWall
              * because for every brick program checks for horizontal and vertical impacts
              */
@@ -453,24 +453,28 @@ public class Wall {
      * @return This method returns a boolean to signify if the brick impacted by the ball is unbroken at the start
      *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
      */
-    private boolean impactWall(){ //method to check impact with wall
+    private boolean impactWall(boolean collected){ //method to check impact with wall
         for(Brick b : bricks){
             //Vertical Impact
             switch (b.findImpact(ball)) {
                 case Brick.UP_IMPACT -> {
-                    ball.reverseY();
+                    if(!collected)
+                        ball.reverseY();
                     return b.setImpact(ball.down, Brick.Crack.UP);
                 }
                 case Brick.DOWN_IMPACT -> {
-                    ball.reverseY();
+                    if(!collected)
+                        ball.reverseY();
                     return b.setImpact(ball.up, Brick.Crack.DOWN);
                 } //Horizontal Impact
                 case Brick.LEFT_IMPACT -> {
-                    ball.reverseX();
+                    if(!collected)
+                        ball.reverseX();
                     return b.setImpact(ball.right, Brick.Crack.RIGHT);
                 }
                 case Brick.RIGHT_IMPACT -> {
-                    ball.reverseX();
+                    if(!collected)
+                        ball.reverseX();
                     return b.setImpact(ball.left, Brick.Crack.LEFT);
                 }
             }

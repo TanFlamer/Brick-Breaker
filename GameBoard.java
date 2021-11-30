@@ -21,7 +21,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.io.FileNotFoundException;
+import java.util.Random;
 
 /**
  * Public class GameBoard is responsible for loading the game and keeping track of all the gam inputs and recording
@@ -144,6 +147,19 @@ public class GameBoard extends JComponent {
      */
     private int[][] scoreLevel = new int[6][2];
 
+
+    private Shape powerUp = new Ellipse2D.Double(0,0,20,20);
+
+    private Random rnd = new Random();
+
+    private boolean collected = false;
+    private boolean spawned = false;
+
+    private int x;
+    private int y;
+    private int godModeStartTime;
+    private String godMode;
+
     /**
      * This constructor is used to initialize the game by adding listeners, loading the bricks for all levels and the
      * debug console and to start the timer to record all player inputs, scores and times.
@@ -166,6 +182,7 @@ public class GameBoard extends JComponent {
         levelScore = "";
         totalTime = "";
         levelTime = "";
+        godMode = "";
         //define all bricks, player and ball
         wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430),choice);
 
@@ -175,7 +192,7 @@ public class GameBoard extends JComponent {
 
         gameTimer = new Timer(10,e ->{ //10-millisecond delay between action and action listener
             wall.move(); //move player and ball every 10 millisecond
-            wall.findImpacts(); //detect impact of ball
+            wall.findImpacts(collected); //detect impact of ball
             message = String.format("Bricks: %d  Balls %d",wall.getBrickCount(),wall.getBallCount()); //show brick and ball count
 
             if(wall.flag==1){
@@ -193,13 +210,38 @@ public class GameBoard extends JComponent {
             totalScore = String.format("Total Score %d",scoreLevel[0][0]);
             levelScore = String.format("Level %d Score %d",wall.getLevel(),scoreLevel[0][0]-returnPreviousLevelsScore(wall.getLevel()));
 
-            int totalMinutes = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1])/60;
-            int totalSeconds = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1])%60;
-            int levelMinutes = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1] - returnPreviousLevelsTime(wall.getLevel()))/60;
-            int levelSeconds = ((int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1] - returnPreviousLevelsTime(wall.getLevel()))%60;
+
+            int currentTime = (int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1];
+            int totalMinutes = currentTime/60;
+            int totalSeconds = currentTime%60;
+            int levelMinutes = (currentTime - returnPreviousLevelsTime(wall.getLevel()))/60;
+            int levelSeconds = (currentTime - returnPreviousLevelsTime(wall.getLevel()))%60;
 
             totalTime = String.format("Total Time %02d:%02d",totalMinutes,totalSeconds);
             levelTime = String.format("Level %d Time %02d:%02d",wall.getLevel(),levelMinutes,levelSeconds);
+
+            if(levelSeconds==0&&!spawned){
+                x = rnd.nextInt(401) + 100;
+                y = 200;
+                collected = false;
+                spawned = true;
+            }
+
+            if(isCollected(wall.ball)){
+                collected = true;
+                spawned = false;
+                godModeStartTime = currentTime - returnPreviousLevelsTime(wall.getLevel());
+            }
+
+            if(collected){
+                if((currentTime - returnPreviousLevelsTime(wall.getLevel()))-godModeStartTime>=10){
+                    collected = false;
+                }
+                godMode = String.format("God Mode Activated %d",10-((currentTime - returnPreviousLevelsTime(wall.getLevel()))-godModeStartTime));
+            }
+            else {
+                godMode = "God Mode Deactivated";
+            }
 
             if(wall.isBallLost()){ //if ball leaves bottom border
 
@@ -393,6 +435,7 @@ public class GameBoard extends JComponent {
         g2d.drawString(levelScore,250,255); //set message colour as blue
         g2d.drawString(totalTime,250,270); //set message colour as blue
         g2d.drawString(levelTime,250,285); //set message colour as blue
+        g2d.drawString(godMode,250,300); //set message colour as blue
 
         drawBall(wall.ball,g2d); //draw ball with inner and border colours
 
@@ -404,6 +447,10 @@ public class GameBoard extends JComponent {
 
         if(showPauseMenu) //if pause menu shown
             drawMenu(g2d); //colour pause menu
+
+        if(spawned&&!collected){
+            drawPowerUp(g2d);
+        }
 
         Toolkit.getDefaultToolkit().sync(); //sync toolkit graphics
     }
@@ -543,6 +590,27 @@ public class GameBoard extends JComponent {
         g2d.drawString(EXIT,x,y); //draw exit button
 
         g2d.setFont(tmpFont); //reset font
+    }
+
+    private void drawPowerUp(Graphics2D g2d){
+
+        RectangularShape tmp = (RectangularShape) powerUp;
+
+        int width = powerUp.getBounds().width;
+        int height = powerUp.getBounds().height;
+
+        tmp.setFrame(x-width/2,y-height/2,width,height);
+        powerUp = tmp;
+
+        g2d.setColor(Color.RED);
+        g2d.fill(powerUp);
+
+        g2d.setColor(Color.BLACK);
+        g2d.draw(powerUp);
+    }
+
+    private boolean isCollected(Ball b){
+        return (powerUp.contains(b.getPosition())||powerUp.contains(b.up)||powerUp.contains(b.down)||powerUp.contains(b.left)||powerUp.contains(b.right));
     }
 
     /**
