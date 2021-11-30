@@ -9,16 +9,50 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * Class Score is used as a linked list to load and hold the basic information about the player such as ranking,
+ * name, level type, time and score after completing a level. Class Score is also used to generate the highscore
+ * list after every level and to generate the top 10 highscore on the HomeMenu.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 class Score { //class for linked list to hold all scores
-    int ranking,score,time;
-    String name,levelType; //player name
+    /**
+     * The ranking of the player.
+     */
+    int ranking;
+    /**
+     * The score of the player.
+     */
+    int score;
+    /**
+     * The time of the player.
+     */
+    int time;
+    /**
+     * The name of the player.
+     */
+    String name;
+    /**
+     * The level type of the player.
+     */
+    String levelType; //player name
 
+    /**
+     * This constructor is called to add new entries to the linked list.
+     * @param ranking The ranking of the new entry.
+     * @param name The name of the new entry.
+     * @param levelType The level type of the new entry.
+     * @param time The time of the new entry.
+     * @param score The score of the new entry.
+     */
     public Score(int ranking,String name,String levelType,int time,int score){
         this.ranking = ranking;
         this.name = name;
@@ -28,6 +62,17 @@ class Score { //class for linked list to hold all scores
     }
 }
 
+/**
+ * Class ScoreComp is a comparator to compare the scores and time of all the players to generate a ranking list.
+ * First, the score is sorted in descending order so that the higher the score, the higher the ranking. If there
+ * are equal scores, then the time is taken into consideration. The time is sorted in ascending order so that
+ * the lower the time, the higher the ranking. This means that for equal scores, the one with the lower time
+ * is higher on the ranking.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 class ScoreComp implements Comparator<Score> { //comparator to sort score in descending order
     @Override
     public int compare(Score comp1, Score comp2) {
@@ -44,47 +89,142 @@ class ScoreComp implements Comparator<Score> { //comparator to sort score in des
     }
 }
 
+/**
+ * Public class Highscore is responsible for generating and showing the top 10 highest scores for each level and
+ * the total highscore for the game on the Highscore Board which can be reached from the HomeMenu. Every time the
+ * highscore lists are loaded, they are first resorted using the comparator. Then, the list is renumbered
+ * according to the new ordering. Although the lists are not expected to have any issue in the ranking since
+ * they are already resorted in another class, these 2 actions serve to act as a precaution in case there is
+ * an unexpected issue with the highscore lists.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class Highscore extends JComponent {
 
+    /**
+     * Rank string.
+     */
     private static final String RANKING = "RANK";
+    /**
+     * Name string.
+     */
     private static final String NAME = "NAME";
+    /**
+     * Category string.
+     */
     private static final String CATEGORY = "CATEGORY";
+    /**
+     * Time string.
+     */
     private static final String TIME = "TIME";
+    /**
+     * Score string.
+     */
     private static final String SCORE = "SCORE";
+    /**
+     * Back string for the back button.
+     */
     private static final String BACKBUTTON = "BACK";
+    /**
+     * Next string for the next button.
+     */
     private static final String NEXTBUTTON = "NEXT";
+    /**
+     * Previous string for the previous button.
+     */
     private static final String PREVIOUSBUTTON = "PREVIOUS";
+    /**
+     * Total HighScores string.
+     */
     private static final String HIGHSCORE = "TOTAL HIGHSCORES";
 
+    /**
+     * Background colour of darker blue.
+     */
     private static final Color BG_COLOR = Color.BLUE.darker().darker();
-    private static final Color TEXT_COLOR = new Color(115, 50, 241);//egyptian blue
+    /**
+     * Text colour of purple.
+     */
+    private static final Color TEXT_COLOR = new Color(115, 50, 241);
+    /**
+     * Clicked button colour of brighter blue.
+     */
     private static final Color CLICKED_BUTTON_COLOR = BG_COLOR.brighter();
+    /**
+     * Clicked text colour of white.
+     */
     private static final Color CLICKED_TEXT = Color.WHITE;
 
-    private GameFrame owner;
-
+    /**
+     * Rectangle for the menu face.
+     */
     private Rectangle menuFace;
+    /**
+     * Rectangle for the back button.
+     */
     private Rectangle backButton;
+    /**
+     * Rectangle for the next button.
+     */
     private Rectangle nextButton;
+    /**
+     * Rectangle for the previous button.
+     */
     private Rectangle previousButton;
 
+    /**
+     * Font for the ranking list.
+     */
     private Font InfoFont;
+    /**
+     * Font for the ranking titles.
+     */
     private Font TitleFont;
+    /**
+     * Font for the button text.
+     */
     private Font buttonFont;
 
+    /**
+     * Boolean to check if back button is clicked.
+     */
     private boolean backClicked;
+    /**
+     * Boolean to check if next button is clicked.
+     */
     private boolean nextClicked;
+    /**
+     * Boolean to check if previous button is clicked.
+     */
     private boolean previousClicked;
 
+    /**
+     * Integer to choose which level highscores are chosen to be displayed.
+     */
     private int level;
 
-    public Highscore(GameFrame owner,Dimension area) throws IOException {
+    /**
+     * This constructor is used to create a menu face to display the highscores for each level and the total
+     * highscores for the game. Buttons are also created and assigned to mouse listeners to detect mouse clicks
+     * and to load other highscore pages or to return to the HomeMenu.
+     *
+     * @param owner This GameFrame is used to link to HighScore so that HighScore can access ite methods.
+     * @param area This is the size of the HomeMenu and is used to load HighScore with the same size.
+     */
+    public Highscore(GameFrame owner,Dimension area) {
 
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow();
 
         this.addMouseListener(new MouseAdapter() {
 
+            /**
+             * This mouse listener is called when mouse is clicked and load relevant events if the relevant button
+             * is clicked.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
@@ -101,6 +241,11 @@ public class Highscore extends JComponent {
                 }
             }
 
+            /**
+             * This mouse listener is called when mouse is pressed and held and sets clicked flag to true and repaints
+             * the button if a button is pressed and held.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
@@ -118,6 +263,11 @@ public class Highscore extends JComponent {
                 }
             }
 
+            /**
+             * This mouse listener is called when mouse is released and sets clicked flag to false and repaints
+             * the button if a button is released.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
                 if(backClicked){ //if start button clicked
@@ -137,6 +287,11 @@ public class Highscore extends JComponent {
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
 
+            /**
+             * This mouse motion listener is called when mouse is moved and changes the mouse cursor to hand cursor if
+             * the mouse cursor is inside a button.
+             * @param mouseEvent This parameter is used to track the mouse motion.
+             */
             @Override
             public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
                 Point p = mouseEvent.getPoint(); //get mouse coordinates
@@ -146,8 +301,6 @@ public class Highscore extends JComponent {
                     owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
             }
         });
-
-        this.owner = owner;
 
         menuFace = new Rectangle(new Point(0,0),area); //make menu face
         this.setPreferredSize(area);
@@ -164,6 +317,10 @@ public class Highscore extends JComponent {
         level = 0;
     }
 
+    /**
+     * This method is responsible for painting and repainting the HighScore.
+     * @param g This graphics class is used to paint the HighScore.
+     */
     public void paint(Graphics g){ //draw main menu
         try {
             drawScoreBoard((Graphics2D)g);
@@ -172,6 +329,11 @@ public class Highscore extends JComponent {
         }
     }
 
+    /**
+     * This method is responsible for painting and repainting the HighScore.
+     * @param g2d This graphics class is used to paint the HighScore.
+     * @throws FileNotFoundException This IOException is thrown if the highscore list does not exist.
+     */
     private void drawScoreBoard(Graphics2D g2d) throws FileNotFoundException {
 
         drawContainer(g2d); //draw main menu
@@ -188,7 +350,7 @@ public class Highscore extends JComponent {
 
         g2d.translate(x,y); //move all points for processing
 
-        //methods calls
+        //method calls
         drawText(g2d,(level % 5 + 5) % 5); //draw menu text
         drawButton(g2d); //draw menu button
         //end of methods calls
@@ -198,6 +360,10 @@ public class Highscore extends JComponent {
         g2d.setColor(prevColor); //get previous colour
     }
 
+    /**
+     * This method is responsible for painting and repainting the menu face of HighScore.
+     * @param g2d This graphics class is used to paint the menu face of the HighScore.
+     */
     private void drawContainer(Graphics2D g2d){
 
         Color prev = g2d.getColor(); //save previous colour
@@ -208,6 +374,14 @@ public class Highscore extends JComponent {
         g2d.setColor(prev); //get previous colour
     }
 
+    /**
+     * This method is responsible for painting and repainting the text of the Highscore such as the player ranking,
+     * name, category, time and score.
+     *
+     * @param g2d This graphics class is used to paint the text of Highscore.
+     * @param level This is the level for which the current highscore list is showing for.
+     * @throws FileNotFoundException This IOException is thrown if the highscore list does not exist.
+     */
     private void drawText(Graphics2D g2d, int level) throws FileNotFoundException { //draw menu text
 
         LinkedList<Score> newScore = new LinkedList<>(); //linked list to hold treatment plans
@@ -281,6 +455,10 @@ public class Highscore extends JComponent {
         }
     }
 
+    /**
+     * This method is responsible for painting and repainting the buttons of Highscore.
+     * @param g2d This graphics class is used to paint the buttons of Highscore.
+     */
     private void drawButton(Graphics2D g2d){ //draw menu buttons
 
         FontRenderContext frc = g2d.getFontRenderContext();
@@ -368,6 +546,14 @@ public class Highscore extends JComponent {
         }
     }
 
+    /**
+     * This method is used to load the highscore lists into linked lists so that the top 10 highscores for each
+     * level and the total highscore for the game can be shown.
+     *
+     * @param loadScore The linked list where the highscore list is loaded into.
+     * @param level This is the level for which the highscore list is loaded.
+     * @throws FileNotFoundException This IOException is thrown if the highscore list does not exist.
+     */
     private void Load(LinkedList<Score> loadScore, int level) throws FileNotFoundException {
 
         String[] hold = new String[5]; //make array of strings with 8 elements
@@ -388,6 +574,12 @@ public class Highscore extends JComponent {
         }
     }
 
+    /**
+     * This method is called to renumber the linked list after resorting it. The new rankings will be in ascending
+     * order in increments of 1 starting from 1.
+     *
+     * @param holdScore The linked list which is to be renumbered.
+     */
     private void Renumber(LinkedList<Score> holdScore){
 
         int num = 1; //array of int to count number of treatment of each type

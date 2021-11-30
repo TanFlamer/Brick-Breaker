@@ -21,16 +21,44 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
+/**
+ * Public class RubberBall is the subclass of Abstract public class Ball. It creates and returns a rubber ball with
+ * the given center point, radius, inner and border colour.
+ *
+ * @author TanZhunXian, Filippo Ranza
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class RubberBall extends Ball {
 
+    /**
+     * The radius of the rubber ball.
+     */
     private static final int DEF_RADIUS = 10;
+    /**
+     * The inner colour of the rubber ball.
+     */
     private static final Color DEF_INNER_COLOR = new Color(255, 219, 88);
+    /**
+     * The border colour of the rubber ball.
+     */
     private static final Color DEF_BORDER_COLOR = DEF_INNER_COLOR.darker().darker();
 
+    /**
+     * This constructor creates a rubber ball with basic information such as center point, radius, inner and border colour.
+     * @param center This is the center point of the new ball.
+     */
     public RubberBall(Point2D center){ //get all basic information of rubber ball
         super(center,DEF_RADIUS,DEF_RADIUS,DEF_INNER_COLOR,DEF_BORDER_COLOR);
     }
 
+    /**
+     * This method is used to create a rubber ball with the given center point and given dimensions.
+     * @param center  This is the center point of the ball.
+     * @param radiusA This is the width of the ball.
+     * @param radiusB This is the height of the ball.
+     * @return This method returns a rubber ball with the given center point and given dimensions.
+     */
     @Override
     protected Shape makeBall(Point2D center, int radiusA, int radiusB) { //create a ball with radius A/B
 

@@ -129,7 +129,7 @@ public class Wall {
      * @param choice This is the double array containing all the choices selected by the player in the custom console to
      *               control generation of custom levels.
      */
-    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos, int[][] choice) throws IOException {
+    public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos, int[][] choice) {
 
         this.startPoint = new Point(ballPos); //start point = initial ball position
         this.choice = choice;

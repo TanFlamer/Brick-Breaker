@@ -28,61 +28,193 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-
+/**
+ * Public class HomeMenu is the first screen the player sees when starting the game. Public class HomeMenu contains
+ * 5 buttons which have different functionalities and also a PopUpMenu which shows some sample photos of some
+ * random levels.
+ *
+ * @author TanZhunXian, Filippo Ranza
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class HomeMenu extends JComponent {
 
+    /**
+     * The greeting.
+     */
     private static final String GREETINGS = "Welcome to:";
+    /**
+     * The game name.
+     */
     private static final String GAME_TITLE = "Brick Destroy";
-    private static final String CREDITS = "Version 0.1";
+    /**
+     * The game version.
+     */
+    private static final String CREDITS = "Version 1.0";
+    /**
+     * Start text.
+     */
     private static final String START_TEXT = "Start";
+    /**
+     * Menu Text.
+     */
     private static final String MENU_TEXT = "Exit";
 
+    /**
+     * HighScores text.
+     */
     private static final String SCORE_TEXT = "HighScores";
+    /**
+     * Customise text.
+     */
     private static final String CUSTOM_TEXT = "Customise";
+    /**
+     * Info text.
+     */
     private static final String INFO_TEXT = "INFO";
 
+    /**
+     * Green background colour.
+     */
     private static final Color BG_COLOR = Color.GREEN.darker();
+    /**
+     * Venetian Red border colour
+     */
     private static final Color BORDER_COLOR = new Color(200,8,21); //Venetian Red
+    /**
+     * School bus yellow dash border colour
+     */
     private static final Color DASH_BORDER_COLOR = new  Color(255, 216, 0);//school bus yellow
+    /**
+     * Egyptian blue text colour
+     */
     private static final Color TEXT_COLOR = new Color(16, 52, 166);//egyptian blue
+    /**
+     * Brighter green clicked button colour
+     */
     private static final Color CLICKED_BUTTON_COLOR = BG_COLOR.brighter();
+    /**
+     * White clicked text colour
+     */
     private static final Color CLICKED_TEXT = Color.WHITE;
+    /**
+     * Border size of 5
+     */
     private static final int BORDER_SIZE = 5;
+    /**
+     * Array of floats of dashes
+     */
     private static final float[] DASHES = {12,6};
 
+    /**
+     * Menu Face Rectangle
+     */
     private Rectangle menuFace;
+    /**
+     * Start button rectangle
+     */
     private Rectangle startButton;
+    /**
+     * Menu button rectangle
+     */
     private Rectangle menuButton;
 
+    /**
+     * Score button rectangle
+     */
     private Rectangle scoreButton;
+    /**
+     * Custom button rectangle
+     */
     private Rectangle customButton;
+    /**
+     * Image button rectangle
+     */
     private Rectangle imageButton;
+    /**
+     * Info button rectangle
+     */
     private Rectangle infoButton;
 
+    /**
+     * Basic stroke for border
+     */
     private BasicStroke borderStoke;
+    /**
+     * Basic stroke for border with no dashes
+     */
     private BasicStroke borderStoke_noDashes;
 
+    /**
+     * Font for greeting string
+     */
     private Font greetingsFont;
+    /**
+     * Font for game title
+     */
     private Font gameTitleFont;
+    /**
+     * Font for credits
+     */
     private Font creditsFont;
+    /**
+     * Font for buttons
+     */
     private Font buttonFont;
 
+    /**
+     * Font for text
+     */
     private Font textFont;
 
+    /**
+     * PopUpMenu to show random sample levels
+     */
     private JPopupMenu popupmenu = new JPopupMenu();
 
+    /**
+     * Connect HomeMenu with GameFrame methods
+     */
     private GameFrame owner;
 
+    /**
+     * Boolean to check if start button clicked
+     */
     private boolean startClicked;
+    /**
+     * Boolean to check if menu button clicked
+     */
     private boolean menuClicked;
 
+    /**
+     * Boolean to check if score button clicked
+     */
     private boolean scoreClicked;
+    /**
+     * Boolean to check if custom button clicked
+     */
     private boolean customClicked;
+    /**
+     * Boolean to check if info button clicked
+     */
     private boolean infoClicked;
+    /**
+     * Boolean to check if PopUpImage clicked
+     */
     private boolean imageClicked;
 
-    private int rand = 0;
+    /**
+     * Integer to load random sample level in PopUpMenu
+     */
+    private int rand;
 
+    /**
+     * This constructor is used to load all the buttons on the main menu and link them to their functions. Listeners
+     * are also matched to their relevant buttons to detect clicks to load the events.
+     *
+     * @param owner This GameFrame is used to link with the HomeMenu so that HomeMenu can access its methods.
+     * @param area This is the size of the HomeMenu.
+     */
     public HomeMenu(GameFrame owner,Dimension area){
 
         this.setFocusable(true); //set focusable
@@ -90,15 +222,16 @@ public class HomeMenu extends JComponent {
 
         this.addMouseListener(new MouseAdapter() {
 
+            /**
+             * This mouse listener is called when mouse is clicked and load relevant events if the relevant button
+             * is clicked.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
                 if(startButton.contains(p)){ //if mouse inside start button
-                    try {
-                        owner.enableGameBoard(); //start game
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    owner.enableGameBoard(); //start game
                 }
                 else if(menuButton.contains(p)){ //if mouse inside exit button
                     System.out.println("Goodbye " + System.getProperty("user.name"));
@@ -119,6 +252,11 @@ public class HomeMenu extends JComponent {
                 }
             }
 
+            /**
+             * This mouse listener is called when mouse is pressed and held and sets clicked flag to true and repaints
+             * the button if a button is pressed and held.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
@@ -147,6 +285,11 @@ public class HomeMenu extends JComponent {
                 }
             }
 
+            /**
+             * This mouse listener is called when mouse is released and sets clicked flag to false and repaints
+             * the button if a button is released.
+             * @param mouseEvent This parameter is used to track the mouse.
+             */
             @Override
             public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
                 if(startClicked){ //if start button clicked
@@ -177,6 +320,11 @@ public class HomeMenu extends JComponent {
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
 
+            /**
+             * This mouse motion listener is called when mouse is moved and changes the mouse cursor to hand cursor if
+             * the mouse cursor is inside a button.
+             * @param mouseEvent This parameter is used to track the mouse motion.
+             */
             @Override
             public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
                 Point p = mouseEvent.getPoint(); //get mouse coordinates
@@ -213,6 +361,10 @@ public class HomeMenu extends JComponent {
         textFont = new Font("Noto Mono",Font.PLAIN,19);
     }
 
+    /**
+     * This method is responsible for painting and repainting the HomeMenu.
+     * @param g This graphics class is used to paint the HomeMenu.
+     */
     public void paint(Graphics g){ //draw main menu
         try {
             drawMenu((Graphics2D)g);
@@ -221,6 +373,11 @@ public class HomeMenu extends JComponent {
         }
     }
 
+    /**
+     * This method is responsible for painting and repainting the HomeMenu.
+     * @param g2d This graphics class is used to paint the HomeMenu.
+     * @throws IOException This IOException is thrown if the image for the PopUpMenu does not exist.
+     */
     public void drawMenu(Graphics2D g2d) throws IOException {
 
         drawContainer(g2d); //draw main menu
@@ -237,7 +394,7 @@ public class HomeMenu extends JComponent {
 
         g2d.translate(x,y); //move all points for processing
 
-        //methods calls
+        //method calls
         drawText(g2d); //draw menu text
         drawButton(g2d); //draw menu button
         drawImage(g2d);
@@ -248,6 +405,10 @@ public class HomeMenu extends JComponent {
         g2d.setColor(prevColor); //get previous colour
     }
 
+    /**
+     * This method is responsible for painting and repainting the menu face of the HomeMenu.
+     * @param g2d This graphics class is used to paint the menu face of the HomeMenu.
+     */
     private void drawContainer(Graphics2D g2d){
 
         Color prev = g2d.getColor(); //save previous colour
@@ -270,6 +431,10 @@ public class HomeMenu extends JComponent {
         g2d.setColor(prev); //get previous colour
     }
 
+    /**
+     * This method is responsible for painting and repainting the text of the HomeMenu.
+     * @param g2d This graphics class is used to paint the text of the HomeMenu.
+     */
     private void drawText(Graphics2D g2d){ //draw menu text
 
         g2d.setColor(TEXT_COLOR); //get text colour
@@ -323,6 +488,10 @@ public class HomeMenu extends JComponent {
         g2d.drawString("Click me!",sX,sY); //draw credits
     }
 
+    /**
+     * This method is responsible for painting and repainting the buttons of the HomeMenu.
+     * @param g2d This graphics class is used to paint the buttons of the HomeMenu.
+     */
     private void drawButton(Graphics2D g2d){ //draw menu buttons
 
         FontRenderContext frc = g2d.getFontRenderContext();
@@ -476,19 +645,22 @@ public class HomeMenu extends JComponent {
         imageButton.setLocation(x,y); //set exit button location
     }
 
+    /**
+     * This method is responsible for painting and repainting the images of the HomeMenu.
+     * @param g2d This graphics class is used to paint the images of the HomeMenu.
+     * @throws IOException This IOException is thrown if the image for the PopUpMenu does not exist.
+     */
     private void drawImage(Graphics2D g2d) throws IOException {
 
         Random rnd = new Random();
         rand = rnd.nextInt(12);
 
-        try{
+        if(popupmenu.getComponentCount()!=0){
             popupmenu.remove(0);
-        } catch (Exception e){
-            //do nothing
-        } finally {
-            JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/ImageShowcase/BrickDestroy"+rand+".png"));
-            popupmenu.add(jMenuItem);
         }
+
+        JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/ImageShowcase/BrickDestroy"+rand+".png"));
+        popupmenu.add(jMenuItem);
 
         BufferedImage myPicture = ImageIO.read(new File("image/ImageShowcase/BrickDestroy"+rand+".png"));
         Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);

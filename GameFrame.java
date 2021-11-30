@@ -23,20 +23,57 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-
+/**
+ * Public class GameFrame is responsible for loading between all the different screens in the game. These screens
+ * include the HomeMenu, GameBoard, HighScore Board, Custom Console and Info Screen. When the game is launched,
+ * the GameFrame first loads in the HomeMenu. The buttons on the HomeMenu are then clicked to access all the
+ * other screens.
+ *
+ * @author TanZhunXian, Filippo Ranza
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class GameFrame extends JFrame {
 
+    /**
+     * The game title.
+     */
     private static final String DEF_TITLE = "Brick Destroy";
 
+    /**
+     * The GameBoard to play the game, accessed from the HomeMenu.
+     */
     private GameBoard gameBoard;
+    /**
+     * The HomeMenu to access all other screens through buttons.
+     */
     private HomeMenu homeMenu;
 
+    /**
+     * The HighScore Board, accessed from the HomeMenu.
+     */
     private Highscore highscore;
+    /**
+     * The Custom Console to customise the levels, accessed from the HomeMenu.
+     */
     private CustomConsole customConsole;
+    /**
+     * The Info Screen to explain the different aspects of the game, accessed from the HomeMenu.
+     */
     private InfoScreen infoScreen;
 
+    /**
+     * Boolean to signal that the game has lost focus.
+     */
     private boolean gaming;
 
+    /**
+     * This constructor loads the HighScore Board, Custom Console, HomeMenu and Info Screen. Then, the HomeMenu
+     * is shown and the player is able to access all other screens through the buttons.
+     *
+     * @throws IOException This constructor throws IOException when the HighScore list or the InfoScreen photos
+     *                     do not exist.
+     */
     public GameFrame() throws IOException {
         super();
 
@@ -44,16 +81,20 @@ public class GameFrame extends JFrame {
 
         this.setLayout(new BorderLayout()); //set layout
 
-        highscore = new Highscore(this,new Dimension(450,300)); //get highscore
-        homeMenu = new HomeMenu(this,new Dimension(450,300)); //set main menu
-        customConsole = new CustomConsole(this,homeMenu);
-        infoScreen = new InfoScreen(this,homeMenu);
-        this.add(homeMenu,BorderLayout.CENTER); //add main menu to centre
+        highscore = new Highscore(this, new Dimension(450, 300)); //get highscore
+        homeMenu = new HomeMenu(this, new Dimension(450, 300)); //set main menu
+        customConsole = new CustomConsole(this, homeMenu);
+        infoScreen = new InfoScreen(this, homeMenu);
+        this.add(homeMenu, BorderLayout.CENTER); //add main menu to centre
 
         this.setUndecorated(true); //set frame undecorated
     }
 
-    public void initialize(){ //initialize game
+    /**
+     * This method is called when the game starts to load. The game title is set, the game screen is centered
+     * and the game screen is made visible.
+     */
+    public void initialize() { //initialize game
         this.setTitle(DEF_TITLE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
@@ -61,16 +102,25 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public void enableGameBoard() throws IOException { //start game
+    /**
+     * This method is called when the player clicks the start button on the HomeMenu. The HomeMenu is removed and
+     * the GameBoard is loaded. The game screen is centered, the game is initialized and window focus listeners
+     * are added.
+     */
+    public void enableGameBoard() { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        gameBoard = new GameBoard(this,customConsole.getChoice()); //call game board
-        this.add(gameBoard,BorderLayout.CENTER); //add main game
+        gameBoard = new GameBoard(this, customConsole.getChoice()); //call game board
+        this.add(gameBoard, BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
         //to avoid problems with graphics focus controller is added here
         this.addWindowFocusListener(new WindowAdapter() {
 
+            /**
+             * This window focus listener is called when game screen gains focus and sets gaming flag to true.
+             * @param windowEvent This parameter is used to track the game screen.
+             */
             @Override
             public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
                 gaming = true; //set gaming flag true
@@ -79,42 +129,64 @@ public class GameFrame extends JFrame {
                   is useful only if the GameBoard as been displayed at least once*/
             }
 
+            /**
+             * This window focus listener is called when game screen loses focus and sets game board to lose focus.
+             * @param windowEvent This parameter is used to track the game screen.
+             */
             @Override
             public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
-                if(gaming) //if gaming flag true
+                if (gaming) //if gaming flag true
                     gameBoard.onLostFocus(); //stop timer and action listener
             }
-        }); //add listener
+        });
     }
 
-    void autoLocate(){ //reposition screen
+    /**
+     * This method is used to center the game screen on the window screen.
+     */
+    void autoLocate() { //reposition screen
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (size.width - this.getWidth()) / 2;
         int y = (size.height - this.getHeight()) / 2;
-        this.setLocation(x,y);
+        this.setLocation(x, y);
     }
 
-    public void enableHighscoreBoard(){
+    /**
+     * This method is called when the player clicks the HighScores button on the HomeMenu. The HomeMenu is removed and
+     * the HighScore Board is loaded. The HighScore Board is centered and made visible.
+     */
+    public void enableHighscoreBoard() {
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        this.add(highscore,BorderLayout.CENTER); //add main game
+        this.add(highscore, BorderLayout.CENTER); //add main game
         this.setUndecorated(true);
         this.setVisible(true);
     }
 
-    public void enableHomeMenu(){
+    /**
+     * This method is called when the player clicks the back button on the HighScore Board. The HighScore Board is
+     * removed and the HomeMenu Board is reloaded, re-centered and made visible.
+     */
+    public void enableHomeMenu() {
         this.dispose();
         this.remove(highscore); //remove main menu
-        this.add(homeMenu,BorderLayout.CENTER); //add main game
+        this.add(homeMenu, BorderLayout.CENTER); //add main game
         this.setUndecorated(true);
         this.setVisible(true);
     }
 
-    public void enableCustomConsole(){
+    /**
+     * This method is called when the player clicks the Customise button on the HomeMenu. The Custom Console is
+     * set visible.
+     */
+    public void enableCustomConsole() {
         customConsole.setVisible(true);
     }
 
-    public void enableInfoScreen(){
+    /**
+     * This method is called when the player clicks the Info button on the HomeMenu. The Info Screen is set visible.
+     */
+    public void enableInfoScreen() {
         infoScreen.setVisible(true);
     }
 }

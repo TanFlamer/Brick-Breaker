@@ -9,14 +9,45 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Public class InfoScreen is used to display information about the game and explains all the different
+ * functionalities of the game so that the player may better enjoy the game.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class InfoScreen extends JDialog {
 
+    /**
+     * Title string.
+     */
     private static final String TITLE = "Game Info";
+    /**
+     * JFrame used to center the InfoScreen.
+     */
     private JFrame owner;
+    /**
+     * HomeMenu which is repainted when InfoScreen closes.
+     */
     private HomeMenu homeMenu;
+    /**
+     * JLabel used to add images from the game to better explain the game.
+     */
     private JLabel image;
-    JPanel panel=new JPanel();
+    /**
+     * JPanel which is loaded with labels and images and which in turn is loaded into a JScrollPane for viewing.
+     */
+    JPanel panel = new JPanel();
 
+    /**
+     * This constructor is called to create an info screen with all the relevant information about the game.
+     * The info screen is filled with labels with text and images and is loaded into a JScrollPane for viewing.
+     *
+     * @param owner JFrame used to center the InfoScreen.
+     * @param homeMenu HomeMenu which is repainted when InfoScreen closes.
+     * @throws IOException This constructor throws IOException if the image for InfoScreen do not exist.
+     */
     public InfoScreen(JFrame owner,HomeMenu homeMenu) throws IOException {
 
         this.owner = owner;
@@ -233,6 +264,9 @@ public class InfoScreen extends JDialog {
         this.pack();
     }
 
+    /**
+     * This method is used to set the InfoScreen title and to add in window listeners.
+     */
     private void initialize() {
 
         this.setModal(true);
@@ -241,11 +275,21 @@ public class InfoScreen extends JDialog {
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         this.addWindowListener(new WindowAdapter() {
+            /**
+             * This window listener is called when the InfoScreen is closing and repaints the HomeMenu.
+             * @param windowEvent This parameter is used to track the InfoScreen window.
+             */
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 homeMenu.repaint();
             }
 
+            /**
+             * This window listener is called when the InfoScreen is activated and centers the InfoScreen on
+             * the screen.
+             *
+             * @param windowEvent This parameter is used to track the InfoScreen window.
+             */
             @Override
             public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
                 setLocation(); //set debug console location
@@ -255,12 +299,22 @@ public class InfoScreen extends JDialog {
         this.setFocusable(true);
     }
 
+    /**
+     * This method is used to center the CustomConsole by using the JFrame location.
+     */
     private void setLocation(){ //set debug console location
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);
     }
 
+    /**
+     * This method creates JLabels with text which are loaded into a JPanel which is then loaded into a JScrollPane.
+     * @param label The text on the JLabels.
+     * @param constraints The constraints on the position of the JLabel.
+     * @param x The x-position of the JLabel.
+     * @param y The y-position of the JLabel.
+     */
     private void makeLabels(String label,GridBagConstraints constraints,int x,int y){ //make buttons and add listener
         constraints.gridx = x;
         constraints.gridy = y;

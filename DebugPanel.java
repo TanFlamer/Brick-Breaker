@@ -22,21 +22,57 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Public class DebugPanel is used to call methods to reset ball count, reset ball and player position, move to
+ * previous or next level and set the ball movement speed.
+ *
+ * @author TanZhunXian, Filippo Ranza
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class DebugPanel extends JPanel {
 
+    /**
+     * Background colour of white for the DebugPanel.
+     */
     private static final Color DEF_BKG = Color.WHITE;
 
+    /**
+     * JButton to skip to next level.
+     */
     private JButton skipLevel;
+    /**
+     * JButton to reset ball count.
+     */
     private JButton resetBalls;
 
+    /**
+     * JButton to go to previous level.
+     */
     private JButton previousLevel;
+    /**
+     * JButton to reset player and ball position.
+     */
     private JButton resetPosition;
 
+    /**
+     * JSlider to set ball horizontal speed.
+     */
     private JSlider ballXSpeed;
+    /**
+     * JSlider to set ball vertical speed.
+     */
     private JSlider ballYSpeed;
 
+    /**
+     * Wall object to call the methods of Wall in the DebugPanel.
+     */
     private Wall wall;
 
+    /**
+     * This constructor is used to initialize the DebugPanel and add the JButtons and JSliders.
+     * @param wall This variable is used to call the methods of Wall when the JButtons or JSliders are used.
+     */
     public DebugPanel(Wall wall){
 
         this.wall = wall;
@@ -62,17 +98,35 @@ public class DebugPanel extends JPanel {
         this.add(ballYSpeed);
     }
 
+    /**
+     * This method sets the DebugPanel background to white and sets the layout to GridLayout.
+     */
     private void initialize(){ //initialize debug panel
         this.setBackground(DEF_BKG); //set background colour
         this.setLayout(new GridLayout(3,2)); //set layout
     }
 
+    /**
+     * This method is used to add the given string to the JButton and to add action listeners to the JButtons.
+     * @param title This is the text on the JButton.
+     * @param e This is the action listener assigned to the JButton.
+     * @return This method returns a JButton with the given string which is assigned an action listener.
+     */
     private JButton makeButton(String title, ActionListener e){ //make buttons and add listener
         JButton out = new JButton(title);
         out.addActionListener(e);
-        return  out;
+        return out;
     }
 
+    /**
+     * This method is used to make JSliders with the given min and max values and to add action listeners to the
+     * JSliders.
+     *
+     * @param min This is the min value of the JSlider.
+     * @param max This is the max value of the JSlider.
+     * @param e This is the action listener assigned to the JSlider.
+     * @return This method returns a JSlider with the given min and max values which is assigned an action listener.
+     */
     private JSlider makeSlider(int min, int max, ChangeListener e){ //make sliders and add listener
         JSlider out = new JSlider(min,max);
         out.setMajorTickSpacing(1); //set tick spacing
@@ -82,6 +136,11 @@ public class DebugPanel extends JPanel {
         return out;
     }
 
+    /**
+     * This method sets the JSlider values to the current speed of the ball.
+     * @param x This is the current horizontal speed of the ball.
+     * @param y This is the current vertical speed of the ball.
+     */
     public void setValues(int x,int y){ //show current ball speed on slider
         ballXSpeed.setValue(x);
         ballYSpeed.setValue(y);
