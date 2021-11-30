@@ -40,7 +40,7 @@ public class Wall {
     /**
      * This is the number of levels in the game.
      */
-    private static final int LEVELS_COUNT = 4;
+    private static final int LEVELS_COUNT = 5;
     /**
      * This is the code for CLAY Brick.
      */
@@ -375,7 +375,7 @@ public class Wall {
         int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
         int brickRow = 0;
 
-        for(int i = 0;i < 4;i++){
+        for(int i = 0;i < 5;i++){
 
             brickRow = brickNum[choice[i][2]];
 
@@ -402,6 +402,7 @@ public class Wall {
         tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
         tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
         tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
+        tmp[4] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CONCRETE);
         return tmp;
     }
 
@@ -542,8 +543,8 @@ public class Wall {
             b.repair(); //reset brick to full strength
         brickCount = bricks.length; //reset brick count
 
-        if(choice[level][8]!=0) {
-            ballCount = choice[level][8]; //reset ball count
+        if(choice[level-1][8]!=0) {
+            ballCount = choice[level-1][8]; //reset ball count
         }
         else{
             ballCount = 3;
@@ -573,11 +574,11 @@ public class Wall {
      * A flag is also triggered to signal to timer to reload the correct time.
      */
     public void nextLevel(){
-        if(level==4)
+        if(level==5)
             return;
 
         if(level!=0)
-            wallReset(level-1);
+            wallReset(level);
 
         bricks = levels[level++]; //load next level
         brickCount = bricks.length; //reset brick count
@@ -601,7 +602,7 @@ public class Wall {
         if(level==1)
             return;
 
-        wallReset(level-1);
+        wallReset(level);
         level -= 2;
         bricks = levels[level++]; //load previous level
         brickCount = bricks.length; //reset brick count
