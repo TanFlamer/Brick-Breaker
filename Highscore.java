@@ -351,7 +351,7 @@ public class Highscore extends JComponent {
         g2d.translate(x,y); //move all points for processing
 
         //method calls
-        drawText(g2d,(level % 5 + 5) % 5); //draw menu text
+        drawText(g2d,(level % 6 + 6) % 6); //draw menu text
         drawButton(g2d); //draw menu button
         //end of methods calls
 

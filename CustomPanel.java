@@ -104,7 +104,7 @@ public class CustomPanel extends JPanel implements ActionListener {
     /**
      * Double array of Integer to hold all player choices to send to GameBoard for level generation.
      */
-    private int[][] choice = new int[4][9];
+    private int[][] choice = new int[5][9];
 
     /**
      * This constructor is used to generate all the JComboBoxes, JButtons and JLabels on the CustomPanel for
@@ -116,7 +116,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         String[] levelType = {"Default","True Ordered","Ordered (Maximal)","Ordered (Moderate)","Ordered (Minimal)","Random (Minimal)","Random (Moderate)","Random (Maximal)","True Random"};
         String[] brickRows = {"1","2","3","4","5","6","7","8","9","10"};
         String[] brickInRow = {"1","2","3","4","5","6","8","10","12","15"};
-        String[] Num = {"1","2","3","4"};
+        String[] Num = {"1","2","3","4","5"};
         String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
         String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4"};
         String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
@@ -393,7 +393,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         }
         else if(e.getSource()==trueRandom){
 
-            for(int i = 0; i < 4;i++){
+            for(int i = 0; i < 5;i++){
                 choice[i][0] = 8;
             }
             levelGen.setSelectedIndex(choice[level.getSelectedIndex()][0]);
@@ -401,7 +401,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         }
         else if(e.getSource()==minimalOrdered){
 
-            for(int i = 0; i < 4;i++){
+            for(int i = 0; i < 5;i++){
                 choice[i][0] = 4;
             }
             levelGen.setSelectedIndex(choice[level.getSelectedIndex()][0]);
@@ -409,7 +409,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         }
         else if(e.getSource()==allDefault){
 
-            for(int i = 0; i < 4;i++){
+            for(int i = 0; i < 5;i++){
                 choice[i][0] = 0;
             }
             levelGen.setSelectedIndex(choice[level.getSelectedIndex()][0]);
@@ -418,7 +418,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         else if(e.getSource()==randomise){
 
             rnd = new Random(); //get random number
-            for(int i = 0; i < 4;i++){
+            for(int i = 0; i < 5;i++){
                 choice[i][0] = rnd.nextInt(9);
                 choice[i][1] = rnd.nextInt(10);
                 choice[i][2] = rnd.nextInt(10);

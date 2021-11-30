@@ -429,13 +429,13 @@ public class ScoreBoard extends JDialog implements ActionListener {
                 Add(newScore, getRanking(level), username, levelType[choice[level-1][0]],score[level][1], score[level][0]);
             }
             else{
-                if(choice[0][0]==choice[1][0]&&choice[1][0]==choice[2][0]&&choice[2][0]==choice[3][0]){
+                if(choice[0][0]==choice[1][0]&&choice[1][0]==choice[2][0]&&choice[2][0]==choice[3][0]&&choice[3][0]==choice[4][0]){
                     Add(newScore, getRanking(level), username, levelType[choice[0][0]],score[level][1], score[level][0]);
                 }
-                else if((choice[0][0]-1)/4==0&&(choice[1][0]-1)/4==0&&(choice[2][0]-1)/4==0&&(choice[3][0]-1)/4==0&&choice[0][0]!=0&&choice[1][0]!=0&&choice[2][0]!=0&&choice[3][0]!=0){
+                else if((choice[0][0]-1)/4==0&&(choice[1][0]-1)/4==0&&(choice[2][0]-1)/4==0&&(choice[3][0]-1)/4==0&&(choice[4][0]-1)/4==0&&choice[0][0]!=0&&choice[1][0]!=0&&choice[2][0]!=0&&choice[3][0]!=0&&choice[4][0]!=0){
                     Add(newScore, getRanking(level), username, finalType[0],score[level][1], score[level][0]);
                 }
-                else if((choice[0][0]-1)/4==1&&(choice[1][0]-1)/4==1&&(choice[2][0]-1)/4==1&&(choice[3][0]-1)/4==1){
+                else if((choice[0][0]-1)/4==1&&(choice[1][0]-1)/4==1&&(choice[2][0]-1)/4==1&&(choice[3][0]-1)/4==1&&(choice[4][0]-1)/4==1){
                     Add(newScore, getRanking(level), username, finalType[1],score[level][1], score[level][0]);
                 }
                 else {

@@ -142,7 +142,7 @@ public class GameBoard extends JComponent {
     /**
      * Double array of integer to record player scores and times.
      */
-    private int[][] scoreLevel = new int[5][2];
+    private int[][] scoreLevel = new int[6][2];
 
     /**
      * This constructor is used to initialize the game by adding listeners, loading the bricks for all levels and the
@@ -207,10 +207,10 @@ public class GameBoard extends JComponent {
                 saveElapsedTime();
 
                 if(wall.ballEnd()){ //if all balls are used up
-                    wall.wallReset(wall.getLevel()-1); //reset wall
+                    wall.wallReset(wall.getLevel()); //reset wall
                     message = "Game over"; //show game over message
                     wall.ballReset(); //reset player and ball position
-                    scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
+                    scoreLevel[0][1] = returnPreviousLevelsTime(wall.getLevel());
                 }
                 else {
                     wall.ballReset(); //reset player and ball position
@@ -232,7 +232,7 @@ public class GameBoard extends JComponent {
                 if(wall.hasLevel()){ //if next level exists
                     message = "Go to Next Level";
                     wall.ballReset(); //reset player and ball position
-                    wall.wallReset(wall.getLevel()-1); //reset wall
+                    wall.wallReset(wall.getLevel()); //reset wall
                     wall.nextLevel(); //move to next level
                 }
                 else{ //if no levels left
@@ -336,7 +336,7 @@ public class GameBoard extends JComponent {
                 else if(restartButtonRect.contains(p)){ //if restart pressed
                     message = "Restarting Game...";
                     wall.ballReset(); //reset balls
-                    wall.wallReset(wall.getLevel()-1); //reset walls
+                    wall.wallReset(wall.getLevel()); //reset walls
                     scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
                     showPauseMenu = false; //close pause menu
                     repaint(); //repaint components
