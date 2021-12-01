@@ -117,6 +117,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         String[] brickRows = {"1","2","3","4","5","6","7","8","9","10"};
         String[] brickInRow = {"1","2","3","4","5","6","8","10","12","15"};
         String[] Num = {"1","2","3","4","5"};
+        String[] brickNum = {"1","2","3","4"};
         String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
         String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4"};
         String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
@@ -147,7 +148,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         this.add(brickRow);
 
         makeJLabels(labels[5]);
-        brickType = makeComboBox(Num);
+        brickType = makeComboBox(brickNum);
         brickType.addActionListener(this);
         this.add(brickType);
 
