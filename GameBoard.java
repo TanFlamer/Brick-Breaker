@@ -147,22 +147,50 @@ public class GameBoard extends JComponent {
      */
     private int[][] scoreLevel = new int[6][2];
 
+    /**
+     * Double array of integer to get level orientation to move the game messages.
+     */
+    private int[][] choice;
 
+    /**
+     * Circle for the power up for God mode
+     */
     private Shape powerUp = new Ellipse2D.Double(0,0,20,20);
 
+    /**
+     * Randomizer to get random power up location.
+     */
     private Random rnd = new Random();
 
+    /**
+     * Boolean to signal if power up is collected.
+     */
     private boolean collected = false;
+    /**
+     * Boolean to signal if power up has spawned.
+     */
     private boolean spawned = false;
 
+    /**
+     * Integer to hold power up x-coordinate.
+     */
     private int x;
+    /**
+     * Integer to hold power up y-coordinate.
+     */
     private int y;
+    /**
+     * Integer to record time when power up is first collected.
+     */
     private int godModeStartTime;
+    /**
+     * String to show status of player and God mode time left.
+     */
     private String godMode;
 
     /**
-     * This constructor is used to initialize the game by adding listeners, loading the bricks for all levels and the
-     * debug console and to start the timer to record all player inputs, scores and times.
+     * This constructor is used to initialize the game by adding listeners, loading the bricks for all levels and power
+     * up and the debug console and to start the timer to record all player inputs, scores and times.
      *
      * @param owner This parameter is used to add listeners to the JFrame and center the debug console.
      * @param choice This parameter is used to send the player choices from the custom console to public class Wall
@@ -173,6 +201,7 @@ public class GameBoard extends JComponent {
 
         strLen = 0; //initial string length is 0
         showPauseMenu = false; //initially do not show pause menu
+        this.choice = choice;
 
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
 
@@ -198,6 +227,7 @@ public class GameBoard extends JComponent {
             if(wall.flag==1){
                 scoreLevel[0][1] = returnPreviousLevelsTime(wall.getLevel());
                 wall.flag = 0;
+                spawned = false;
             }
 
             scoreLevel[0][0] = returnPreviousLevelsScore(wall.getLevel());
@@ -222,7 +252,12 @@ public class GameBoard extends JComponent {
 
             if(levelSeconds==0 && !spawned){
                 x = rnd.nextInt(401) + 100;
-                y = 200;
+                if(choice[wall.getLevel()-1][9]==0) {
+                    y = 325;
+                }
+                else if (choice[wall.getLevel()-1][9]==1){
+                    y = 125;
+                }
                 collected = false;
                 spawned = true;
             }
@@ -430,12 +465,23 @@ public class GameBoard extends JComponent {
         g2d.fillRect(0,0,this.getWidth(),this.getHeight());
 
         g2d.setColor(Color.BLUE); //set blue colour
-        g2d.drawString(message,250,225); //set message colour as blue
-        g2d.drawString(totalScore,250,240); //set message colour as blue
-        g2d.drawString(levelScore,250,255); //set message colour as blue
-        g2d.drawString(totalTime,250,270); //set message colour as blue
-        g2d.drawString(levelTime,250,285); //set message colour as blue
-        g2d.drawString(godMode,250,300); //set message colour as blue
+
+        if(choice[wall.getLevel()-1][9]==0) {
+            g2d.drawString(message, 250, 225); //set message colour as blue
+            g2d.drawString(totalScore, 250, 240); //set message colour as blue
+            g2d.drawString(levelScore, 250, 255); //set message colour as blue
+            g2d.drawString(totalTime, 250, 270); //set message colour as blue
+            g2d.drawString(levelTime, 250, 285); //set message colour as blue
+            g2d.drawString(godMode, 250, 300); //set message colour as blue
+        }
+        else if(choice[wall.getLevel()-1][9]==1){
+            g2d.drawString(message, 250, 150); //set message colour as blue
+            g2d.drawString(totalScore, 250, 165); //set message colour as blue
+            g2d.drawString(levelScore, 250, 180); //set message colour as blue
+            g2d.drawString(totalTime, 250, 195); //set message colour as blue
+            g2d.drawString(levelTime, 250, 210); //set message colour as blue
+            g2d.drawString(godMode, 250, 225); //set message colour as blue
+        }
 
         drawBall(wall.ball,g2d); //draw ball with inner and border colours
 
@@ -562,7 +608,6 @@ public class GameBoard extends JComponent {
         x = this.getWidth() / 8; //get position of continue button
         y = this.getHeight() / 4;
 
-
         if(continueButtonRect == null){ //if continue button not drawn
             FontRenderContext frc = g2d.getFontRenderContext();
             continueButtonRect = menuFont.getStringBounds(CONTINUE,frc).getBounds(); //get rectangle shape button for continue
@@ -592,6 +637,11 @@ public class GameBoard extends JComponent {
         g2d.setFont(tmpFont); //reset font
     }
 
+    /**
+     * This method is used to draw a red circle power up which triggers God mode for the player for 10 seconds
+     * when collected.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawPowerUp(Graphics2D g2d){
 
         RectangularShape tmp = (RectangularShape) powerUp;
@@ -609,6 +659,12 @@ public class GameBoard extends JComponent {
         g2d.draw(powerUp);
     }
 
+    /**
+     * This method checks to see if the power up has been collected by checking if any of the points of the ball
+     * is within the circle of the power up.
+     * @param b The ball whose points are checked.
+     * @return This method returns a boolean to signal if the ball has intersected and collected the power up.
+     */
     private boolean isCollected(Ball b){
         return (powerUp.contains(b.getPosition())||powerUp.contains(b.up)||powerUp.contains(b.down)||powerUp.contains(b.left)||powerUp.contains(b.right));
     }

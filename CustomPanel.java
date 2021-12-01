@@ -62,6 +62,9 @@ public class CustomPanel extends JPanel implements ActionListener {
      */
     private JComboBox brick4;
 
+    /**
+     * JComboBox for the level orientation.
+     */
     private JComboBox playerOrientation;
 
     /**
@@ -98,7 +101,14 @@ public class CustomPanel extends JPanel implements ActionListener {
      */
     private JLabel levelChoice;
 
+    /**
+     * JLabel to show current level number.
+     */
     private JLabel levelOrientation;
+
+    /**
+     * JLabel to show current level orientation.
+     */
     private JLabel levelOrientationChoice;
 
     /**
@@ -126,7 +136,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
         String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4","Player Position"};
         String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
-        String[] playerPosition = {"Bottom","Top","Left","Right"};
+        String[] playerPosition = {"Bottom","Top"};
 
         initialize();
 
