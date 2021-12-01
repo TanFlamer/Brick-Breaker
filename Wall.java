@@ -219,28 +219,10 @@ public class Wall {
         Brick[] tmp  = new Brick[(randRow * randBrickRow) + (randRow / 2)];
 
         Dimension brickSize = new Dimension((int) brickLength, (int) brickHeight); //get dimensions of brickSize
-        Point p = new Point(); //new point at (0,0)
-
-        int twoRows = 2 * randBrickRow + 1;
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-            if(i % twoRows < randBrickRow){ //even row
-
-                double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
-                double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
-
-                p.setLocation(x,y); //set corner coordinate of brick
-            }
-            else{ //odd row
-
-                int posX = i % twoRows - randBrickRow; //get position of brick on odd row
-
-                double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
-                double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
-
-                p.setLocation(x,y); //set corner coordinate of brick
-            }
+            Point p = getBrickLocation(i,randBrickRow,(int)brickLength,(int)brickHeight);
 
             if((levelGen-1)/4==0){
 
@@ -317,32 +299,46 @@ public class Wall {
         Brick[] tmp  = new Brick[(brickCnt-(brickCnt % lineCnt))+(lineCnt / 2)]; //array of Bricks which account for extra brick in odd rows
 
         Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
-        Point p = new Point(); //new point at (0,0)
 
         int twoRows = 2 * brickOnLine + 1;
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
+            Point p = getBrickLocation(i,brickOnLine,(int)brickLen,(int)brickHgt);
+
             if(i % twoRows < brickOnLine){ //even row
-
-                double x = i % twoRows * brickLen; // x = get corner X-coordinate of brick
-                double y = i / twoRows * 2 * brickHgt; // y = get corner Y-coordinate of brick
-
-                p.setLocation(x,y); //set corner coordinate of brick
                 tmp[i] = ((i % twoRows) % 2 == 0) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
             }
             else{ //odd row
-
                 int posX = i % twoRows - brickOnLine; //get position of brick on odd row
-
-                double x = (posX * brickLen) - (brickLen / 2); // x = get corner X-coordinate of brick
-                double y = (i / twoRows * 2 + 1) * brickHgt; // y = get corner Y-coordinate of brick
-
-                p.setLocation(x,y); //set corner coordinate of brick
                 tmp[i] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
             }
         }
         return tmp;
+    }
+
+    private Point getBrickLocation(int i, int brickOnLine,int brickLength, int brickHeight){
+
+        Point p = new Point();
+        int twoRows = 2 * brickOnLine + 1;
+
+        if(i % twoRows < brickOnLine){ //even row
+
+            double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
+            double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+
+            p.setLocation(x,y); //set corner coordinate of brick
+        }
+        else{ //odd row
+
+            int posX = i % twoRows - brickOnLine; //get position of brick on odd row
+
+            double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
+            double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+
+            p.setLocation(x,y); //set corner coordinate of brick
+        }
+        return p;
     }
 
 	/**
