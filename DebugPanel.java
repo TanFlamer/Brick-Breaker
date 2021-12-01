@@ -83,7 +83,7 @@ public class DebugPanel extends JPanel {
         resetBalls = makeButton("Reset Balls",e -> wall.resetBallCount());
 
         previousLevel = makeButton("Previous Level",e -> wall.previousLevel());
-        resetPosition = makeButton("Reset Position",e -> wall.ballReset());
+        resetPosition = makeButton("Reset Position",e -> wall.ballReset(wall.getLevel()));
 
         ballXSpeed = makeSlider(-4,4,e -> wall.setBallXSpeed(ballXSpeed.getValue())); //make new sliders
         ballYSpeed = makeSlider(-4,4,e -> wall.setBallYSpeed(ballYSpeed.getValue())); //show and set speed of ball

@@ -99,7 +99,7 @@ public class Wall {
     public int flag = 0;
 
     /**
-     * This is the start point of the ball and the player.
+     * This is the start point of the ball.
      */
     private Point startPoint;
     /**
@@ -114,6 +114,16 @@ public class Wall {
      * This is the boolean to signal if the ball has left the bottom page border and to reset the ball and player.
      */
     private boolean ballLost;
+
+    /**
+     * This is the start point of the player.
+     */
+    private Point playerStartPoint;
+
+    /**
+     * This is the area of the game screen and is used to calculate ball and player start point.
+     */
+    private Rectangle drawArea;
 
     /**
      * This constructor controls the generation of the bricks in each level by taking all the basic information
@@ -131,8 +141,17 @@ public class Wall {
      */
     public Wall(Rectangle drawArea, int brickCount, int lineCount, double brickDimensionRatio, Point ballPos, int[][] choice) {
 
-        this.startPoint = new Point(ballPos); //start point = initial ball position
+        if(choice[0][9]==0) {
+            this.startPoint = new Point(ballPos); //start point = initial ball position
+            this.playerStartPoint = new Point(ballPos);
+        }
+        else if (choice[0][9]==1){
+            this.startPoint = new Point(drawArea.width/2,20); //start point = initial ball position
+            this.playerStartPoint = new Point(drawArea.width/2,10); //start point = initial ball position
+        }
+
         this.choice = choice;
+        this.drawArea = drawArea;
 
         levels = makeCustomLevels(drawArea,brickCount,lineCount,brickDimensionRatio,choice); //make levels
         level = 0; //start at level 0
@@ -147,7 +166,12 @@ public class Wall {
 
         rnd = new Random(); //get random number
 
-        makeBall(ballPos); //make ball at position (300,430)
+        if(choice[0][9]==0){
+            makeBall(ballPos); //make ball at position (300,430)
+        }
+        else if (choice[0][9]==1){
+            makeBall(new Point(drawArea.width/2,20));
+        }
 
         int speedX,speedY;
         do{
@@ -159,8 +183,12 @@ public class Wall {
 
         ball.setSpeed(speedX,speedY); //set ball speed
 
-        player = new Player((Point) ballPos.clone(),150,10, drawArea); //make new player
-
+        if(choice[0][9]==0) {
+            player = new Player((Point) ballPos.clone(), 150, 10, drawArea); //make new player
+        }
+        else if (choice[0][9]==1){
+            player = new Player(new Point(drawArea.width/2,10), 150, 10, drawArea); //make new player
+        }
         area = drawArea; //rectangle at (0,0) with 600 width and 450 height
     }
 
@@ -186,9 +214,10 @@ public class Wall {
      *               which uses random number of brick types or if the player chooses less than 3 brick type.
      * @param brick4 This is the last brick type entered by the player. It is used unless the player chooses a level type
      *               which uses random number of brick types or if the player chooses less than 4 brick type.
+     * @param level This is the level number and is used to check the level orientation.
      * @return The method returns an array of Bricks which is used for the generation of a custom level.
      */
-    private Brick[] makeAllLevel(Rectangle drawArea, int row, int brickRow, int levelGen, int brickType, int brick1, int brick2, int brick3, int brick4){
+    private Brick[] makeAllLevel(Rectangle drawArea, int row, int brickRow, int levelGen, int brickType, int brick1, int brick2, int brick3, int brick4, int level){
 
         rnd = new Random(); //get random number
         int randRow = 0,randBrickRow = 0;
@@ -222,7 +251,7 @@ public class Wall {
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-            Point p = getBrickLocation(i,randBrickRow,(int)brickLength,(int)brickHeight);
+            Point p = getBrickLocation(drawArea,i,randBrickRow,(int)brickLength,(int)brickHeight,level);
 
             if((levelGen-1)/4==0){
 
@@ -265,10 +294,11 @@ public class Wall {
      * @param lineCnt This is the number of lines of bricks to be generated in the default levels.
      * @param brickSizeRatio This is the width-to-height ratio of the default bricks.
      * @param type This is the type of brick to be generated for the whole array of Bricks.
+     * @param level This is the level number and is used to check the level orientation.
      * @return This method returns an array of Clay Bricks for the first default level.
      */
-    private Brick[] makeSingleTypeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int type){
-        return makeChessboardLevel(drawArea,brickCnt,lineCnt,brickSizeRatio,type,type);
+    private Brick[] makeSingleTypeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int type, int level){
+        return makeChessboardLevel(drawArea,brickCnt,lineCnt,brickSizeRatio,type,type,level);
     }
 
     /**
@@ -284,9 +314,10 @@ public class Wall {
      * @param brickSizeRatio This is the width-to-height ratio of the default bricks.
      * @param typeA This is the first type of brick to be generated for bricks satisfying certain conditions.
      * @param typeB This is the second type of brick to be generated for bricks satisfying certain conditions.
-     * @return This method returns an array of  Bricks for the other 3 default levels.
+     * @param level This is the level number and is used to check the level orientation.
+     * @return This method returns an array of Bricks for the other 3 default levels.
      */
-    private Brick[] makeChessboardLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB){
+    private Brick[] makeChessboardLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB, int level){
 
         int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
 
@@ -304,7 +335,7 @@ public class Wall {
 
         for(int i = 0; i < tmp.length; i++){ //loop through whole array
 
-            Point p = getBrickLocation(i,brickOnLine,(int)brickLen,(int)brickHgt);
+            Point p = getBrickLocation(drawArea,i,brickOnLine,(int)brickLen,(int)brickHgt,level);
 
             if(i % twoRows < brickOnLine){ //even row
                 tmp[i] = ((i % twoRows) % 2 == 0) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
@@ -317,27 +348,48 @@ public class Wall {
         return tmp;
     }
 
-    private Point getBrickLocation(int i, int brickOnLine,int brickLength, int brickHeight){
+    /**
+     * This method is used to calculate the brick positions for brick generation. The level orientation must be
+     * checked to make sure that the bricks are spawned in the right places.
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @param i This is the number of the current brick being generated.
+     * @param brickOnLine This is the number of bricks on an even line.
+     * @param brickLength This is the length of a brick.
+     * @param brickHeight This is the height of a brick.
+     * @param level This is the level number and is used to check the level orientation.
+     * @return This method returns the new brick position for brick generation.
+     */
+    private Point getBrickLocation(Rectangle drawArea, int i, int brickOnLine,int brickLength, int brickHeight, int level){
 
         Point p = new Point();
+        double x = 0,y = 0;
         int twoRows = 2 * brickOnLine + 1;
 
         if(i % twoRows < brickOnLine){ //even row
 
-            double x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
-            double y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
-
-            p.setLocation(x,y); //set corner coordinate of brick
+            if(choice[level][9]==0){
+                x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
+                y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+            }
+            else if(choice[level][9]==1){
+                x = drawArea.getWidth() - ((i%twoRows)+1)*brickLength;
+                y = drawArea.getHeight() - (2*(i/twoRows)+1)*brickHeight;
+            }
         }
         else{ //odd row
 
             int posX = i % twoRows - brickOnLine; //get position of brick on odd row
-
-            double x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
-            double y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
-
-            p.setLocation(x,y); //set corner coordinate of brick
+            if(choice[level][9]==0){
+                x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
+                y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+            }
+            else if(choice[level][9]==1){
+                x = drawArea.getWidth() + brickLength/2 - (posX+1)*brickLength;
+                y = drawArea.getHeight() - 2*(i/twoRows+1)*brickHeight;
+            }
         }
+        p.setLocation(x,y); //set corner coordinate of brick
         return p;
     }
 
@@ -376,7 +428,7 @@ public class Wall {
             brickRow = brickNum[choice[i][2]];
 
             if(choice[i][0]!=0)
-                tmp[i] = makeAllLevel(drawArea,choice[i][1]+1,brickRow,choice[i][0],choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7]);
+                tmp[i] = makeAllLevel(drawArea,choice[i][1]+1,brickRow,choice[i][0],choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7],i);
         }
         return tmp;
     }
@@ -394,11 +446,11 @@ public class Wall {
     private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
         Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
         //get column for each 2d-array
-        tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY);
-        tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT);
-        tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL);
-        tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT);
-        tmp[4] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CONCRETE);
+        tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,0);
+        tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT,1);
+        tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL,2);
+        tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT,3);
+        tmp[4] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CONCRETE,4);
         return tmp;
     }
 
@@ -414,12 +466,20 @@ public class Wall {
 	/**
      * This method is used to check for any impacts of the ball and define all the behaviours when impact with
      * the ball occurs. If impact occurs with the player, vertical direction of ball is reversed. If impact occurs
-     * with a brick, the method below will compute the outcome. If impact occurs with the left and right page borders, horizontal direction of ball is reversed.
-     * If impact occurs with the top page border, vertical direction of ball is reversed. Finally, if ball leaves the
-     * bottom page border, ball is lost, ball count decreases and player nad ball position are reset.
+     * with a brick, the method below will compute the outcome. If impact occurs with the left and right page borders,
+     * horizontal direction of ball is reversed. For a game with bottom player orientation, if impact occurs with the
+     * top page border, vertical direction of ball is reversed. For a game with top player orientation, if impact occurs
+     * with the bottom page border, vertical direction of ball is reversed. Finally, if ball leaves the bottom page
+     * border on bottom player orientation or leaves the top page border on top player orientation, ball is lost,
+     * ball count decreases and player and ball position are reset.
+     *
+     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
+     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
+     * @param playerPosition This is the level orientation of the level and is used to determine the action taken
+     *                       when ball collides with top and bottom page border.
      */
-    public void findImpacts(boolean collected){ //impact method
-        if(player.impact(ball)){ //if player hits ball
+    public void findImpacts(boolean collected, int playerPosition){ //impact method
+        if(player.impact(ball,playerPosition)){ //if player hits ball
             ball.reverseY(); //reverse Y-direction
         }
         else if(impactWall(collected)){
@@ -431,12 +491,23 @@ public class Wall {
         else if(impactBorder()) { //if ball impacts border
             ball.reverseX(); //reverse X-direction
         }
-        else if(ball.getPosition().getY() < area.getY()){ //if ball hits top border
-            ball.reverseY(); //reverse Y-direction
+        else if(choice[level-1][9]==0){
+            if(ball.getPosition().getY() < area.getY()){ //if ball hits top border
+                ball.reverseY(); //reverse Y-direction
+            }
+            else if(ball.getPosition().getY() > area.getY() + area.getHeight()){ //if ball hits bottom border
+                ballCount--; //ball lost
+                ballLost = true; //ball lost is true
+            }
         }
-        else if(ball.getPosition().getY() > area.getY() + area.getHeight()){ //if ball hits bottom border
-            ballCount--; //ball lost
-            ballLost = true; //ball lost is true
+        else if(choice[level-1][9]==1){
+            if(ball.getPosition().getY() < area.getY()){ //if ball hits top border
+                ballCount--; //ball lost
+                ballLost = true; //ball lost is true
+            }
+            else if(ball.getPosition().getY() > area.getY() + area.getHeight()){ //if ball hits bottom border
+                ball.reverseY(); //reverse Y-direction
+            }
         }
     }
 
@@ -445,7 +516,11 @@ public class Wall {
      * checks if the brick is already broken. If brick is already broken, no impact occurs and the ball just passes
      * through. If brick is not broken, impact occurs and brick count will decrease if the brick is broken. The
      * direction of impact between the ball and brick are taken and the direction of motion of the ball is reversed.
+     * If power up has been collected then ball deflection is disabled and bricks are destroyed instantly on collision
+     * with the ball.
      *
+     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
+     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      * @return This method returns a boolean to signify if the brick impacted by the ball is unbroken at the start
      *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
      */
@@ -515,10 +590,23 @@ public class Wall {
      * This method is used to reset the player and the ball to the default starting position. It is triggered when
      * the current ball has left the bottom page border. The ball is reset with a new horizontal and vertical speed.
      * The ball lost flag is then set to false.
+     *
+     * @param level This is the level number and is used to check the level orientation so that ball and player
+     *              starting position can be determined.
      */
-    public void ballReset(){ //when ball is lost
-        player.moveTo(startPoint); //move player at position (300,430)
+    public void ballReset(int level){ //when ball is lost
+
+        if(choice[level-1][9]==0) {
+            startPoint = new Point(drawArea.width/2,drawArea.height-20); //start point = initial ball position
+            playerStartPoint = new Point(drawArea.width/2,drawArea.height-20);
+        }
+        else if (choice[level-1][9]==1){
+            startPoint = new Point(drawArea.width/2,20); //start point = initial ball position
+            playerStartPoint = new Point(drawArea.width/2,10); //start point = initial ball position
+        }
+
         ball.moveTo(startPoint); //move ball at position (300,430)
+        player.moveTo(playerStartPoint);
         int speedX,speedY;
         do{
             speedX = rnd.nextInt(5) - 2;
@@ -582,6 +670,7 @@ public class Wall {
 
         bricks = levels[level++]; //load next level
         brickCount = bricks.length; //reset brick count
+        ballReset(level);
 
         if(choice[level-1][8]!=0) {
             ballCount = choice[level-1][8]; //reset ball count
@@ -606,6 +695,7 @@ public class Wall {
         level -= 2;
         bricks = levels[level++]; //load previous level
         brickCount = bricks.length; //reset brick count
+        ballReset(level);
 
         if(choice[level-1][8]!=0) {
             ballCount = choice[level-1][8]; //reset ball count

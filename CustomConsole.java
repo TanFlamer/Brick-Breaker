@@ -78,13 +78,15 @@ public class CustomConsole extends JDialog {
 
             /**
              * This window listener is called when the CustomConsole is activated and centers the CustomConsole on
-             * the screen.
+             * the screen. The choices are also set to the player choices and the choice message is reset.
              *
              * @param windowEvent This parameter is used to track the CustomConsole window.
              */
             @Override
             public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
                 setLocation(); //set debug console location
+                customPanel.setIndex();
+                customPanel.resetMessage();
             }
         });
 

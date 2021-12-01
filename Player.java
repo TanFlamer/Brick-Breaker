@@ -86,19 +86,28 @@ public class Player {
      * @return The rectangle shape for the player with the given width and height is returned.
      */
     private Rectangle makeRectangle(int width,int height){
-        Point p = new Point((int)(ballPoint.getX() - (width / 2)),(int)ballPoint.getY()); //get corner coordinate
+        Point p = new Point((int) (ballPoint.getX() - (width / 2)), (int) ballPoint.getY()); //get corner coordinate
         return  new Rectangle(p,new Dimension(width,height)); //make rectangle player
     }
 
     /**
      * This method checks for any impact of the ball with the player. If player face contains the bottom side of
-     * the ball inside, then impact has occurred.
+     * the ball inside and orientation of the player is at the bottom, then impact has occurred. If player face
+     * contains the top side of the ball inside and orientation of the player is at the top, then impact
+     * has occurred.
      *
      * @param b The ball which is checked for impact with the player.
+     * @param playerPosition The orientation of the player in game.
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean impact(Ball b){ //scan to see if player contains bottom side of ball
-        return playerFace.contains(b.getPosition()) && playerFace.contains(b.down) ;
+    public boolean impact(Ball b, int playerPosition){ //scan to see if player contains bottom side of ball
+        if(playerPosition==0){
+            return playerFace.contains(b.getPosition()) && playerFace.contains(b.down);
+        }
+        else if (playerPosition==1){
+            return playerFace.contains(b.getPosition()) && playerFace.contains(b.up);
+        }
+        return false;
     }
 
     /**
