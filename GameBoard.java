@@ -227,7 +227,7 @@ public class GameBoard extends JComponent {
                 spawned = true;
             }
 
-            if(isCollected(wall.ball)){
+            if(isCollected(wall.ball)&&spawned){
                 collected = true;
                 spawned = false;
                 godModeStartTime = systemClock;
