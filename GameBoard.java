@@ -211,16 +211,16 @@ public class GameBoard extends JComponent {
             levelScore = String.format("Level %d Score %d",wall.getLevel(),scoreLevel[0][0]-returnPreviousLevelsScore(wall.getLevel()));
 
 
-            int currentTime = (int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1];
-            int totalMinutes = currentTime/60;
-            int totalSeconds = currentTime%60;
-            int levelMinutes = (currentTime - returnPreviousLevelsTime(wall.getLevel()))/60;
-            int levelSeconds = (currentTime - returnPreviousLevelsTime(wall.getLevel()))%60;
+            int systemClock = (int) java.time.Instant.now().getEpochSecond() - startTime + scoreLevel[0][1];
+            int totalMinutes = systemClock/60;
+            int totalSeconds = systemClock%60;
+            int levelMinutes = (systemClock - returnPreviousLevelsTime(wall.getLevel()))/60;
+            int levelSeconds = (systemClock - returnPreviousLevelsTime(wall.getLevel()))%60;
 
             totalTime = String.format("Total Time %02d:%02d",totalMinutes,totalSeconds);
             levelTime = String.format("Level %d Time %02d:%02d",wall.getLevel(),levelMinutes,levelSeconds);
 
-            if(levelSeconds==0&&!spawned){
+            if(levelSeconds==0 && !spawned){
                 x = rnd.nextInt(401) + 100;
                 y = 200;
                 collected = false;
@@ -230,14 +230,14 @@ public class GameBoard extends JComponent {
             if(isCollected(wall.ball)){
                 collected = true;
                 spawned = false;
-                godModeStartTime = currentTime - returnPreviousLevelsTime(wall.getLevel());
+                godModeStartTime = systemClock;
             }
 
             if(collected){
-                if((currentTime - returnPreviousLevelsTime(wall.getLevel()))-godModeStartTime>=10){
+                if(systemClock - godModeStartTime >= 10){
                     collected = false;
                 }
-                godMode = String.format("God Mode Activated %d",10-((currentTime - returnPreviousLevelsTime(wall.getLevel()))-godModeStartTime));
+                godMode = String.format("God Mode Activated %d",10 - (systemClock - godModeStartTime));
             }
             else {
                 godMode = "God Mode Deactivated";
