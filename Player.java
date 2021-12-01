@@ -71,10 +71,10 @@ public class Player {
      * @param height The height of the player.
      * @param container The shape of the player.
      */
-    public Player(Point ballPoint,int width,int height,Rectangle container) {
+    public Player(Point ballPoint,int width,int height,Rectangle container,int playerPosition) {
         this.ballPoint = ballPoint; //ball position
         moveAmount = 0; //player has not moved
-        playerFace = makeRectangle(width, height); //make rectangle player
+        playerFace = makeRectangle(width, height, playerPosition); //make rectangle player
         min = container.x + (width / 2); //set min position as half of width from left order
         max = min + container.width - width; //set max position as half of width from right border
     }
@@ -85,8 +85,11 @@ public class Player {
      * @param height The height of the player.
      * @return The rectangle shape for the player with the given width and height is returned.
      */
-    private Rectangle makeRectangle(int width,int height){
-        Point p = new Point((int)(ballPoint.getX() - (width / 2)),(int)ballPoint.getY()); //get corner coordinate
+    private Rectangle makeRectangle(int width,int height,int playerPosition){
+        Point p = null;
+        if(playerPosition==0||playerPosition==1) {
+            p = new Point((int) (ballPoint.getX() - (width / 2)), (int) ballPoint.getY()); //get corner coordinate
+        }
         return  new Rectangle(p,new Dimension(width,height)); //make rectangle player
     }
 
@@ -97,8 +100,14 @@ public class Player {
      * @param b The ball which is checked for impact with the player.
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean impact(Ball b){ //scan to see if player contains bottom side of ball
-        return playerFace.contains(b.getPosition()) && playerFace.contains(b.down) ;
+    public boolean impact(Ball b, int playerPosition){ //scan to see if player contains bottom side of ball
+        if(playerPosition==0){
+            return playerFace.contains(b.getPosition()) && playerFace.contains(b.down);
+        }
+        else if (playerPosition==1){
+            return playerFace.contains(b.getPosition()) && playerFace.contains(b.up);
+        }
+        return false;
     }
 
     /**

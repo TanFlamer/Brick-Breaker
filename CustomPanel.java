@@ -317,7 +317,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * The choices made by a player for a specific level are loaded into the JComboBoxes every time that level is
      * selected in the JComboBox.
      */
-    private void setIndex(){
+    public void setIndex(){
         row.setSelectedIndex(choice[level.getSelectedIndex()][1]);
         brickRow.setSelectedIndex(choice[level.getSelectedIndex()][2]);
         brickType.setSelectedIndex(choice[level.getSelectedIndex()][3]);
@@ -334,7 +334,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * The message showing the player level and level type is reset every time a new level is selected in the
      * JComboBox or when the player saves the current choices.
      */
-    private void resetMessage(){
+    public void resetMessage(){
         levelNum.setText("Level "+ level.getSelectedItem() +" Level Type:");
         levelChoice.setText((String)levelGen.getSelectedItem());
         levelOrientation.setText("Level "+ level.getSelectedItem() +" Orientation:");

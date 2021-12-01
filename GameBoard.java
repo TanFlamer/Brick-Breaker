@@ -184,7 +184,7 @@ public class GameBoard extends JComponent {
         levelTime = "";
         godMode = "";
         //define all bricks, player and ball
-        wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(300,430),choice);
+        wall = new Wall(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,new Point(DEF_WIDTH/2,DEF_HEIGHT-20),choice);
 
         debugConsole = new DebugConsole(owner,wall,this);
         //initialize the first level
@@ -192,7 +192,7 @@ public class GameBoard extends JComponent {
 
         gameTimer = new Timer(10,e ->{ //10-millisecond delay between action and action listener
             wall.move(); //move player and ball every 10 millisecond
-            wall.findImpacts(collected); //detect impact of ball
+            wall.findImpacts(collected,choice[wall.getLevel()-1][9]); //detect impact of ball
             message = String.format("Bricks: %d  Balls %d",wall.getBrickCount(),wall.getBallCount()); //show brick and ball count
 
             if(wall.flag==1){
@@ -251,11 +251,11 @@ public class GameBoard extends JComponent {
                 if(wall.ballEnd()){ //if all balls are used up
                     wall.wallReset(wall.getLevel()); //reset wall
                     message = "Game over"; //show game over message
-                    wall.ballReset(); //reset player and ball position
+                    wall.ballReset(wall.getLevel()); //reset player and ball position
                     scoreLevel[0][1] = returnPreviousLevelsTime(wall.getLevel());
                 }
                 else {
-                    wall.ballReset(); //reset player and ball position
+                    wall.ballReset(wall.getLevel()); //reset player and ball position
                 }
             }
             else if(wall.isDone()){ //if all bricks destroyed
@@ -273,7 +273,7 @@ public class GameBoard extends JComponent {
 
                 if(wall.hasLevel()){ //if next level exists
                     message = "Go to Next Level";
-                    wall.ballReset(); //reset player and ball position
+                    wall.ballReset(wall.getLevel()); //reset player and ball position
                     wall.wallReset(wall.getLevel()); //reset wall
                     wall.nextLevel(); //move to next level
                 }
@@ -377,7 +377,7 @@ public class GameBoard extends JComponent {
                 }
                 else if(restartButtonRect.contains(p)){ //if restart pressed
                     message = "Restarting Game...";
-                    wall.ballReset(); //reset balls
+                    wall.ballReset(wall.getLevel()); //reset balls
                     wall.wallReset(wall.getLevel()); //reset walls
                     scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
                     showPauseMenu = false; //close pause menu
