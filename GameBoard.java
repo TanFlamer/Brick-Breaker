@@ -416,6 +416,7 @@ public class GameBoard extends JComponent {
                     wall.wallReset(wall.getLevel()); //reset walls
                     scoreLevel[0][1] = returnPreviousLevelsScore(wall.getLevel());
                     showPauseMenu = false; //close pause menu
+                    spawned = false;
                     repaint(); //repaint components
                 }
                 else if(exitButtonRect.contains(p)){ //if exit pressed
@@ -491,12 +492,12 @@ public class GameBoard extends JComponent {
 
         drawPlayer(wall.player,g2d); //colour player
 
-        if(showPauseMenu) //if pause menu shown
-            drawMenu(g2d); //colour pause menu
-
         if(spawned&&!collected){
             drawPowerUp(g2d);
         }
+
+        if(showPauseMenu) //if pause menu shown
+            drawMenu(g2d); //colour pause menu
 
         Toolkit.getDefaultToolkit().sync(); //sync toolkit graphics
     }
