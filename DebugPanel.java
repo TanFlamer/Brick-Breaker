@@ -15,8 +15,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package test;
-
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -64,29 +62,25 @@ public class DebugPanel extends JPanel {
      */
     private JSlider ballYSpeed;
 
-    /**
-     * Wall object to call the methods of Wall in the DebugPanel.
-     */
-    private Wall wall;
+    private GameBoardController controller;
 
     /**
      * This constructor is used to initialize the DebugPanel and add the JButtons and JSliders.
-     * @param wall This variable is used to call the methods of Wall when the JButtons or JSliders are used.
+     *
      */
-    public DebugPanel(Wall wall){
+    public DebugPanel(GameEngine gameEngine){
 
-        this.wall = wall;
-
+        this.controller = gameEngine.getController();
         initialize(); //initialize debug panel
 
-        skipLevel = makeButton("Skip Level",e -> wall.nextLevel()); //make new buttons
-        resetBalls = makeButton("Reset Balls",e -> wall.resetBallCount());
+        skipLevel = makeButton("Skip Level",e -> controller.nextLevel(false)); //make new buttons
+        resetBalls = makeButton("Reset Balls",e -> controller.resetBallCount());
 
-        previousLevel = makeButton("Previous Level",e -> wall.previousLevel());
-        resetPosition = makeButton("Reset Position",e -> wall.ballReset(wall.getLevel()));
+        previousLevel = makeButton("Previous Level",e -> controller.previousLevel());
+        resetPosition = makeButton("Reset Position",e -> controller.ballReset());
 
-        ballXSpeed = makeSlider(-4,4,e -> wall.setBallXSpeed(ballXSpeed.getValue())); //make new sliders
-        ballYSpeed = makeSlider(-4,4,e -> wall.setBallYSpeed(ballYSpeed.getValue())); //show and set speed of ball
+        ballXSpeed = makeSlider(-4,4,e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue())); //make new sliders
+        ballYSpeed = makeSlider(-4,4,e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue())); //show and set speed of ball
 
         this.add(skipLevel); //add buttons
         this.add(resetBalls);

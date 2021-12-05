@@ -15,7 +15,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,26 +49,22 @@ public class DebugConsole extends JDialog {
      * GameBoard which is repainted when DebugConsole closes.
      */
     private GameBoard gameBoard;
-    /**
-     * Wall to get ball speed so that DebugPanel JSlider can be set.
-     */
-    private Wall wall;
 
+    private BrickBreaker brickBreaker;
     /**
      * This constructor is used to load the DebugPanel into the DebugConsole and to add in window listeners.
      *
      * @param owner JFrame which is used to center the DebugConsole.
-     * @param wall Wall to get ball speed so that DebugPanel JSlider can be set.
-     * @param gameBoard GameBoard which is repainted when DebugConsole closes.
      */
-    public DebugConsole(JFrame owner,Wall wall,GameBoard gameBoard){
+    public DebugConsole(JFrame owner,GameEngine gameEngine,BrickBreaker brickBreaker){
 
-        this.wall = wall;
+        //this.wall = wall;
         this.owner = owner;
-        this.gameBoard = gameBoard;
+        this.gameBoard = gameEngine.getGameBoard();
+        this.brickBreaker = brickBreaker;
         initialize(); //call debug console
 
-        debugPanel = new DebugPanel(wall);
+        debugPanel = new DebugPanel(gameEngine);
         this.add(debugPanel,BorderLayout.CENTER); //add debug panel to center
 
         this.pack(); //resize debug console
@@ -92,7 +87,7 @@ public class DebugConsole extends JDialog {
              */
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                gameBoard.repaint();
+                brickBreaker.repaint();
             }
 
             /**
@@ -104,7 +99,7 @@ public class DebugConsole extends JDialog {
             @Override
             public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
                 setLocation(); //set debug console location
-                Ball b = wall.ball; //get ball
+                Ball b = gameBoard.getBall(); //get ball
                 debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
             }
         });

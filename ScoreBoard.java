@@ -1,4 +1,3 @@
-package test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,9 +49,9 @@ public class ScoreBoard extends JDialog implements ActionListener {
      */
     private JFrame owner;
     /**
-     * GameBoard to repaint after window closes.
+     * BrickBreaker to repaint after window closes.
      */
-    private GameBoard gameboard;
+    private BrickBreaker brickBreaker;
     /**
      * Username of the player to be saved.
      */
@@ -76,7 +75,7 @@ public class ScoreBoard extends JDialog implements ActionListener {
     /**
      * Double array of integers to record player time and score for each level and the whole game.
      */
-    private int[][] score;
+    private int[][] scoreAndTime;
     /**
      * Integer to get current level number.
      */
@@ -89,23 +88,22 @@ public class ScoreBoard extends JDialog implements ActionListener {
      * removed so that the rankings shown are accurate.
      *
      * @param owner JFrame used to center the ScoreBoard.
-     * @param gameboard GameBoard to repaint after window closes.
      * @param level Integer to get current level number.
-     * @param score Double array of integers to record player time and score for each level and the whole game.
+     * @param scoreAndTime Double array of integers to record player time and score for each level and the whole game.
      * @param choice Double array of integers to get player choice to generate level category.
      * @throws FileNotFoundException This constructor throws FileNotFoundException when the highscore list for
      *                               that level does not exist.
      */
-    public ScoreBoard(JFrame owner, GameBoard gameboard, int level, int[][] score, int[][] choice) throws FileNotFoundException {
+    public ScoreBoard(JFrame owner, BrickBreaker brickBreaker, int level, int[][] scoreAndTime, int[][] choice) throws FileNotFoundException {
 
         String[] column = {"Ranking","Name","Category","Time","Score"};
 
         JLabel jLabel;
 
         this.owner = owner;
-        this.gameboard = gameboard;
+        this.brickBreaker = brickBreaker;
         this.choice = choice;
-        this.score = score;
+        this.scoreAndTime = scoreAndTime;
         this.level = level;
 
         Load(newScore,level);
@@ -148,16 +146,16 @@ public class ScoreBoard extends JDialog implements ActionListener {
         this.add(viewRanking,constraints);
 
         if(level!=0) {
-            jLabel = new JLabel("Level " + level + " score = " + score[level][0]);
+            jLabel = new JLabel("Level " + level + " score = " + scoreAndTime[level][0]);
         }
         else{
-            jLabel = new JLabel("Total highscore = " + score[0][0]);
+            jLabel = new JLabel("Total highscore = " + scoreAndTime[0][0]);
         }
         constraints.gridx = 0;
         constraints.gridy = 2;
         this.add(jLabel,constraints);
 
-        String timeString = String.format("%02d:%02d",score[level][1]/60,score[level][1]%60);
+        String timeString = String.format("%02d:%02d",scoreAndTime[level][1]/60,scoreAndTime[level][1]%60);
 
         if(level!=0) {
             jLabel = new JLabel("Level " + level + " time = " + timeString);
@@ -178,13 +176,13 @@ public class ScoreBoard extends JDialog implements ActionListener {
             jLabel = new JLabel("Category = " + levelType[choice[level-1][0]]);
         }
         else {
-            if(choice[0][0]==choice[1][0]&&choice[1][0]==choice[2][0]&&choice[2][0]==choice[3][0]){
+            if(choice[0][0]==choice[1][0]&&choice[1][0]==choice[2][0]&&choice[2][0]==choice[3][0]&&choice[3][0]==choice[4][0]){
                 jLabel = new JLabel("Category = " + levelType[choice[0][0]]);
             }
-            else if((choice[0][0]-1)/4==0&&(choice[1][0]-1)/4==0&&(choice[2][0]-1)/4==0&&(choice[3][0]-1)/4==0){
+            else if((choice[0][0]-1)/4==0&&(choice[1][0]-1)/4==0&&(choice[2][0]-1)/4==0&&(choice[3][0]-1)/4==0&&(choice[4][0]-1)/4==0&&choice[0][0]!=0&&choice[1][0]!=0&&choice[2][0]!=0&&choice[3][0]!=0&&choice[4][0]!=0){
                 jLabel = new JLabel("Category = " + finalType[0]);
             }
-            else if((choice[0][0]-1)/4==1&&(choice[1][0]-1)/4==1&&(choice[2][0]-1)/4==1&&(choice[3][0]-1)/4==1){
+            else if((choice[0][0]-1)/4==1&&(choice[1][0]-1)/4==1&&(choice[2][0]-1)/4==1&&(choice[3][0]-1)/4==1&&(choice[4][0]-1)/4==1){
                 jLabel = new JLabel("Category = " + finalType[1]);
             }
             else {
@@ -322,7 +320,7 @@ public class ScoreBoard extends JDialog implements ActionListener {
              */
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                gameboard.repaint();
+                brickBreaker.repaint();
             }
 
             /**
@@ -354,8 +352,8 @@ public class ScoreBoard extends JDialog implements ActionListener {
         int ranking = 0;
 
         for(Score find : newScore){
-            if(score[level][0]>find.score){
-                if(score[level][1]<find.time){
+            if(scoreAndTime[level][0]>find.score){
+                if(scoreAndTime[level][1]<find.time){
                     ranking = find.ranking;
                     break;
                 }
@@ -426,20 +424,20 @@ public class ScoreBoard extends JDialog implements ActionListener {
             name.setText("Name saved.");
 
             if(level!=0) {
-                Add(newScore, getRanking(level), username, levelType[choice[level-1][0]],score[level][1], score[level][0]);
+                Add(newScore, getRanking(level), username, levelType[choice[level-1][0]],scoreAndTime[level][1], scoreAndTime[level][0]);
             }
             else{
                 if(choice[0][0]==choice[1][0]&&choice[1][0]==choice[2][0]&&choice[2][0]==choice[3][0]&&choice[3][0]==choice[4][0]){
-                    Add(newScore, getRanking(level), username, levelType[choice[0][0]],score[level][1], score[level][0]);
+                    Add(newScore, getRanking(level), username, levelType[choice[0][0]],scoreAndTime[level][1], scoreAndTime[level][0]);
                 }
                 else if((choice[0][0]-1)/4==0&&(choice[1][0]-1)/4==0&&(choice[2][0]-1)/4==0&&(choice[3][0]-1)/4==0&&(choice[4][0]-1)/4==0&&choice[0][0]!=0&&choice[1][0]!=0&&choice[2][0]!=0&&choice[3][0]!=0&&choice[4][0]!=0){
-                    Add(newScore, getRanking(level), username, finalType[0],score[level][1], score[level][0]);
+                    Add(newScore, getRanking(level), username, finalType[0],scoreAndTime[level][1], scoreAndTime[level][0]);
                 }
                 else if((choice[0][0]-1)/4==1&&(choice[1][0]-1)/4==1&&(choice[2][0]-1)/4==1&&(choice[3][0]-1)/4==1&&(choice[4][0]-1)/4==1){
-                    Add(newScore, getRanking(level), username, finalType[1],score[level][1], score[level][0]);
+                    Add(newScore, getRanking(level), username, finalType[1],scoreAndTime[level][1], scoreAndTime[level][0]);
                 }
                 else {
-                    Add(newScore, getRanking(level), username, finalType[2],score[level][1], score[level][0]);
+                    Add(newScore, getRanking(level), username, finalType[2],scoreAndTime[level][1], scoreAndTime[level][0]);
                 }
             }
             newScore.sort(new ScoreComp());

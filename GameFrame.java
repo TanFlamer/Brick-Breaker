@@ -15,7 +15,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +42,7 @@ public class GameFrame extends JFrame {
     /**
      * The GameBoard to play the game, accessed from the HomeMenu.
      */
-    private GameBoard gameBoard;
+    private BrickBreaker brickBreaker;
     /**
      * The HomeMenu to access all other screens through buttons.
      */
@@ -67,6 +66,8 @@ public class GameFrame extends JFrame {
      */
     private boolean gaming;
 
+    int[][] choice;
+
     /**
      * This constructor loads the HighScore Board, Custom Console, HomeMenu and Info Screen. Then, the HomeMenu
      * is shown and the player is able to access all other screens through the buttons.
@@ -86,7 +87,7 @@ public class GameFrame extends JFrame {
         customConsole = new CustomConsole(this, homeMenu);
         infoScreen = new InfoScreen(this, homeMenu);
         this.add(homeMenu, BorderLayout.CENTER); //add main menu to centre
-
+        this.choice = customConsole.getChoice();
         this.setUndecorated(true); //set frame undecorated
     }
 
@@ -110,13 +111,12 @@ public class GameFrame extends JFrame {
     public void enableGameBoard() { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        gameBoard = new GameBoard(this, customConsole.getChoice()); //call game board
-        this.add(gameBoard, BorderLayout.CENTER); //add main game
+        brickBreaker = new BrickBreaker(this,choice);
+        this.add(brickBreaker, BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
         //to avoid problems with graphics focus controller is added here
         this.addWindowFocusListener(new WindowAdapter() {
-
             /**
              * This window focus listener is called when game screen gains focus and sets gaming flag to true.
              * @param windowEvent This parameter is used to track the game screen.
@@ -136,7 +136,7 @@ public class GameFrame extends JFrame {
             @Override
             public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
                 if (gaming) //if gaming flag true
-                    gameBoard.onLostFocus(); //stop timer and action listener
+                    brickBreaker.onLostFocus(); //stop timer and action listener
             }
         });
     }

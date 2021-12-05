@@ -1,4 +1,3 @@
-package test;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

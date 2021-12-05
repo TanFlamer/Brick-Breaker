@@ -1,4 +1,3 @@
-package test;
 
 import javax.swing.*;
 import java.awt.*;
@@ -459,7 +458,7 @@ public class CustomPanel extends JPanel implements ActionListener {
                 choice[i][6] = rnd.nextInt(4);
                 choice[i][7] = rnd.nextInt(4);
                 choice[i][8] = rnd.nextInt(11);
-                choice[i][9] = rnd.nextInt(4);
+                choice[i][9] = rnd.nextInt(2);
             }
             setIndex();
             resetMessage();
