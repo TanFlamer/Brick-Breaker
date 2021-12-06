@@ -37,15 +37,11 @@ public class GameBoardController {
     private Player player;
     private Ball ball;
     private GodModePowerUp powerUp;
-    private Brick[][] bricks;
-    private Brick[] brick;
     private int[][] scoreAndTime;
     private int[][] choice;
     private int brickCount;
     private int ballCount;
-    private int messageFlag;
     private int startTime;
-    private int godModeTimeLeft;
     private int level = 0;
 
     private boolean ballLost = false;
@@ -64,10 +60,7 @@ public class GameBoardController {
         this.ball = gameBoard.getBall();
         this.powerUp = gameBoard.getPowerUp();
         this.choice = gameBoard.getChoice();
-        this.bricks = gameBoard.getBricks();
         this.scoreAndTime = gameBoard.getScoreAndTime();
-        this.messageFlag = gameBoard.getMessageFlag();
-        this.godModeTimeLeft = gameBoard.getGodModeTimeLeft();
 
         if(choice[0][9]==0) {
             this.startPoint = ball.getCenter(); //start point = initial ball position
@@ -126,8 +119,7 @@ public class GameBoardController {
         pauseFlag = !pauseFlag;
         if(!pauseFlag){
             startTime = (int) java.time.Instant.now().getEpochSecond();
-            messageFlag = 0;
-            gameBoard.setMessageFlag(messageFlag);
+            gameBoard.setMessageFlag(0);
             gameSounds.getBgm().start();
         }
         else {
@@ -166,7 +158,7 @@ public class GameBoardController {
     public void calculateScoreAndTime(){
 
         scoreAndTime[0][0] = returnPreviousLevelsScore();
-        for(Brick b: brick){
+        for(Brick b: gameBoard.getBrick()){
             if(b.isBroken()){
                 scoreAndTime[0][0] += b.getScore();
             }
@@ -180,8 +172,7 @@ public class GameBoardController {
             startTime = (int) java.time.Instant.now().getEpochSecond();
 
             if(powerUp.isCollected()) {
-                godModeTimeLeft--;
-                gameBoard.setGodModeTimeLeft(godModeTimeLeft);
+                gameBoard.setGodModeTimeLeft(gameBoard.getGodModeTimeLeft()-1);
             }
         }
         gameBoard.setTime(0,scoreAndTime[0][1]);
@@ -224,8 +215,7 @@ public class GameBoardController {
                 powerUp.setCollected(false);
                 powerUp.setSpawned(false);
                 gameBoard.setPowerUpSpawns(0);
-                messageFlag = 1;
-                gameBoard.setMessageFlag(messageFlag);
+                gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
             }
             else {
@@ -244,8 +234,7 @@ public class GameBoardController {
             if(hasLevel()){
                 wallReset();
                 ballReset();
-                messageFlag = 2;
-                gameBoard.setMessageFlag(messageFlag);
+                gameBoard.setMessageFlag(2);
                 nextLevel(true);
                 if(!pauseFlag)
                     reversePauseFlag();
@@ -255,8 +244,7 @@ public class GameBoardController {
                 if(!pauseFlag)
                     reversePauseFlag();
                 new ScoreBoard(owner,brickBreaker,0,scoreAndTime,choice);
-                messageFlag = 3;
-                gameBoard.setMessageFlag(messageFlag);
+                gameBoard.setMessageFlag(3);
                 endFlag = true;
             }
         }
@@ -265,12 +253,11 @@ public class GameBoardController {
             gameSounds.playSoundEffect("Pickup");
             powerUp.setCollected(true);
             powerUp.setSpawned(false);
-            godModeTimeLeft = 10;
-            gameBoard.setGodModeTimeLeft(godModeTimeLeft);
+            gameBoard.setGodModeTimeLeft(10);
         }
 
         if(powerUp.isCollected()){
-            if(godModeTimeLeft==0){
+            if(gameBoard.getGodModeTimeLeft()==0){
                 powerUp.setCollected(false);
             }
         }
@@ -289,7 +276,7 @@ public class GameBoardController {
     }
 
     public boolean hasLevel(){ //if next level exists
-        return level < bricks.length;
+        return level < gameBoard.getBricks().length;
     }
 
     public void nextLevel(boolean trueProgression){
@@ -302,10 +289,9 @@ public class GameBoardController {
         if(!trueProgression)
             resetLevelScoreAndTime();
 
-        brick = bricks[level++]; //load next level
-        gameBoard.setBrick(brick);
+        gameBoard.setBrick(gameBoard.getBricks()[level++]);
         gameBoard.setLevel(level);
-        brickCount = brick.length; //reset brick count
+        brickCount = gameBoard.getBrick().length; //reset brick count
         gameBoard.setBrickCount(brickCount);
         ballReset();
         resetBallCount();
@@ -323,10 +309,9 @@ public class GameBoardController {
         resetLevelScoreAndTime();
         wallReset();
         level -= 2;
-        brick = bricks[level++]; //load previous level
-        gameBoard.setBrick(brick);
+        gameBoard.setBrick(gameBoard.getBricks()[level++]);
         gameBoard.setLevel(level);
-        brickCount = brick.length; //reset brick count
+        brickCount = gameBoard.getBrick().length; //reset brick count
         gameBoard.setBrickCount(brickCount);
         ballReset();
         resetBallCount();
@@ -426,9 +411,9 @@ public class GameBoardController {
     }
 
     public void wallReset(){
-        for(Brick b : brick)
+        for(Brick b : gameBoard.getBrick())
             repair(b); //reset brick to full strength
-        brickCount = brick.length; //reset brick count
+        brickCount = gameBoard.getBrick().length; //reset brick count
         gameBoard.setBrickCount(brickCount);
         resetBallCount();
     }
@@ -462,6 +447,7 @@ public class GameBoardController {
 
     public void findImpacts(boolean collected, int playerPosition){ //impact method
         if(ballPlayerImpact(ball,playerPosition)){ //if player hits ball
+            gameSounds.playSoundEffect("Bounce");
             reverseY(); //reverse Y-direction
         }
         else if(impactWall(collected)){
@@ -497,7 +483,7 @@ public class GameBoardController {
     }
 
     private boolean impactWall(boolean collected){ //method to check impact with wall
-        for(Brick b : brick){
+        for(Brick b : gameBoard.getBrick()){
             //Vertical Impact
             switch (findImpact(ball,b)) {
                 case UP_IMPACT -> {
