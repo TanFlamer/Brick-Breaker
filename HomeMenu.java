@@ -73,10 +73,6 @@ public class HomeMenu extends JComponent {
     private static final String INFO_TEXT = "INFO";
 
     /**
-     * Green background colour.
-     */
-    private static final Color BG_COLOR = Color.GREEN.darker();
-    /**
      * Venetian Red border colour
      */
     private static final Color BORDER_COLOR = new Color(200,8,21); //Venetian Red
@@ -85,13 +81,13 @@ public class HomeMenu extends JComponent {
      */
     private static final Color DASH_BORDER_COLOR = new  Color(255, 216, 0);//school bus yellow
     /**
-     * Egyptian blue text colour
+     * Purple text colour
      */
-    private static final Color TEXT_COLOR = new Color(16, 52, 166);//egyptian blue
+    private static final Color TEXT_COLOR = new Color(130, 7, 127);//purple
     /**
      * Brighter green clicked button colour
      */
-    private static final Color CLICKED_BUTTON_COLOR = BG_COLOR.brighter();
+    private static final Color CLICKED_BUTTON_COLOR = TEXT_COLOR.brighter();
     /**
      * White clicked text colour
      */
@@ -353,11 +349,11 @@ public class HomeMenu extends JComponent {
         borderStoke = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,0,DASHES,0);
         borderStoke_noDashes = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
         //text fonts
-        greetingsFont = new Font("Noto Mono",Font.PLAIN,25);
+        greetingsFont = new Font("Noto Mono",Font.BOLD,25);
         gameTitleFont = new Font("Noto Mono",Font.BOLD,40);
-        creditsFont = new Font("Monospaced",Font.PLAIN,10);
-        buttonFont = new Font("Monospaced",Font.PLAIN,startButton.height-2);
-        textFont = new Font("Noto Mono",Font.PLAIN,19);
+        creditsFont = new Font("Noto Mono",Font.BOLD,18);
+        buttonFont = new Font("Monospaced",Font.BOLD,startButton.height-2);
+        textFont = new Font("Noto Mono",Font.BOLD,18);
     }
 
     /**
@@ -408,12 +404,14 @@ public class HomeMenu extends JComponent {
      * This method is responsible for painting and repainting the menu face of the HomeMenu.
      * @param g2d This graphics class is used to paint the menu face of the HomeMenu.
      */
-    private void drawContainer(Graphics2D g2d){
+    private void drawContainer(Graphics2D g2d) throws IOException {
 
         Color prev = g2d.getColor(); //save previous colour
 
-        g2d.setColor(BG_COLOR); //get background colour
-        g2d.fill(menuFace); //fill menu with green
+        BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerBackground.png"));
+        Image newImage = myPicture.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
+
+        g2d.drawImage(newImage,0,0,null);
 
         Stroke tmp = g2d.getStroke(); //save previous line style (stroke)
 
@@ -447,13 +445,13 @@ public class HomeMenu extends JComponent {
         int sX,sY;
 
         sX = (int)(menuFace.getWidth() - greetingsRect.getWidth()) / 2; //get coordinates of text start point
-        sY = (int)(menuFace.getHeight() / 4);
+        sY = (int)(menuFace.getHeight() / 5);
 
         g2d.setFont(greetingsFont); //get text font
         g2d.drawString(GREETINGS,sX,sY); //draw greetings
 
         sX = (int)(menuFace.getWidth() - gameTitleRect.getWidth()) / 2; //get coordinates of text start point
-        sY += (int) gameTitleRect.getHeight() * 1.1;//add 10% of String height between the two strings
+        sY += (int) gameTitleRect.getHeight() * 0.8;//add 10% of String height between the two strings
 
         g2d.setFont(gameTitleFont); //get text font
         g2d.drawString(GAME_TITLE,sX,sY); //draw game title
@@ -505,7 +503,6 @@ public class HomeMenu extends JComponent {
         g2d.setFont(buttonFont); //set button font
 
         int x = (menuFace.width - startButton.width) / 2; //get coordinates of text start point
-        //int y =(int) ((menuFace.height - startButton.height) * 0.8);
         int y =(int) ((menuFace.height - startButton.height) * 0.6);
 
         startButton.setLocation(x,y); //set start button location
