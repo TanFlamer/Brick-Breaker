@@ -32,6 +32,7 @@ public class GameBoardController {
 
     private GameBoard gameBoard;
     private BrickBreaker brickBreaker;
+    private GameSounds gameSounds;
     private JFrame owner;
     private Player player;
     private Ball ball;
@@ -54,9 +55,10 @@ public class GameBoardController {
     private Point startPoint;
     private Point playerStartPoint;
 
-    public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker) {
+    public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds) {
         this.gameBoard = gameBoard;
         this.brickBreaker = brickBreaker;
+        this.gameSounds = gameSounds;
         this.owner = owner;
         this.player = gameBoard.getPlayer();
         this.ball = gameBoard.getBall();
@@ -126,6 +128,10 @@ public class GameBoardController {
             startTime = (int) java.time.Instant.now().getEpochSecond();
             messageFlag = 0;
             gameBoard.setMessageFlag(messageFlag);
+            gameSounds.getBgm().start();
+        }
+        else {
+            gameSounds.getBgm().stop();
         }
     }
 
@@ -215,15 +221,24 @@ public class GameBoardController {
                 resetLevelScoreAndTime();
                 resetTotalScoreAndTime();
                 wallReset();
+                powerUp.setCollected(false);
+                powerUp.setSpawned(false);
+                gameBoard.setPowerUpSpawns(0);
                 messageFlag = 1;
                 gameBoard.setMessageFlag(messageFlag);
+                gameSounds.playSoundEffect("GameOver");
             }
+            else {
+                gameSounds.playSoundEffect("BallLost");
+            }
+
             ballReset();
             if(!pauseFlag)
                 reversePauseFlag();
         }
         else if(isLevelDone()){
 
+            gameSounds.playSoundEffect("NextLevel");
             new ScoreBoard(owner,brickBreaker,level,scoreAndTime,choice);
 
             if(hasLevel()){
@@ -236,6 +251,7 @@ public class GameBoardController {
                     reversePauseFlag();
             }
             else {
+                gameSounds.playSoundEffect("LastLevel");
                 if(!pauseFlag)
                     reversePauseFlag();
                 new ScoreBoard(owner,brickBreaker,0,scoreAndTime,choice);
@@ -246,6 +262,7 @@ public class GameBoardController {
         }
 
         if(powerUpCollected() && powerUp.isSpawned()&& !powerUp.isCollected()){
+            gameSounds.playSoundEffect("Pickup");
             powerUp.setCollected(true);
             powerUp.setSpawned(false);
             godModeTimeLeft = 10;
@@ -296,6 +313,7 @@ public class GameBoardController {
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
         gameBoard.setPowerUpSpawns(0);
+        gameSounds.setBgm("BGM"+level);
     }
 
     public void previousLevel(){
@@ -316,6 +334,7 @@ public class GameBoardController {
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
         gameBoard.setPowerUpSpawns(0);
+        gameSounds.setBgm("BGM"+level);
     }
 
     public void resetTotalScoreAndTime(){
@@ -450,10 +469,12 @@ public class GameBoardController {
             gameBoard.setBrickCount(brickCount);
         }
         else if(impactBorder()) { //if ball impacts border
+            gameSounds.playSoundEffect("Bounce");
             reverseX(); //reverse X-direction
         }
         else if(choice[level-1][9]==0){
             if(ball.getCenter().getY() < 0){ //if ball hits top border
+                gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
             else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
@@ -469,6 +490,7 @@ public class GameBoardController {
                 ballLost = true; //ball lost is true
             }
             else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
+                gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
         }
@@ -539,10 +561,12 @@ public class GameBoardController {
 
     private boolean impact(Brick b){
         if(random.nextDouble() < b.getBreakProbability()){ //if random probability less than STEEL_PROBABILITY
+            gameSounds.playSoundEffect("Damage");
             b.setStrength(b.getStrength()-1); //reduce brick strength
             b.setBroken(b.getStrength() == 0); //if strength = 0, signal brick broken
             return true;
         }
+        gameSounds.playSoundEffect("Deflect");
         return false;
     }
 

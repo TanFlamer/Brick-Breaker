@@ -115,7 +115,7 @@ public class GameFrame extends JFrame {
     public void enableGameBoard() { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        brickBreaker = new BrickBreaker(this,choice);
+        brickBreaker = new BrickBreaker(this,choice,gameSounds);
         this.add(brickBreaker, BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game

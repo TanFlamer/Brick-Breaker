@@ -56,13 +56,13 @@ public class DebugConsole extends JDialog {
      *
      * @param owner JFrame which is used to center the DebugConsole.
      */
-    public DebugConsole(JFrame owner,GameEngine gameEngine,BrickBreaker brickBreaker){
+    public DebugConsole(JFrame owner,GameEngine gameEngine,BrickBreaker brickBreaker,GameSounds gameSounds){
 
         //this.wall = wall;
         this.owner = owner;
         this.gameBoard = gameEngine.getGameBoard();
         this.brickBreaker = brickBreaker;
-        initialize(); //call debug console
+        initialize(gameSounds,gameEngine); //call debug console
 
         debugPanel = new DebugPanel(gameEngine);
         this.add(debugPanel,BorderLayout.CENTER); //add debug panel to center
@@ -73,7 +73,7 @@ public class DebugConsole extends JDialog {
     /**
      * This method is used to set the DebugConsole title and to add in window listeners.
      */
-    private void initialize(){ //call debug console
+    private void initialize(GameSounds gameSounds,GameEngine gameEngine){ //call debug console
 
         this.setModal(true);
         this.setTitle(TITLE);
@@ -88,6 +88,7 @@ public class DebugConsole extends JDialog {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 brickBreaker.repaint();
+                gameSounds.setBgm("BGM"+gameEngine.getGameBoard().getLevel());
             }
 
             /**
@@ -101,6 +102,7 @@ public class DebugConsole extends JDialog {
                 setLocation(); //set debug console location
                 Ball b = gameBoard.getBall(); //get ball
                 debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
+                gameSounds.setBgm("Debug");
             }
         });
         this.setFocusable(true);

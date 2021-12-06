@@ -17,8 +17,8 @@ public class GameSounds {
         try{
             Clip bgm = AudioSystem.getClip();
             bgm.open(AudioSystem.getAudioInputStream(song));
-            this.bgm = bgm;
             bgm.loop(Clip.LOOP_CONTINUOUSLY);
+            this.bgm = bgm;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -43,9 +43,5 @@ public class GameSounds {
 
     public Clip getBgm() {
         return bgm;
-    }
-
-    public Clip getSoundEffect() {
-        return soundEffect;
     }
 }

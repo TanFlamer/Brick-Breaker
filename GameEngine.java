@@ -8,9 +8,9 @@ public class GameEngine {
     private GameBoardController controller;
     private GameBoardRenderer renderer;
 
-    public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker) {
+    public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker,GameSounds gameSounds) {
         gameBoard = new GameBoard(choice);
-        controller = new GameBoardController(owner,gameBoard,brickBreaker);
+        controller = new GameBoardController(owner,gameBoard,brickBreaker,gameSounds);
         renderer = new GameBoardRenderer(gameBoard);
     }
 
