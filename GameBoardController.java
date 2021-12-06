@@ -37,7 +37,6 @@ public class GameBoardController {
     private Player player;
     private Ball ball;
     private GodModePowerUp powerUp;
-    private int[][] scoreAndTime;
     private int[][] choice;
     private int brickCount;
     private int ballCount;
@@ -60,7 +59,6 @@ public class GameBoardController {
         this.ball = gameBoard.getBall();
         this.powerUp = gameBoard.getPowerUp();
         this.choice = gameBoard.getChoice();
-        this.scoreAndTime = gameBoard.getScoreAndTime();
 
         if(choice[0][9]==0) {
             this.startPoint = ball.getCenter(); //start point = initial ball position
@@ -157,41 +155,29 @@ public class GameBoardController {
 
     public void calculateScoreAndTime(){
 
-        scoreAndTime[0][0] = returnPreviousLevelsScore();
+        gameBoard.setScore(0,returnPreviousLevelsScore());
         for(Brick b: gameBoard.getBrick()){
             if(b.isBroken()){
-                scoreAndTime[0][0] += b.getScore();
+                gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
             }
         }
-        gameBoard.setScore(0,scoreAndTime[0][0]);
-        storeLevelScore();
-        gameBoard.setScore(level,scoreAndTime[level][0]);
+        gameBoard.setScore(level,gameBoard.getScore(0) - returnPreviousLevelsScore());
 
         if((int) java.time.Instant.now().getEpochSecond() > startTime){
-            scoreAndTime[0][1]++;
+            gameBoard.setTime(0,gameBoard.getTime(0)+1);
             startTime = (int) java.time.Instant.now().getEpochSecond();
 
             if(powerUp.isCollected()) {
                 gameBoard.setGodModeTimeLeft(gameBoard.getGodModeTimeLeft()-1);
             }
         }
-        gameBoard.setTime(0,scoreAndTime[0][1]);
-        storeLevelTime();
-        gameBoard.setTime(level,scoreAndTime[level][1]);
-    }
-
-    public void storeLevelScore(){
-        scoreAndTime[level][0] = scoreAndTime[0][0] - returnPreviousLevelsScore();
-    }
-
-    public void storeLevelTime(){
-        scoreAndTime[level][1] = scoreAndTime[0][1] - returnPreviousLevelsTime();
+        gameBoard.setTime(level,gameBoard.getTime(0) - returnPreviousLevelsTime());
     }
 
     public int returnPreviousLevelsScore(){
         int total = 0;
         for(int i = level;i > 1; i--){
-            total += scoreAndTime[i-1][0];
+            total += gameBoard.getScore(i-1);
         }
         return total;
     }
@@ -199,7 +185,7 @@ public class GameBoardController {
     public int returnPreviousLevelsTime(){
         int total = 0;
         for(int i = level;i > 1; i--){
-            total += scoreAndTime[i-1][1];
+            total += gameBoard.getTime(i-1);
         }
         return total;
     }
@@ -229,7 +215,7 @@ public class GameBoardController {
         else if(isLevelDone()){
 
             gameSounds.playSoundEffect("NextLevel");
-            new ScoreBoard(owner,brickBreaker,level,scoreAndTime,choice);
+            new ScoreBoard(owner,brickBreaker,level,gameBoard.getScoreAndTime(),choice);
 
             if(hasLevel()){
                 wallReset();
@@ -243,7 +229,7 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("LastLevel");
                 if(!pauseFlag)
                     reversePauseFlag();
-                new ScoreBoard(owner,brickBreaker,0,scoreAndTime,choice);
+                new ScoreBoard(owner,brickBreaker,0,gameBoard.getScoreAndTime(),choice);
                 gameBoard.setMessageFlag(3);
                 endFlag = true;
             }
@@ -323,17 +309,13 @@ public class GameBoardController {
     }
 
     public void resetTotalScoreAndTime(){
-        scoreAndTime[0][0] = returnPreviousLevelsScore();
-        gameBoard.setTime(0,scoreAndTime[0][0]);
-        scoreAndTime[0][1] = returnPreviousLevelsTime();
-        gameBoard.setTime(0,scoreAndTime[0][1]);
+        gameBoard.setScore(0,returnPreviousLevelsScore());
+        gameBoard.setTime(0,returnPreviousLevelsTime());
     }
 
     public void resetLevelScoreAndTime(){
-        scoreAndTime[level][0] = 0;
-        gameBoard.setScore(level,scoreAndTime[level][0]);
-        scoreAndTime[level][1] = 0;
-        gameBoard.setTime(level,scoreAndTime[level][1]);
+        gameBoard.setScore(level,0);
+        gameBoard.setTime(level,0);
     }
 
     public void ballReset(){ //when ball is lost
@@ -391,7 +373,7 @@ public class GameBoardController {
     public void powerUpRandomSpawn(){
         int x,y;
 
-        if(gameBoard.getPowerUpSpawns() < (scoreAndTime[level][1]/60 + 1) && !powerUp.isSpawned() && !powerUp.isCollected()) {
+        if(gameBoard.getPowerUpSpawns() < (gameBoard.getTime(level)/60 + 1) && !powerUp.isSpawned() && !powerUp.isCollected()) {
             x = random.nextInt(401) + 100;
             if (choice[level - 1][9] == 0) {
                 y = 325;

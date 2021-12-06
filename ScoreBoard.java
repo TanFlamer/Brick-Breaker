@@ -149,7 +149,7 @@ public class ScoreBoard extends JDialog implements ActionListener {
             jLabel = new JLabel("Level " + level + " score = " + scoreAndTime[level][0]);
         }
         else{
-            jLabel = new JLabel("Total highscore = " + scoreAndTime[0][0]);
+            jLabel = new JLabel("Total highscore = " + scoreAndTime[level][0]);
         }
         constraints.gridx = 0;
         constraints.gridy = 2;

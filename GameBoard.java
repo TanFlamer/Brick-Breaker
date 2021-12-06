@@ -260,6 +260,14 @@ public class GameBoard {
         return scoreAndTime;
     }
 
+    public int getScore(int level){
+        return scoreAndTime[level][0];
+    }
+
+    public int getTime(int level){
+        return scoreAndTime[level][1];
+    }
+
     public void setScore(int level, int score) {
         this.scoreAndTime[level][0] = score;
     }
