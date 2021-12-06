@@ -92,6 +92,8 @@ public class BrickBreaker extends JComponent {
                     engine.getController().resetTotalScoreAndTime();
                     engine.getGameBoard().setShowPauseMenu(false); //close pause menu
                     engine.getGameBoard().getPowerUp().setSpawned(false);
+                    engine.getGameBoard().getPowerUp().setCollected(false);
+                    engine.getGameBoard().setPowerUpSpawns(0);
                     repaint(); //repaint components
                 }
                 else if(exitButtonRect.contains(p)){ //if exit pressed

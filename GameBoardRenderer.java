@@ -130,7 +130,7 @@ public class GameBoardRenderer implements Renderer {
         if(gameBoard.getPowerUp().isCollected())
             godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
         else
-            godMode = "God Mode Deactivated";
+            godMode = String.format("God Mode Orbs Left %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
 
         g2d.setColor(Color.BLUE); //set blue colour
 

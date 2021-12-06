@@ -29,6 +29,7 @@ public class GameBoard {
     private int brickCount = 0;
     private int ballCount = 3;
     private int godModeTimeLeft = 0;
+    private int powerUpSpawns = 0;
 
     private boolean showPauseMenu = false;
 
@@ -293,5 +294,13 @@ public class GameBoard {
 
     public void setShowPauseMenu(boolean showPauseMenu) {
         this.showPauseMenu = showPauseMenu;
+    }
+
+    public int getPowerUpSpawns() {
+        return powerUpSpawns;
+    }
+
+    public void setPowerUpSpawns(int powerUpSpawns) {
+        this.powerUpSpawns = powerUpSpawns;
     }
 }
