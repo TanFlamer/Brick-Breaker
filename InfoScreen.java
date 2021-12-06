@@ -47,11 +47,11 @@ public class InfoScreen extends JDialog {
      * @param homeMenu HomeMenu which is repainted when InfoScreen closes.
      * @throws IOException This constructor throws IOException if the image for InfoScreen do not exist.
      */
-    public InfoScreen(JFrame owner,HomeMenu homeMenu) throws IOException {
+    public InfoScreen(JFrame owner,HomeMenu homeMenu,GameSounds gameSounds) throws IOException {
 
         this.owner = owner;
         this.homeMenu = homeMenu;
-        initialize();
+        initialize(gameSounds);
 
         panel.setLayout(new GridBagLayout()); //set layout
         GridBagConstraints constraints = new GridBagConstraints();
@@ -266,7 +266,7 @@ public class InfoScreen extends JDialog {
     /**
      * This method is used to set the InfoScreen title and to add in window listeners.
      */
-    private void initialize() {
+    private void initialize(GameSounds gameSounds) {
 
         this.setModal(true);
         this.setTitle(TITLE);
@@ -281,6 +281,7 @@ public class InfoScreen extends JDialog {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 homeMenu.repaint();
+                gameSounds.setBgm("Menu");
             }
 
             /**
@@ -292,6 +293,7 @@ public class InfoScreen extends JDialog {
             @Override
             public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
                 setLocation(); //set debug console location
+                gameSounds.setBgm("Info");
             }
         });
 

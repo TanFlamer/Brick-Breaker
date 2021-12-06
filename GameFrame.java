@@ -61,6 +61,8 @@ public class GameFrame extends JFrame {
      */
     private InfoScreen infoScreen;
 
+    private GameSounds gameSounds;
+
     /**
      * Boolean to signal that the game has lost focus.
      */
@@ -82,11 +84,13 @@ public class GameFrame extends JFrame {
 
         this.setLayout(new BorderLayout()); //set layout
 
+        gameSounds = new GameSounds();
         highscore = new Highscore(this, new Dimension(450, 300)); //get highscore
         homeMenu = new HomeMenu(this, new Dimension(450, 300)); //set main menu
-        customConsole = new CustomConsole(this, homeMenu);
-        infoScreen = new InfoScreen(this, homeMenu);
+        customConsole = new CustomConsole(this,homeMenu,gameSounds);
+        infoScreen = new InfoScreen(this,homeMenu,gameSounds);
         this.add(homeMenu, BorderLayout.CENTER); //add main menu to centre
+        gameSounds.setBgm("Menu");
         this.choice = customConsole.getChoice();
         this.setUndecorated(true); //set frame undecorated
     }
@@ -127,6 +131,7 @@ public class GameFrame extends JFrame {
                 /*the first time the frame loses focus is because it has been disposed to install the GameBoard,
                   so went it regains the focus it's ready to play. of course calling a method such as 'onLostFocus'
                   is useful only if the GameBoard as been displayed at least once*/
+                gameSounds.getBgm().start();
             }
 
             /**
@@ -137,6 +142,7 @@ public class GameFrame extends JFrame {
             public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
                 if (gaming) //if gaming flag true
                     brickBreaker.onLostFocus(); //stop timer and action listener
+                gameSounds.getBgm().stop();
             }
         });
     }
@@ -161,6 +167,7 @@ public class GameFrame extends JFrame {
         this.add(highscore, BorderLayout.CENTER); //add main game
         this.setUndecorated(true);
         this.setVisible(true);
+        gameSounds.setBgm("Highscore");
     }
 
     /**
@@ -173,6 +180,7 @@ public class GameFrame extends JFrame {
         this.add(homeMenu, BorderLayout.CENTER); //add main game
         this.setUndecorated(true);
         this.setVisible(true);
+        gameSounds.setBgm("Menu");
     }
 
     /**

@@ -43,12 +43,12 @@ public class CustomConsole extends JDialog {
      * @param owner JFrame which is used to center the CustomConsole.
      * @param homeMenu HomeMenu which is repainted when CustomConsole closes.
      */
-    public CustomConsole(JFrame owner,HomeMenu homeMenu) {
+    public CustomConsole(JFrame owner,HomeMenu homeMenu,GameSounds gameSounds) {
 
         this.owner = owner;
         this.homeMenu = homeMenu;
 
-        initialize();
+        initialize(gameSounds);
         customPanel = new CustomPanel();
         this.choice = customPanel.getChoice();
         this.add(customPanel,BorderLayout.CENTER);
@@ -59,7 +59,7 @@ public class CustomConsole extends JDialog {
     /**
      * This method is used to set the CustomConsole title and to add in window listeners.
      */
-    private void initialize() {
+    private void initialize(GameSounds gameSounds) {
 
         this.setModal(true);
         this.setTitle(TITLE);
@@ -74,6 +74,7 @@ public class CustomConsole extends JDialog {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 homeMenu.repaint();
+                gameSounds.setBgm("Menu");
             }
 
             /**
@@ -87,6 +88,7 @@ public class CustomConsole extends JDialog {
                 setLocation(); //set debug console location
                 customPanel.setIndex();
                 customPanel.resetMessage();
+                gameSounds.setBgm("Custom");
             }
         });
 
