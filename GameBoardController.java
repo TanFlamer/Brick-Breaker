@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -246,7 +245,7 @@ public class GameBoardController {
             }
         }
 
-        if(powerUpCollected()&&powerUp.isSpawned()){
+        if(powerUpCollected() && powerUp.isSpawned()&& !powerUp.isCollected()){
             powerUp.setCollected(true);
             powerUp.setSpawned(false);
             godModeTimeLeft = 10;
@@ -294,6 +293,9 @@ public class GameBoardController {
         ballReset();
         resetBallCount();
         resetTotalScoreAndTime();
+        powerUp.setCollected(false);
+        powerUp.setSpawned(false);
+        gameBoard.setPowerUpSpawns(0);
     }
 
     public void previousLevel(){
@@ -311,6 +313,9 @@ public class GameBoardController {
         ballReset();
         resetBallCount();
         resetTotalScoreAndTime();
+        powerUp.setCollected(false);
+        powerUp.setSpawned(false);
+        gameBoard.setPowerUpSpawns(0);
     }
 
     public void resetTotalScoreAndTime(){
@@ -381,7 +386,8 @@ public class GameBoardController {
 
     public void powerUpRandomSpawn(){
         int x,y;
-        if(scoreAndTime[level][1]%60==0 && !powerUp.isSpawned()) {
+
+        if(gameBoard.getPowerUpSpawns() < (scoreAndTime[level][1]/60 + 1) && !powerUp.isSpawned() && !powerUp.isCollected()) {
             x = random.nextInt(401) + 100;
             if (choice[level - 1][9] == 0) {
                 y = 325;
@@ -392,6 +398,7 @@ public class GameBoardController {
             powerUp.setCollected(false);
             powerUp.setMidPoint(new Point(x,y));
             powerUpMoveTo(powerUp.getMidPoint());
+            gameBoard.setPowerUpSpawns(gameBoard.getPowerUpSpawns()+1);
         }
     }
 
@@ -585,15 +592,12 @@ public class GameBoardController {
         double w = (end.x - start.x) / (double)DEF_STEPS; //get width of each step
         double h = (end.y - start.y) / (double)DEF_STEPS; //get height of each step
 
-        int bound = DEF_CRACK_DEPTH; //get crack depth
-        int jump  = bound * 5; //5 times crack depth
-
         double x,y;
 
         for(int i = 1; i < DEF_STEPS;i++){
 
             x = (i * w) + start.x; //get next X-coordinate of next step
-            y = (i * h) + start.y + randomInBounds(bound); //get next Y-coordinate of next step (random)
+            y = (i * h) + start.y + randomInBounds(); //get next Y-coordinate of next step (random)
 
             path.lineTo(x,y); //draw crack to (x,y)
         }
@@ -614,22 +618,22 @@ public class GameBoardController {
         Point out = new Point(); //new point
         int pos; //new coordinate
 
-        switch(direction){
-            case HORIZONTAL:
+        switch (direction) {
+            case HORIZONTAL -> {
                 pos = random.nextInt(to.x - from.x) + from.x; //get random X-coordinate between from.x to to.x
-                out.setLocation(pos,to.y); //set out to new point
-                break;
-            case VERTICAL:
+                out.setLocation(pos, to.y); //set out to new point
+            }
+            case VERTICAL -> {
                 pos = random.nextInt(to.y - from.y) + from.y; //get random Y-coordinate between from.y to.y
-                out.setLocation(to.x,pos); //set out to new point
-                break;
+                out.setLocation(to.x, pos); //set out to new point
+            }
         }
         return out; //return new point
     }
 
-    private int randomInBounds(int bound){ //get random addition to Y-coordinate
-        int n = (bound * 2) + 1;
-        return random.nextInt(n) - bound; //return random number between -bound to bound
+    private int randomInBounds(){ //get random addition to Y-coordinate
+        int n = (DEF_CRACK_DEPTH * 2) + 1;
+        return random.nextInt(n) - DEF_CRACK_DEPTH; //return random number between -bound to bound
     }
 
     public boolean getEndFlag() {
