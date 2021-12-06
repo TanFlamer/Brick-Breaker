@@ -7,6 +7,9 @@ public class GameBoard {
     public static final int DEF_HEIGHT = 450;
     public static final int LEVELS_COUNT = 5;
 
+    public static final int BALL_DIAMETER = 10;
+    public static final int POWER_UP_DIAMETER = 20;
+
     private static final int CLAY = 1;
     private static final int STEEL = 2;
     private static final int CEMENT = 3;
@@ -29,11 +32,11 @@ public class GameBoard {
 
     private boolean showPauseMenu = false;
 
-    public GameBoard(Player player, Ball ball,GodModePowerUp powerUp,int[][] choice) {
-        this.player = player;
-        this.ball = ball;
-        this.powerUp = powerUp;
+    public GameBoard(int[][] choice) {
         this.choice = choice;
+        player = new Player(new Point(DEF_WIDTH/2,DEF_HEIGHT-20),150,10,new Rectangle(DEF_WIDTH,DEF_HEIGHT));
+        ball = new Ball(new Point(DEF_WIDTH/2,DEF_HEIGHT-20),BALL_DIAMETER);
+        powerUp = new GodModePowerUp(new Point(DEF_WIDTH/2,DEF_HEIGHT/2),POWER_UP_DIAMETER);
         bricks = makeCustomLevels(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,choice);
         scoreAndTime = new int[LEVELS_COUNT+1][2];
     }
