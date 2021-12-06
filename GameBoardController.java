@@ -38,10 +38,7 @@ public class GameBoardController {
     private Ball ball;
     private GodModePowerUp powerUp;
     private int[][] choice;
-    private int brickCount;
-    private int ballCount;
     private int startTime;
-    private int level = 0;
 
     private boolean ballLost = false;
     private boolean pauseFlag = true;
@@ -76,7 +73,7 @@ public class GameBoardController {
             powerUpRandomSpawn();
             movePlayer();
             moveBall();
-            findImpacts(powerUp.isCollected(), choice[level-1][9]);
+            findImpacts(powerUp.isCollected(), choice[gameBoard.getLevel()-1][9]);
             calculateScoreAndTime();
             gameChecks();
         }
@@ -135,7 +132,7 @@ public class GameBoardController {
             speedX = random.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
         }while(speedX == 0); //continue loop if speed-X is 0
         do{
-            if(choice[level-1][9]==0)
+            if(choice[gameBoard.getLevel()-1][9]==0)
                 speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
             else
                 speedY = random.nextInt(3); //random speed for ball in Y-axis, always - for up
@@ -161,7 +158,7 @@ public class GameBoardController {
                 gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
             }
         }
-        gameBoard.setScore(level,gameBoard.getScore(0) - returnPreviousLevelsScore());
+        gameBoard.setScore(gameBoard.getLevel(),gameBoard.getScore(0) - returnPreviousLevelsScore());
 
         if((int) java.time.Instant.now().getEpochSecond() > startTime){
             gameBoard.setTime(0,gameBoard.getTime(0)+1);
@@ -171,12 +168,12 @@ public class GameBoardController {
                 gameBoard.setGodModeTimeLeft(gameBoard.getGodModeTimeLeft()-1);
             }
         }
-        gameBoard.setTime(level,gameBoard.getTime(0) - returnPreviousLevelsTime());
+        gameBoard.setTime(gameBoard.getLevel(),gameBoard.getTime(0) - returnPreviousLevelsTime());
     }
 
     public int returnPreviousLevelsScore(){
         int total = 0;
-        for(int i = level;i > 1; i--){
+        for(int i = gameBoard.getLevel();i > 1; i--){
             total += gameBoard.getScore(i-1);
         }
         return total;
@@ -184,7 +181,7 @@ public class GameBoardController {
 
     public int returnPreviousLevelsTime(){
         int total = 0;
-        for(int i = level;i > 1; i--){
+        for(int i = gameBoard.getLevel();i > 1; i--){
             total += gameBoard.getTime(i-1);
         }
         return total;
@@ -215,7 +212,7 @@ public class GameBoardController {
         else if(isLevelDone()){
 
             gameSounds.playSoundEffect("NextLevel");
-            new ScoreBoard(owner,brickBreaker,level,gameBoard.getScoreAndTime(),choice);
+            new ScoreBoard(owner,brickBreaker,gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
 
             if(hasLevel()){
                 wallReset();
@@ -254,58 +251,56 @@ public class GameBoardController {
     }
 
     public boolean ballEnd(){ //if all balls are used up
-        return ballCount == 0;
+        return gameBoard.getBallCount() == 0;
     }
 
     public boolean isLevelDone(){ //if all bricks destroyed
-        return brickCount == 0;
+        return gameBoard.getBrickCount() == 0;
     }
 
     public boolean hasLevel(){ //if next level exists
-        return level < gameBoard.getBricks().length;
+        return gameBoard.getLevel() < gameBoard.getBricks().length;
     }
 
     public void nextLevel(boolean trueProgression){
-        if(level==5)
+        if(gameBoard.getLevel()==5)
             return;
 
-        if(level!=0)
+        if(gameBoard.getLevel()!=0)
             wallReset();
 
         if(!trueProgression)
             resetLevelScoreAndTime();
 
-        gameBoard.setBrick(gameBoard.getBricks()[level++]);
-        gameBoard.setLevel(level);
-        brickCount = gameBoard.getBrick().length; //reset brick count
-        gameBoard.setBrickCount(brickCount);
+        gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
+        gameBoard.setLevel(gameBoard.getLevel()+1);
+        gameBoard.setBrickCount(gameBoard.getBrick().length);
         ballReset();
         resetBallCount();
         resetTotalScoreAndTime();
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
         gameBoard.setPowerUpSpawns(0);
-        gameSounds.setBgm("BGM"+level);
+        gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
     public void previousLevel(){
-        if(level==1)
+        if(gameBoard.getLevel()==1)
             return;
 
         resetLevelScoreAndTime();
         wallReset();
-        level -= 2;
-        gameBoard.setBrick(gameBoard.getBricks()[level++]);
-        gameBoard.setLevel(level);
-        brickCount = gameBoard.getBrick().length; //reset brick count
-        gameBoard.setBrickCount(brickCount);
+        gameBoard.setLevel(gameBoard.getLevel()-2);
+        gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
+        gameBoard.setLevel(gameBoard.getLevel()+1);
+        gameBoard.setBrickCount(gameBoard.getBrick().length);
         ballReset();
         resetBallCount();
         resetTotalScoreAndTime();
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
         gameBoard.setPowerUpSpawns(0);
-        gameSounds.setBgm("BGM"+level);
+        gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
     public void resetTotalScoreAndTime(){
@@ -314,17 +309,17 @@ public class GameBoardController {
     }
 
     public void resetLevelScoreAndTime(){
-        gameBoard.setScore(level,0);
-        gameBoard.setTime(level,0);
+        gameBoard.setScore(gameBoard.getLevel(),0);
+        gameBoard.setTime(gameBoard.getLevel(),0);
     }
 
     public void ballReset(){ //when ball is lost
 
-        if(choice[level-1][9]==0) {
+        if(choice[gameBoard.getLevel()-1][9]==0) {
             startPoint = new Point(DEF_WIDTH/2,DEF_HEIGHT-20); //start point = initial ball position
             playerStartPoint = new Point(DEF_WIDTH/2,DEF_HEIGHT-20);
         }
-        else if (choice[level-1][9]==1){
+        else if (choice[gameBoard.getLevel()-1][9]==1){
             startPoint = new Point(DEF_WIDTH/2,20); //start point = initial ball position
             playerStartPoint = new Point(DEF_WIDTH/2,10); //start point = initial ball position
         }
@@ -373,9 +368,9 @@ public class GameBoardController {
     public void powerUpRandomSpawn(){
         int x,y;
 
-        if(gameBoard.getPowerUpSpawns() < (gameBoard.getTime(level)/60 + 1) && !powerUp.isSpawned() && !powerUp.isCollected()) {
+        if(gameBoard.getPowerUpSpawns() < (gameBoard.getTime(gameBoard.getLevel())/60 + 1) && !powerUp.isSpawned() && !powerUp.isCollected()) {
             x = random.nextInt(401) + 100;
-            if (choice[level - 1][9] == 0) {
+            if (choice[gameBoard.getLevel() - 1][9] == 0) {
                 y = 325;
             } else {
                 y = 125;
@@ -395,19 +390,17 @@ public class GameBoardController {
     public void wallReset(){
         for(Brick b : gameBoard.getBrick())
             repair(b); //reset brick to full strength
-        brickCount = gameBoard.getBrick().length; //reset brick count
-        gameBoard.setBrickCount(brickCount);
+        gameBoard.setBrickCount(gameBoard.getBrick().length);
         resetBallCount();
     }
 
     public void resetBallCount(){
-        if(choice[level-1][8]!=0) {
-            ballCount = choice[level-1][8]; //reset ball count
+        if(choice[gameBoard.getLevel()-1][8]!=0) {
+            gameBoard.setBallCount(choice[gameBoard.getLevel()-1][8]);
         }
         else{
-            ballCount = 3;
+            gameBoard.setBallCount(3);
         }
-        gameBoard.setBallCount(ballCount);
     }
 
     public void repair(Brick b){ //repair brick
@@ -433,28 +426,25 @@ public class GameBoardController {
             reverseY(); //reverse Y-direction
         }
         else if(impactWall(collected)){
-            brickCount--; //minus brick count
-            gameBoard.setBrickCount(brickCount);
+            gameBoard.setBrickCount(gameBoard.getBrickCount()-1);
         }
         else if(impactBorder()) { //if ball impacts border
             gameSounds.playSoundEffect("Bounce");
             reverseX(); //reverse X-direction
         }
-        else if(choice[level-1][9]==0){
+        else if(choice[gameBoard.getLevel()-1][9]==0){
             if(ball.getCenter().getY() < 0){ //if ball hits top border
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
             else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
-                ballCount--; //ball lost
-                gameBoard.setBallCount(ballCount);
+                gameBoard.setBallCount(gameBoard.getBallCount()-1);
                 ballLost = true; //ball lost is true
             }
         }
-        else if(choice[level-1][9]==1){
+        else if(choice[gameBoard.getLevel()-1][9]==1){
             if(ball.getCenter().getY() < 0){ //if ball hits top border
-                ballCount--; //ball lost
-                gameBoard.setBallCount(ballCount);
+                gameBoard.setBallCount(gameBoard.getBallCount()-1);
                 ballLost = true; //ball lost is true
             }
             else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
