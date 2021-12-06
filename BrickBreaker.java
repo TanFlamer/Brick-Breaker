@@ -26,13 +26,13 @@ public class BrickBreaker extends JComponent {
 
     int[][] choice;
 
-    public BrickBreaker(JFrame owner,int[][] choice) {
+    public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds) {
         super();
         this.choice = choice;
-        GameEngine engine = new GameEngine(owner,choice,this);
+        GameEngine engine = new GameEngine(owner,choice,this,gameSounds);
         this.engine = engine;
         this.initialize(owner);
-        debugConsole = new DebugConsole(owner,engine,this);
+        debugConsole = new DebugConsole(owner,engine,this,gameSounds);
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
 
         // Game loop.

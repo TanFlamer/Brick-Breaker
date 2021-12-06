@@ -4,21 +4,44 @@ import java.io.File;
 
 public class GameSounds {
 
-    private Clip clip;
+    private Clip bgm;
+    private Clip soundEffect;
 
-    public GameSounds(String filename){
-        File sound = new File(filename+".wav");
+    public void setBgm(String filename){
+
+        if(bgm!=null)
+            bgm.stop();
+
+        File song = new File("sounds/BGM/"+filename+".wav");
 
         try{
-            Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(sound));
+            Clip bgm = AudioSystem.getClip();
+            bgm.open(AudioSystem.getAudioInputStream(song));
+            bgm.loop(Clip.LOOP_CONTINUOUSLY);
+            this.bgm = bgm;
         }
         catch (Exception e){
             e.printStackTrace();
         }
+        bgm.start();
     }
 
-    public Clip getClip() {
-        return clip;
+    public void playSoundEffect(String filename){
+
+        File sound = new File("sounds/SoundEffects/"+filename+".wav");
+
+        try{
+            Clip soundEffect = AudioSystem.getClip();
+            soundEffect.open(AudioSystem.getAudioInputStream(sound));
+            this.soundEffect = soundEffect;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        soundEffect.start();
+    }
+
+    public Clip getBgm() {
+        return bgm;
     }
 }
