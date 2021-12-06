@@ -41,13 +41,13 @@ public class GameBoard {
         scoreAndTime = new int[LEVELS_COUNT+1][2];
     }
 
-    private Brick[] makeAllLevel(Rectangle drawArea, int row, int brickRow, int levelGen, int brickType, int brick1, int brick2, int brick3, int brick4, int level){
+    private Brick[] makeAllLevel(Rectangle drawArea, int[][] choice, int brickRow, int level){
 
-        int randRow = 0,randBrickRow = 0;
+        int randRow,randBrickRow;
 
         int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
         int [] brickRand = {1,2,3,4};
-        int [] brickChoice = {brick1,brick2,brick3,brick4};
+        int [] brickChoice = {choice[level][4],choice[level][5],choice[level][6],choice[level][7]};
 
         for (int i = 0; i < brickRand.length; i++) {
             int randomIndexToSwap = random.nextInt(brickRand.length);
@@ -56,12 +56,12 @@ public class GameBoard {
             brickRand[i] = temp;
         }
 
-        if(levelGen%4==0){
+        if(choice[level][0]%4==0){
             randRow = random.nextInt(10) + 1;
             randBrickRow = brickNum[random.nextInt(10)];
         }
         else{
-            randRow = row;
+            randRow = choice[level][1] + 1;
             randBrickRow = brickRow;
         }
 
@@ -76,28 +76,28 @@ public class GameBoard {
 
             Point p = getBrickLocation(drawArea,i,randBrickRow,(int)brickLength,(int)brickHeight,level);
 
-            if((levelGen-1)/4==0){
+            if((choice[level][0]-1)/4==0){
 
-                if(levelGen%4==0||levelGen%4==3){
+                if(choice[level][0]%4==0||choice[level][0]%4==3){
                     tmp[i] = makeBrick(p,brickSize,brickRand[i%4]);
                 }
-                else if(levelGen%4==1){
-                    tmp[i] = makeBrick(p,brickSize,brickChoice[i%(brickType+1)]+1);
+                else if(choice[level][0]%4==1){
+                    tmp[i] = makeBrick(p,brickSize,brickChoice[i%(choice[level][3]+1)]+1);
                 }
-                else if(levelGen%4==2){
-                    tmp[i] = makeBrick(p,brickSize,brickRand[i%(brickType+1)]);
+                else if(choice[level][0]%4==2){
+                    tmp[i] = makeBrick(p,brickSize,brickRand[i%(choice[level][3]+1)]);
                 }
             }
-            else if((levelGen-1)/4==1){
+            else if((choice[level][0]-1)/4==1){
 
-                if(levelGen%4==0||levelGen%4==3){
+                if(choice[level][0]%4==0||choice[level][0]%4==3){
                     tmp[i] = makeBrick(p,brickSize,random.nextInt(4)+1);
                 }
-                else if(levelGen%4==1){
-                    tmp[i] = makeBrick(p,brickSize,brickChoice[random.nextInt(brickType+1)]+1);
+                else if(choice[level][0]%4==1){
+                    tmp[i] = makeBrick(p,brickSize,brickChoice[random.nextInt(choice[level][3]+1)]+1);
                 }
-                else if(levelGen%4==2){
-                    tmp[i] = makeBrick(p,brickSize,brickRand[random.nextInt(brickType+1)]);
+                else if(choice[level][0]%4==2){
+                    tmp[i] = makeBrick(p,brickSize,brickRand[random.nextInt(choice[level][3]+1)]);
                 }
             }
         }
@@ -177,14 +177,13 @@ public class GameBoard {
         Brick[][] tmp = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //get default levels
 
         int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
-        int brickRow = 0;
 
         for(int i = 0;i < 5;i++){
 
-            brickRow = brickNum[choice[i][2]];
+            int brickRow = brickNum[choice[i][2]];
 
             if(choice[i][0]!=0)
-                tmp[i] = makeAllLevel(drawArea,choice[i][1]+1,brickRow,choice[i][0],choice[i][3],choice[i][4],choice[i][5],choice[i][6],choice[i][7],i);
+                tmp[i] = makeAllLevel(drawArea,choice,brickRow,i);
         }
         return tmp;
     }
