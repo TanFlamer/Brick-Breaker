@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 
 public class BrickBreaker extends JComponent {
 
-    private static final int DEF_WIDTH = 600;
-    private static final int DEF_HEIGHT = 450;
-
     private Rectangle continueButtonRect;
     private Rectangle exitButtonRect;
     private Rectangle restartButtonRect;
@@ -23,13 +20,12 @@ public class BrickBreaker extends JComponent {
 
     private GameEngine engine;
     private DebugConsole debugConsole;
+    private Dimension area;
 
-    int[][] choice;
-
-    public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds) {
+    public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds,Dimension area) {
         super();
-        this.choice = choice;
-        GameEngine engine = new GameEngine(owner,choice,this,gameSounds);
+        this.area = area;
+        GameEngine engine = new GameEngine(owner,choice,this,gameSounds,area);
         this.engine = engine;
         this.initialize(owner);
         debugConsole = new DebugConsole(owner,engine,this,gameSounds);
@@ -52,7 +48,7 @@ public class BrickBreaker extends JComponent {
     }
 
     private void initialize(JFrame owner) { //initialize JFrame
-        this.setPreferredSize(new Dimension(DEF_WIDTH, DEF_HEIGHT)); //set frame size
+        this.setPreferredSize(area); //set frame size
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow(); //request focus
 
@@ -178,8 +174,8 @@ public class BrickBreaker extends JComponent {
 
         g2d.setFont(menuFont); //set menu font
 
-        int x = DEF_WIDTH / 8; //get position of continue button
-        int y = DEF_HEIGHT / 4;
+        int x = area.width / 8; //get position of continue button
+        int y = area.height / 4;
 
         if(continueButtonRect == null){ //if continue button not drawn
             FontRenderContext frc = g2d.getFontRenderContext();

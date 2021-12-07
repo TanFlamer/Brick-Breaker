@@ -5,9 +5,6 @@ public class GameBoardRenderer implements Renderer {
 
     private static final Color BG_COLOR = Color.WHITE;
 
-    private static final int DEF_WIDTH = 600;
-    private static final int DEF_HEIGHT = 450;
-
     private static final String CONTINUE = "Continue";
     private static final String RESTART = "Restart";
     private static final String EXIT = "Exit";
@@ -20,6 +17,7 @@ public class GameBoardRenderer implements Renderer {
     private int strLen = 0;
 
     private GameBoard gameBoard;
+    private Dimension area;
 
     private String message = "";
     private String totalScore = "";
@@ -28,8 +26,9 @@ public class GameBoardRenderer implements Renderer {
     private String levelTime = "";
     private String godMode = "";
 
-    public GameBoardRenderer(GameBoard gameBoard) {
+    public GameBoardRenderer(GameBoard gameBoard,Dimension area) {
         this.gameBoard = gameBoard;
+        this.area = area;
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
     }
 
@@ -64,7 +63,7 @@ public class GameBoardRenderer implements Renderer {
     private void clear(Graphics2D g2d){ //clear colour
 
         g2d.setColor(BG_COLOR); //get white colour
-        g2d.fillRect(0,0,DEF_WIDTH,DEF_HEIGHT); //fill frame with white colour
+        g2d.fillRect(0,0, area.width, area.height); //fill frame with white colour
     }
 
     private void drawBrick(Brick brick,Graphics2D g2d){
@@ -176,7 +175,7 @@ public class GameBoardRenderer implements Renderer {
         g2d.setComposite(ac); //set alpha composite
 
         g2d.setColor(Color.BLACK); //get black colour
-        g2d.fillRect(0,0,DEF_WIDTH,DEF_HEIGHT); //fill frame with black colour
+        g2d.fillRect(0,0,area.width,area.height); //fill frame with black colour
 
         g2d.setComposite(tmp); //reset composite
     }
@@ -193,13 +192,13 @@ public class GameBoardRenderer implements Renderer {
             strLen = menuFont.getStringBounds(PAUSE,frc).getBounds().width; //get width of bound string
         }
 
-        int x = (DEF_WIDTH - strLen) / 2; //get position of pause menu
-        int y = DEF_HEIGHT / 10;
+        int x = (area.width - strLen) / 2; //get position of pause menu
+        int y = area.height / 10;
 
         g2d.drawString(PAUSE,x,y); //draw pause menu
 
-        x = DEF_WIDTH / 8; //get position of continue button
-        y = DEF_HEIGHT / 4;
+        x = area.width / 8; //get position of continue button
+        y = area.height / 4;
 
         g2d.drawString(CONTINUE,x,y); //draw continue button
 

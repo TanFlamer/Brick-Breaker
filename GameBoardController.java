@@ -8,8 +8,6 @@ import java.util.Random;
 
 public class GameBoardController {
 
-    public static final int DEF_WIDTH = 600;
-    public static final int DEF_HEIGHT = 450;
     private static final int DEF_MOVE_AMOUNT = 5;
 
     public static final int UP_IMPACT = 100;
@@ -39,6 +37,7 @@ public class GameBoardController {
     private GodModePowerUp powerUp;
     private int[][] choice;
     private int startTime;
+    private Dimension area;
 
     private boolean ballLost = false;
     private boolean pauseFlag = true;
@@ -47,7 +46,7 @@ public class GameBoardController {
     private Point startPoint;
     private Point playerStartPoint;
 
-    public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds) {
+    public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
         this.gameBoard = gameBoard;
         this.brickBreaker = brickBreaker;
         this.gameSounds = gameSounds;
@@ -56,14 +55,15 @@ public class GameBoardController {
         this.ball = gameBoard.getBall();
         this.powerUp = gameBoard.getPowerUp();
         this.choice = gameBoard.getChoice();
+        this.area = area;
 
         if(choice[0][9]==0) {
             this.startPoint = ball.getCenter(); //start point = initial ball position
             this.playerStartPoint = player.getMidPoint();
         }
         else if (choice[0][9]==1){
-            this.startPoint = new Point(DEF_WIDTH/2,20); //start point = initial ball position
-            this.playerStartPoint = new Point(DEF_WIDTH/2,10); //start point = initial ball position
+            this.startPoint = new Point(area.width/2,20); //start point = initial ball position
+            this.playerStartPoint = new Point(area.width/2,10); //start point = initial ball position
         }
         nextLevel(false);
     }
@@ -316,12 +316,12 @@ public class GameBoardController {
     public void ballReset(){ //when ball is lost
 
         if(choice[gameBoard.getLevel()-1][9]==0) {
-            startPoint = new Point(DEF_WIDTH/2,DEF_HEIGHT-20); //start point = initial ball position
-            playerStartPoint = new Point(DEF_WIDTH/2,DEF_HEIGHT-20);
+            startPoint = new Point(area.width/2,area.height-20); //start point = initial ball position
+            playerStartPoint = new Point(area.width/2,area.height-20);
         }
         else if (choice[gameBoard.getLevel()-1][9]==1){
-            startPoint = new Point(DEF_WIDTH/2,20); //start point = initial ball position
-            playerStartPoint = new Point(DEF_WIDTH/2,10); //start point = initial ball position
+            startPoint = new Point(area.width/2,20); //start point = initial ball position
+            playerStartPoint = new Point(area.width/2,10); //start point = initial ball position
         }
 
         ballMoveTo(startPoint);
@@ -437,7 +437,7 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
-            else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
+            else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
                 gameBoard.setBallCount(gameBoard.getBallCount()-1);
                 ballLost = true; //ball lost is true
             }
@@ -447,7 +447,7 @@ public class GameBoardController {
                 gameBoard.setBallCount(gameBoard.getBallCount()-1);
                 ballLost = true; //ball lost is true
             }
-            else if(ball.getCenter().getY() > DEF_HEIGHT){ //if ball hits bottom border
+            else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
@@ -485,7 +485,7 @@ public class GameBoardController {
 
     private boolean impactBorder(){ //if ball impacts left or right border
         Point2D p = ball.getCenter();
-        return ((p.getX() < 0) ||(p.getX() > DEF_WIDTH));
+        return ((p.getX() < 0) ||(p.getX() > area.width));
     }
 
     public final int findImpact(Ball b,Brick brick){ //get direction of impact

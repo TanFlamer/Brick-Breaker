@@ -3,8 +3,6 @@ import java.util.Random;
 
 public class GameBoard {
 
-    public static final int DEF_WIDTH = 600;
-    public static final int DEF_HEIGHT = 450;
     public static final int LEVELS_COUNT = 5;
 
     public static final int BALL_DIAMETER = 10;
@@ -33,12 +31,12 @@ public class GameBoard {
 
     private boolean showPauseMenu = false;
 
-    public GameBoard(int[][] choice) {
+    public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
-        player = new Player(new Point(DEF_WIDTH/2,DEF_HEIGHT-20),150,10,new Rectangle(DEF_WIDTH,DEF_HEIGHT));
-        ball = new Ball(new Point(DEF_WIDTH/2,DEF_HEIGHT-20),BALL_DIAMETER);
-        powerUp = new GodModePowerUp(new Point(DEF_WIDTH/2,DEF_HEIGHT/2),POWER_UP_DIAMETER);
-        bricks = makeCustomLevels(new Rectangle(0,0,DEF_WIDTH,DEF_HEIGHT),30,3,6/2,choice);
+        player = new Player(new Point(area.width/2,area.height-20),150,10,new Rectangle(area));
+        ball = new Ball(new Point(area.width/2,area.height-20),BALL_DIAMETER);
+        powerUp = new GodModePowerUp(new Point(area.width/2,area.height/2),POWER_UP_DIAMETER);
+        bricks = makeCustomLevels(new Rectangle(0,0,area.width,area.height),30,3,6/2,choice);
         scoreAndTime = new int[LEVELS_COUNT+1][2];
     }
 

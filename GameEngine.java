@@ -8,10 +8,10 @@ public class GameEngine {
     private GameBoardController controller;
     private GameBoardRenderer renderer;
 
-    public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker,GameSounds gameSounds) {
-        gameBoard = new GameBoard(choice);
-        controller = new GameBoardController(owner,gameBoard,brickBreaker,gameSounds);
-        renderer = new GameBoardRenderer(gameBoard);
+    public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
+        gameBoard = new GameBoard(choice,area);
+        controller = new GameBoardController(owner,gameBoard,brickBreaker,gameSounds,area);
+        renderer = new GameBoardRenderer(gameBoard,area);
     }
 
     public void update() throws FileNotFoundException {

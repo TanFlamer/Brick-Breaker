@@ -39,6 +39,12 @@ public class GameFrame extends JFrame {
      */
     private static final String DEF_TITLE = "Brick Destroy";
 
+    private static final int MENU_WIDTH = 450;
+    private static final int MENU_HEIGHT = 300;
+
+    private static final int GAME_WIDTH = 600;
+    private static final int GAME_HEIGHT = 450;
+
     /**
      * The GameBoard to play the game, accessed from the HomeMenu.
      */
@@ -85,8 +91,8 @@ public class GameFrame extends JFrame {
         this.setLayout(new BorderLayout()); //set layout
 
         gameSounds = new GameSounds();
-        highscore = new Highscore(this, new Dimension(450, 300)); //get highscore
-        homeMenu = new HomeMenu(this, new Dimension(450, 300)); //set main menu
+        highscore = new Highscore(this, new Dimension(MENU_WIDTH, MENU_HEIGHT)); //get highscore
+        homeMenu = new HomeMenu(this, new Dimension(MENU_WIDTH, MENU_HEIGHT)); //set main menu
         customConsole = new CustomConsole(this,homeMenu,gameSounds);
         infoScreen = new InfoScreen(this,homeMenu,gameSounds);
         this.add(homeMenu, BorderLayout.CENTER); //add main menu to centre
@@ -115,7 +121,7 @@ public class GameFrame extends JFrame {
     public void enableGameBoard() { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
-        brickBreaker = new BrickBreaker(this,choice,gameSounds);
+        brickBreaker = new BrickBreaker(this,choice,gameSounds,new Dimension(GAME_WIDTH, GAME_HEIGHT));
         this.add(brickBreaker, BorderLayout.CENTER); //add main game
         this.setUndecorated(false);
         initialize(); //initialize game
