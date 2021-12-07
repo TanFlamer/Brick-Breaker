@@ -82,14 +82,8 @@ public class BrickBreaker extends JComponent {
                 }
                 else if(restartButtonRect.contains(p)){ //if restart pressed
                     engine.getGameBoard().setMessageFlag(4);
-                    engine.getController().ballReset();
-                    engine.getController().wallReset();
-                    engine.getController().resetLevelScoreAndTime();
-                    engine.getController().resetTotalScoreAndTime();
+                    engine.getController().resetLevelData();
                     engine.getGameBoard().setShowPauseMenu(false); //close pause menu
-                    engine.getGameBoard().getPowerUp().setSpawned(false);
-                    engine.getGameBoard().getPowerUp().setCollected(false);
-                    engine.getGameBoard().setPowerUpSpawns(0);
                     repaint(); //repaint components
                 }
                 else if(exitButtonRect.contains(p)){ //if exit pressed

@@ -192,20 +192,15 @@ public class GameBoardController {
         if(isBallLost()){
 
             if(ballEnd()){
-                resetLevelScoreAndTime();
-                resetTotalScoreAndTime();
-                wallReset();
-                powerUp.setCollected(false);
-                powerUp.setSpawned(false);
-                gameBoard.setPowerUpSpawns(0);
+                resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
             }
             else {
+                ballReset();
                 gameSounds.playSoundEffect("BallLost");
             }
 
-            ballReset();
             if(!pauseFlag)
                 reversePauseFlag();
         }
@@ -262,6 +257,16 @@ public class GameBoardController {
         return gameBoard.getLevel() < gameBoard.getBricks().length;
     }
 
+    public void resetLevelData(){
+        wallReset();
+        ballReset();
+        resetLevelScoreAndTime();
+        resetTotalScoreAndTime();
+        powerUp.setCollected(false);
+        powerUp.setSpawned(false);
+        gameBoard.setPowerUpSpawns(0);
+    }
+
     public void nextLevel(boolean trueProgression){
         if(gameBoard.getLevel()==5)
             return;
@@ -275,12 +280,7 @@ public class GameBoardController {
         gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
         gameBoard.setLevel(gameBoard.getLevel()+1);
         gameBoard.setBrickCount(gameBoard.getBrick().length);
-        ballReset();
-        resetBallCount();
-        resetTotalScoreAndTime();
-        powerUp.setCollected(false);
-        powerUp.setSpawned(false);
-        gameBoard.setPowerUpSpawns(0);
+        resetLevelData();
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
@@ -294,12 +294,7 @@ public class GameBoardController {
         gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
         gameBoard.setLevel(gameBoard.getLevel()+1);
         gameBoard.setBrickCount(gameBoard.getBrick().length);
-        ballReset();
-        resetBallCount();
-        resetTotalScoreAndTime();
-        powerUp.setCollected(false);
-        powerUp.setSpawned(false);
-        gameBoard.setPowerUpSpawns(0);
+        resetLevelData();
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
