@@ -18,6 +18,7 @@ public class GameBoard {
     private Brick[] brick;
     private int[][] scoreAndTime;
     private int[][] choice;
+    private Dimension area;
     private Player player;
     private Ball ball;
     private GodModePowerUp powerUp;
@@ -33,6 +34,7 @@ public class GameBoard {
 
     public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
+        this.area = area;
         player = new Player(new Point(area.width/2,area.height-20),150,10,new Rectangle(area));
         ball = new Ball(new Point(area.width/2,area.height-20),BALL_DIAMETER);
         powerUp = new GodModePowerUp(new Point(area.width/2,area.height/2),POWER_UP_DIAMETER);
@@ -199,7 +201,7 @@ public class GameBoard {
     }
 
     private Brick makeBrick(Point point, Dimension size, int type){ //make new bricks
-        return new Brick(type,point.x,point.y,size.width,size.height);
+        return new Brick(type,point.x,point.y,size.width,size.height,area);
     }
 
     public Brick[][] getBricks() {

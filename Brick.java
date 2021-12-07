@@ -6,14 +6,6 @@ public class Brick {
     private Shape brickFace;
     private Shape brickFaceNew;
 
-    private String name;
-
-    private int x;
-    private int y;
-
-    private int width;
-    private int height;
-
     private Color border;
     private Color inner;
 
@@ -30,16 +22,12 @@ public class Brick {
 
     private GeneralPath crack = new GeneralPath();
 
-    public Brick(int brickID, int x, int y, int width, int height){
+    public Brick(int brickID, int x, int y, int width, int height, Dimension area){
 
         getBrickInfo(brickID);
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
         this.broken = false;
         this.strength = fullStrength;
-        this.score = scoreMultiplier * 600/width;
+        this.score = scoreMultiplier * area.width/width;
         this.brickFace = new Rectangle(new Point(x,y), new Dimension(width,height));
         this.brickFaceNew = new Rectangle(new Point(x,y), new Dimension(width,height));
     }
@@ -48,7 +36,7 @@ public class Brick {
 
         switch (brickID) {
             case 1 -> {
-                name = "Clay Brick";
+                //Clay Brick
                 fullStrength = 1;
                 scoreMultiplier = 10;
                 breakProbability = 1;
@@ -57,7 +45,7 @@ public class Brick {
                 inner = new Color(178, 34, 34).darker();
             }
             case 2 -> {
-                name = "Steel Brick";
+                //Steel Brick
                 fullStrength = 1;
                 scoreMultiplier = 40;
                 breakProbability = 0.4;
@@ -66,7 +54,7 @@ public class Brick {
                 inner = new Color(203, 203, 201);
             }
             case 3 -> {
-                name = "Cement Brick";
+                //Cement Brick
                 fullStrength = 2;
                 scoreMultiplier = 40;
                 breakProbability = 1;
@@ -75,7 +63,7 @@ public class Brick {
                 inner = new Color(147, 147, 147);
             }
             case 4 -> {
-                name = "Concrete Brick";
+                //Concrete Brick
                 fullStrength = 2;
                 scoreMultiplier = 100;
                 breakProbability = 0.4;
