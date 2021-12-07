@@ -7,7 +7,7 @@ public class Ball {
 
     private int speedX = 0;
     private int speedY = 0;
-    private int diameter;
+    private final int diameter;
 
     private Point center;
     private Point up;
@@ -15,8 +15,8 @@ public class Ball {
     private Point left;
     private Point right;
 
-    private Color inner = new Color(255, 219, 88);
-    private Color border = inner.darker().darker();
+    private final Color inner = new Color(255, 219, 88);
+    private final Color border = inner.darker().darker();
 
     public Ball(Point center,int diameter){
         this.center = center;

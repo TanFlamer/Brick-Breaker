@@ -4,9 +4,9 @@ import java.io.FileNotFoundException;
 
 public class GameEngine {
 
-    private GameBoard gameBoard;
-    private GameBoardController controller;
-    private GameBoardRenderer renderer;
+    private final GameBoard gameBoard;
+    private final GameBoardController controller;
+    private final GameBoardRenderer renderer;
 
     public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
         gameBoard = new GameBoard(choice,area);

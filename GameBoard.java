@@ -13,15 +13,15 @@ public class GameBoard {
     private static final int CEMENT = 3;
     private static final int CONCRETE = 4;
 
-    private static Random random = new Random();
-    private Brick[][] bricks;
+    private static final Random random = new Random();
+    private final Brick[][] bricks;
     private Brick[] brick;
-    private int[][] scoreAndTime;
-    private int[][] choice;
-    private Dimension area;
+    private final int[][] scoreAndTime;
+    private final int[][] choice;
+    private final Dimension area;
     private Player player;
-    private Ball ball;
-    private GodModePowerUp powerUp;
+    private final Ball ball;
+    private final GodModePowerUp powerUp;
 
     private int level = 0;
     private int messageFlag = 0;
@@ -29,16 +29,20 @@ public class GameBoard {
     private int ballCount = 3;
     private int godModeTimeLeft = 0;
     private int powerUpSpawns = 0;
+    private int startTime = 0;
 
     private boolean showPauseMenu = false;
+    private boolean ballLost = false;
+    private boolean pauseFlag = true;
+    private boolean endFlag = false;
 
     public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
         this.area = area;
-        player = new Player(new Point(area.width/2,area.height-20),150,10,new Rectangle(area));
+        player = new Player(new Point(area.width/2,area.height-20),150,10,area);
         ball = new Ball(new Point(area.width/2,area.height-20),BALL_DIAMETER);
         powerUp = new GodModePowerUp(new Point(area.width/2,area.height/2),POWER_UP_DIAMETER);
-        bricks = makeCustomLevels(new Rectangle(0,0,area.width,area.height),30,3,6/2,choice);
+        bricks = makeCustomLevels(new Rectangle(0,0,area.width,area.height), choice);
         scoreAndTime = new int[LEVELS_COUNT+1][2];
     }
 
@@ -105,21 +109,21 @@ public class GameBoard {
         return tmp;
     }
 
-    private Brick[] makeSingleTypeLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int type, int level){
-        return makeChessboardLevel(drawArea,brickCnt,lineCnt,brickSizeRatio,type,type,level);
+    private Brick[] makeSingleTypeLevel(Rectangle drawArea){
+        return makeChessboardLevel(drawArea, GameBoard.CLAY, GameBoard.CLAY, 0);
     }
 
-    private Brick[] makeChessboardLevel(Rectangle drawArea, int brickCnt, int lineCnt, double brickSizeRatio, int typeA, int typeB, int level){
+    private Brick[] makeChessboardLevel(Rectangle drawArea, int typeA, int typeB, int level){
 
-        int brickOnLine = brickCnt / lineCnt; //number of bricks on single line (number of bricks/number of lines)
+        int brickOnLine = 30 / 3; //number of bricks on single line (number of bricks/number of lines)
 
         int centerLeft = brickOnLine / 2 - 1; // 10/2 - 1 = 5 - 1 = 4
         int centerRight = brickOnLine / 2 + 1; // 10/2 + 1 = 5 + 1 = 6
 
         double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
-        double brickHgt = brickLen / brickSizeRatio; //get brick height (brick length/brick size ratio)
+        double brickHgt = brickLen / (double) 3; //get brick height (brick length/brick size ratio)
 
-        Brick[] tmp  = new Brick[(brickCnt-(brickCnt % lineCnt))+(lineCnt / 2)]; //array of Bricks which account for extra brick in odd rows
+        Brick[] tmp  = new Brick[30+(3/2)]; //array of Bricks which account for extra brick in odd rows
 
         Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt); //get dimensions of brickSize
 
@@ -173,9 +177,9 @@ public class GameBoard {
         return p;
     }
 
-    private Brick[][] makeCustomLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio,int[][] choice){
+    private Brick[][] makeCustomLevels(Rectangle drawArea, int[][] choice){
 
-        Brick[][] tmp = makeLevels(drawArea,brickCount,lineCount,brickDimensionRatio); //get default levels
+        Brick[][] tmp = makeDefaultLevels(drawArea); //get default levels
 
         int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
 
@@ -189,14 +193,14 @@ public class GameBoard {
         return tmp;
     }
 
-    private Brick[][] makeLevels(Rectangle drawArea,int brickCount,int lineCount,double brickDimensionRatio){
+    private Brick[][] makeDefaultLevels(Rectangle drawArea){
         Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
         //get column for each 2d-array
-        tmp[0] = makeSingleTypeLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,0);
-        tmp[1] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,CEMENT,1);
-        tmp[2] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,CLAY,STEEL,2);
-        tmp[3] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CEMENT,3);
-        tmp[4] = makeChessboardLevel(drawArea,brickCount,lineCount,brickDimensionRatio,STEEL,CONCRETE,4);
+        tmp[0] = makeSingleTypeLevel(drawArea);
+        tmp[1] = makeChessboardLevel(drawArea, CLAY,CEMENT,1);
+        tmp[2] = makeChessboardLevel(drawArea, CLAY,STEEL,2);
+        tmp[3] = makeChessboardLevel(drawArea, STEEL,CEMENT,3);
+        tmp[4] = makeChessboardLevel(drawArea, STEEL,CONCRETE,4);
         return tmp;
     }
 
@@ -310,5 +314,37 @@ public class GameBoard {
 
     public void setPowerUpSpawns(int powerUpSpawns) {
         this.powerUpSpawns = powerUpSpawns;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+    }
+
+    public boolean isBallLost() {
+        return ballLost;
+    }
+
+    public void setBallLost(boolean ballLost) {
+        this.ballLost = ballLost;
+    }
+
+    public boolean isPauseFlag() {
+        return pauseFlag;
+    }
+
+    public void setPauseFlag(boolean pauseFlag) {
+        this.pauseFlag = pauseFlag;
+    }
+
+    public boolean isEndFlag() {
+        return endFlag;
+    }
+
+    public void setEndFlag(boolean endFlag) {
+        this.endFlag = endFlag;
     }
 }

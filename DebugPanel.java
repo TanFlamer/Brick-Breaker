@@ -36,24 +36,6 @@ public class DebugPanel extends JPanel {
     private static final Color DEF_BKG = Color.WHITE;
 
     /**
-     * JButton to skip to next level.
-     */
-    private JButton skipLevel;
-    /**
-     * JButton to reset ball count.
-     */
-    private JButton resetBalls;
-
-    /**
-     * JButton to go to previous level.
-     */
-    private JButton previousLevel;
-    /**
-     * JButton to reset player and ball position.
-     */
-    private JButton resetPosition;
-
-    /**
      * JSlider to set ball horizontal speed.
      */
     private JSlider ballXSpeed;
@@ -62,7 +44,7 @@ public class DebugPanel extends JPanel {
      */
     private JSlider ballYSpeed;
 
-    private GameBoardController controller;
+    private final GameBoardController controller;
 
     /**
      * This constructor is used to initialize the DebugPanel and add the JButtons and JSliders.
@@ -73,14 +55,13 @@ public class DebugPanel extends JPanel {
         this.controller = gameEngine.getController();
         initialize(); //initialize debug panel
 
-        skipLevel = makeButton("Skip Level",e -> controller.nextLevel(false)); //make new buttons
-        resetBalls = makeButton("Reset Balls",e -> controller.resetBallCount());
+        JButton skipLevel = makeButton("Skip Level", e -> controller.nextLevel(false)); //make new buttons
+        JButton resetBalls = makeButton("Reset Balls", e -> controller.resetBallCount());
+        JButton previousLevel = makeButton("Previous Level", e -> controller.previousLevel());
+        JButton resetPosition = makeButton("Reset Position", e -> controller.ballReset());
 
-        previousLevel = makeButton("Previous Level",e -> controller.previousLevel());
-        resetPosition = makeButton("Reset Position",e -> controller.ballReset());
-
-        ballXSpeed = makeSlider(-4,4,e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue())); //make new sliders
-        ballYSpeed = makeSlider(-4,4,e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue())); //show and set speed of ball
+        ballXSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue())); //make new sliders
+        ballYSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue())); //show and set speed of ball
 
         this.add(skipLevel); //add buttons
         this.add(resetBalls);
@@ -116,13 +97,11 @@ public class DebugPanel extends JPanel {
      * This method is used to make JSliders with the given min and max values and to add action listeners to the
      * JSliders.
      *
-     * @param min This is the min value of the JSlider.
-     * @param max This is the max value of the JSlider.
      * @param e This is the action listener assigned to the JSlider.
      * @return This method returns a JSlider with the given min and max values which is assigned an action listener.
      */
-    private JSlider makeSlider(int min, int max, ChangeListener e){ //make sliders and add listener
-        JSlider out = new JSlider(min,max);
+    private JSlider makeSlider(ChangeListener e){ //make sliders and add listener
+        JSlider out = new JSlider(-4, 4);
         out.setMajorTickSpacing(1); //set tick spacing
         out.setSnapToTicks(true); //snap to tick
         out.setPaintTicks(true); //paint ticks

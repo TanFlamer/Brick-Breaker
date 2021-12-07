@@ -4,7 +4,7 @@ import java.awt.geom.GeneralPath;
 public class Brick {
 
     private Shape brickFace;
-    private Shape brickFaceNew;
+    private final Shape brickFaceNew;
 
     private Color border;
     private Color inner;
@@ -14,13 +14,13 @@ public class Brick {
 
     private double breakProbability;
 
-    private int score;
+    private final int score;
     private int scoreMultiplier;
 
     private boolean broken;
     private boolean crackable;
 
-    private GeneralPath crack = new GeneralPath();
+    private final GeneralPath crack = new GeneralPath();
 
     public Brick(int brickID, int x, int y, int width, int height, Dimension area){
 

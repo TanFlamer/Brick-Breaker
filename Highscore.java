@@ -159,32 +159,32 @@ public class Highscore extends JComponent {
     /**
      * Rectangle for the menu face.
      */
-    private Rectangle menuFace;
+    private final Rectangle menuFace;
     /**
      * Rectangle for the back button.
      */
-    private Rectangle backButton;
+    private final Rectangle backButton;
     /**
      * Rectangle for the next button.
      */
-    private Rectangle nextButton;
+    private final Rectangle nextButton;
     /**
      * Rectangle for the previous button.
      */
-    private Rectangle previousButton;
+    private final Rectangle previousButton;
 
     /**
      * Font for the ranking list.
      */
-    private Font InfoFont;
+    private final Font InfoFont;
     /**
      * Font for the ranking titles.
      */
-    private Font TitleFont;
+    private final Font TitleFont;
     /**
      * Font for the button text.
      */
-    private Font buttonFont;
+    private final Font buttonFont;
 
     /**
      * Boolean to check if back button is clicked.

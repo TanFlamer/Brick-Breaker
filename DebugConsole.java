@@ -40,17 +40,17 @@ public class DebugConsole extends JDialog {
     /**
      * JFrame which is used to center the DebugConsole.
      */
-    private JFrame owner;
+    private final JFrame owner;
     /**
      * The DebugPanel which is contained within DebugConsole.
      */
-    private DebugPanel debugPanel;
+    private final DebugPanel debugPanel;
     /**
      * GameBoard which is repainted when DebugConsole closes.
      */
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
 
-    private BrickBreaker brickBreaker;
+    private final BrickBreaker brickBreaker;
     /**
      * This constructor is used to load the DebugPanel into the DebugConsole and to add in window listeners.
      *

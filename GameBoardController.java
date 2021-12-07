@@ -26,22 +26,17 @@ public class GameBoardController {
     public static final int DEF_CRACK_DEPTH = 1;
     public static final int DEF_STEPS = 35;
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
-    private GameBoard gameBoard;
-    private BrickBreaker brickBreaker;
-    private GameSounds gameSounds;
-    private JFrame owner;
-    private Player player;
-    private Ball ball;
-    private GodModePowerUp powerUp;
-    private int[][] choice;
-    private int startTime;
-    private Dimension area;
-
-    private boolean ballLost = false;
-    private boolean pauseFlag = true;
-    private boolean endFlag = false;
+    private final GameBoard gameBoard;
+    private final BrickBreaker brickBreaker;
+    private final GameSounds gameSounds;
+    private final JFrame owner;
+    private final Player player;
+    private final Ball ball;
+    private final GodModePowerUp powerUp;
+    private final int[][] choice;
+    private final Dimension area;
 
     private Point startPoint;
     private Point playerStartPoint;
@@ -69,7 +64,7 @@ public class GameBoardController {
     }
 
     public void update() throws FileNotFoundException {
-        if(!pauseFlag&&!endFlag) {
+        if(!gameBoard.isPauseFlag()&&!gameBoard.isEndFlag()) {
             powerUpRandomSpawn();
             movePlayer();
             moveBall();
@@ -111,19 +106,15 @@ public class GameBoardController {
     }
 
     public void reversePauseFlag(){
-        pauseFlag = !pauseFlag;
-        if(!pauseFlag){
-            startTime = (int) java.time.Instant.now().getEpochSecond();
+        gameBoard.setPauseFlag(!gameBoard.isPauseFlag());
+        if(!gameBoard.isPauseFlag()){
+            gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
             gameBoard.setMessageFlag(0);
             gameSounds.getBgm().start();
         }
         else {
             gameSounds.getBgm().stop();
         }
-    }
-
-    public boolean getPauseFlag(){
-        return pauseFlag;
     }
 
     public void setBallSpeed(){
@@ -160,9 +151,9 @@ public class GameBoardController {
         }
         gameBoard.setScore(gameBoard.getLevel(),gameBoard.getScore(0) - returnPreviousLevelsScore());
 
-        if((int) java.time.Instant.now().getEpochSecond() > startTime){
+        if((int) java.time.Instant.now().getEpochSecond() > gameBoard.getStartTime()){
             gameBoard.setTime(0,gameBoard.getTime(0)+1);
-            startTime = (int) java.time.Instant.now().getEpochSecond();
+            gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
 
             if(powerUp.isCollected()) {
                 gameBoard.setGodModeTimeLeft(gameBoard.getGodModeTimeLeft()-1);
@@ -189,9 +180,9 @@ public class GameBoardController {
 
     public void gameChecks() throws FileNotFoundException {
 
-        if(isBallLost()){
+        if(gameBoard.isBallLost()){ //ball is lost
 
-            if(ballEnd()){
+            if(gameBoard.getBallCount() == 0){ //if ball count 0
                 resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
@@ -201,29 +192,29 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("BallLost");
             }
 
-            if(!pauseFlag)
+            if(!gameBoard.isPauseFlag())
                 reversePauseFlag();
         }
-        else if(isLevelDone()){
+        else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
 
             gameSounds.playSoundEffect("NextLevel");
             new ScoreBoard(owner,brickBreaker,gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
 
-            if(hasLevel()){
+            if(gameBoard.getLevel() < gameBoard.getBricks().length){ //if level left / level number < total level
                 wallReset();
                 ballReset();
                 gameBoard.setMessageFlag(2);
                 nextLevel(true);
-                if(!pauseFlag)
+                if(!gameBoard.isPauseFlag())
                     reversePauseFlag();
             }
             else {
                 gameSounds.playSoundEffect("LastLevel");
-                if(!pauseFlag)
+                if(!gameBoard.isPauseFlag())
                     reversePauseFlag();
                 new ScoreBoard(owner,brickBreaker,0,gameBoard.getScoreAndTime(),choice);
                 gameBoard.setMessageFlag(3);
-                endFlag = true;
+                gameBoard.setEndFlag(true);
             }
         }
 
@@ -239,22 +230,6 @@ public class GameBoardController {
                 powerUp.setCollected(false);
             }
         }
-    }
-
-    public boolean isBallLost(){ //if ball leaves bottom border
-        return ballLost;
-    }
-
-    public boolean ballEnd(){ //if all balls are used up
-        return gameBoard.getBallCount() == 0;
-    }
-
-    public boolean isLevelDone(){ //if all bricks destroyed
-        return gameBoard.getBrickCount() == 0;
-    }
-
-    public boolean hasLevel(){ //if next level exists
-        return gameBoard.getLevel() < gameBoard.getBricks().length;
     }
 
     public void resetLevelData(){
@@ -323,7 +298,7 @@ public class GameBoardController {
         playerMoveTo(playerStartPoint);
 
         setBallSpeed();
-        ballLost = false; //ball is found
+        gameBoard.setBallLost(false);
     }
 
     public void ballMoveTo(Point p){ //teleport ball to point p
@@ -434,13 +409,13 @@ public class GameBoardController {
             }
             else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
                 gameBoard.setBallCount(gameBoard.getBallCount()-1);
-                ballLost = true; //ball lost is true
+                gameBoard.setBallLost(true);
             }
         }
         else if(choice[gameBoard.getLevel()-1][9]==1){
             if(ball.getCenter().getY() < 0){ //if ball hits top border
                 gameBoard.setBallCount(gameBoard.getBallCount()-1);
-                ballLost = true; //ball lost is true
+                gameBoard.setBallLost(true);
             }
             else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
                 gameSounds.playSoundEffect("Bounce");
@@ -611,9 +586,5 @@ public class GameBoardController {
     private int randomInBounds(){ //get random addition to Y-coordinate
         int n = (DEF_CRACK_DEPTH * 2) + 1;
         return random.nextInt(n) - DEF_CRACK_DEPTH; //return random number between -bound to bound
-    }
-
-    public boolean getEndFlag() {
-        return endFlag;
     }
 }

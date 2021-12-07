@@ -7,17 +7,17 @@ public class Player {
     private Point midPoint;
 
     private int moveAmount;
-    private int min;
-    private int max;
+    private final int min;
+    private final int max;
 
-    private Color border = Color.GREEN.darker().darker();
-    private Color inner = Color.GREEN;
+    private final Color border = Color.GREEN.darker().darker();
+    private final Color inner = Color.GREEN;
 
-    public Player(Point midPoint,int width,int height,Rectangle container){
+    public Player(Point midPoint,int width,int height,Dimension area){
         this.midPoint = midPoint;
         moveAmount = 0;
-        min = container.x + (width / 2);
-        max = min + container.width - width;
+        min = width / 2;
+        max = min + area.width - width;
         playerFace = new Rectangle(new Point((int) (midPoint.getX() - (width / 2)), (int) midPoint.getY()),new Dimension(width,height)); //make rectangle player
     }
 

@@ -47,39 +47,35 @@ public class ScoreBoard extends JDialog implements ActionListener {
     /**
      * JFrame used to center the ScoreBoard.
      */
-    private JFrame owner;
+    private final JFrame owner;
     /**
      * BrickBreaker to repaint after window closes.
      */
-    private BrickBreaker brickBreaker;
-    /**
-     * Username of the player to be saved.
-     */
-    private String username;
+    private final BrickBreaker brickBreaker;
     /**
      * JButton to be pressed to save player data.
      */
-    private JButton saveName;
+    private final JButton saveName;
     /**
      * JLabel to prompt player for username.
      */
-    private JLabel name;
+    private final JLabel name;
     /**
      * JTextField for player to enter username.
      */
-    private JTextField getName;
+    private final JTextField getName;
     /**
      * Double array of integers to get player choice to generate level category.
      */
-    private int[][] choice;
+    private final int[][] choice;
     /**
      * Double array of integers to record player time and score for each level and the whole game.
      */
-    private int[][] scoreAndTime;
+    private final int[][] scoreAndTime;
     /**
      * Integer to get current level number.
      */
-    private int level;
+    private final int level;
 
     /**
      * This constructor is used to load and display highscores for each level after the level is completed and
@@ -415,11 +411,12 @@ public class ScoreBoard extends JDialog implements ActionListener {
         }
         else {
             String temp = getName.getText();
+            String username;
             if(temp.length()>8) {
-                this.username = temp.substring(0,8);
+                username = temp.substring(0,8);
             }
             else {
-                this.username = temp;
+                username = temp;
             }
             name.setText("Name saved.");
 

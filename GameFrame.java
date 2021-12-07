@@ -52,22 +52,22 @@ public class GameFrame extends JFrame {
     /**
      * The HomeMenu to access all other screens through buttons.
      */
-    private HomeMenu homeMenu;
+    private final HomeMenu homeMenu;
 
     /**
      * The HighScore Board, accessed from the HomeMenu.
      */
-    private Highscore highscore;
+    private final Highscore highscore;
     /**
      * The Custom Console to customise the levels, accessed from the HomeMenu.
      */
-    private CustomConsole customConsole;
+    private final CustomConsole customConsole;
     /**
      * The Info Screen to explain the different aspects of the game, accessed from the HomeMenu.
      */
-    private InfoScreen infoScreen;
+    private final InfoScreen infoScreen;
 
-    private GameSounds gameSounds;
+    private final GameSounds gameSounds;
 
     /**
      * Boolean to signal that the game has lost focus.

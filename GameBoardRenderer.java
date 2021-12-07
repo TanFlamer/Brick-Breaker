@@ -13,18 +13,11 @@ public class GameBoardRenderer implements Renderer {
     private static final int TEXT_SIZE = 30;
     private static final Color MENU_COLOR = new Color(0,255,0);
 
-    private Font menuFont;
+    private final Font menuFont;
     private int strLen = 0;
 
-    private GameBoard gameBoard;
-    private Dimension area;
-
-    private String message = "";
-    private String totalScore = "";
-    private String levelScore = "";
-    private String totalTime = "";
-    private String levelTime = "";
-    private String godMode = "";
+    private final GameBoard gameBoard;
+    private final Dimension area;
 
     public GameBoardRenderer(GameBoard gameBoard,Dimension area) {
         this.gameBoard = gameBoard;
@@ -99,6 +92,7 @@ public class GameBoardRenderer implements Renderer {
 
     private void drawMessages(Graphics2D g2d){
 
+        String message = null;
         if(gameBoard.getMessageFlag()==0)
             message = String.format("Bricks: %d  Balls %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
         else if(gameBoard.getMessageFlag()==1)
@@ -112,8 +106,8 @@ public class GameBoardRenderer implements Renderer {
         else if(gameBoard.getMessageFlag()==5)
             message = "Focus Lost";
 
-        totalScore = String.format("Total Score %d",gameBoard.getScoreAndTime()[0][0]);
-        levelScore = String.format("Level %d Score %d",gameBoard.getLevel(),gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
+        String totalScore = String.format("Total Score %d", gameBoard.getScoreAndTime()[0][0]);
+        String levelScore = String.format("Level %d Score %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
 
         int systemClock = gameBoard.getScoreAndTime()[0][1];
         int totalMinutes = systemClock/60;
@@ -123,9 +117,10 @@ public class GameBoardRenderer implements Renderer {
         int levelMinutes = levelClock/60;
         int levelSeconds = levelClock%60;
 
-        totalTime = String.format("Total Time %02d:%02d",totalMinutes,totalSeconds);
-        levelTime = String.format("Level %d Time %02d:%02d",gameBoard.getLevel(),levelMinutes,levelSeconds);
+        String totalTime = String.format("Total Time %02d:%02d", totalMinutes, totalSeconds);
+        String levelTime = String.format("Level %d Time %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
 
+        String godMode;
         if(gameBoard.getPowerUp().isCollected())
             godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
         else

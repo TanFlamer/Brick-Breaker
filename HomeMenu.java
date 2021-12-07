@@ -104,73 +104,68 @@ public class HomeMenu extends JComponent {
     /**
      * Menu Face Rectangle
      */
-    private Rectangle menuFace;
+    private final Rectangle menuFace;
     /**
      * Start button rectangle
      */
-    private Rectangle startButton;
+    private final Rectangle startButton;
     /**
      * Menu button rectangle
      */
-    private Rectangle menuButton;
+    private final Rectangle menuButton;
 
     /**
      * Score button rectangle
      */
-    private Rectangle scoreButton;
+    private final Rectangle scoreButton;
     /**
      * Custom button rectangle
      */
-    private Rectangle customButton;
+    private final Rectangle customButton;
     /**
      * Image button rectangle
      */
-    private Rectangle imageButton;
+    private final Rectangle imageButton;
     /**
      * Info button rectangle
      */
-    private Rectangle infoButton;
+    private final Rectangle infoButton;
 
     /**
      * Basic stroke for border
      */
-    private BasicStroke borderStoke;
+    private final BasicStroke borderStoke;
     /**
      * Basic stroke for border with no dashes
      */
-    private BasicStroke borderStoke_noDashes;
+    private final BasicStroke borderStoke_noDashes;
 
     /**
      * Font for greeting string
      */
-    private Font greetingsFont;
+    private final Font greetingsFont;
     /**
      * Font for game title
      */
-    private Font gameTitleFont;
+    private final Font gameTitleFont;
     /**
      * Font for credits
      */
-    private Font creditsFont;
+    private final Font creditsFont;
     /**
      * Font for buttons
      */
-    private Font buttonFont;
+    private final Font buttonFont;
 
     /**
      * Font for text
      */
-    private Font textFont;
+    private final Font textFont;
 
     /**
      * PopUpMenu to show random sample levels
      */
-    private JPopupMenu popupmenu = new JPopupMenu();
-
-    /**
-     * Connect HomeMenu with GameFrame methods
-     */
-    private GameFrame owner;
+    private final JPopupMenu popupmenu = new JPopupMenu();
 
     /**
      * Boolean to check if start button clicked
@@ -197,11 +192,6 @@ public class HomeMenu extends JComponent {
      * Boolean to check if PopUpImage clicked
      */
     private boolean imageClicked;
-
-    /**
-     * Integer to load random sample level in PopUpMenu
-     */
-    private int rand;
 
     /**
      * This constructor is used to load all the buttons on the main menu and link them to their functions. Listeners
@@ -329,8 +319,6 @@ public class HomeMenu extends JComponent {
                     owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
             }
         });
-
-        this.owner = owner;
 
         menuFace = new Rectangle(new Point(0,0),area); //make menu face
         this.setPreferredSize(area);
@@ -649,16 +637,16 @@ public class HomeMenu extends JComponent {
     private void drawImage(Graphics2D g2d) throws IOException {
 
         Random rnd = new Random();
-        rand = rnd.nextInt(12);
+        int rand = rnd.nextInt(12);
 
         if(popupmenu.getComponentCount()!=0){
             popupmenu.remove(0);
         }
 
-        JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/ImageShowcase/BrickDestroy"+rand+".png"));
+        JMenuItem jMenuItem = new JMenuItem(new ImageIcon("image/ImageShowcase/BrickDestroy"+ rand +".png"));
         popupmenu.add(jMenuItem);
 
-        BufferedImage myPicture = ImageIO.read(new File("image/ImageShowcase/BrickDestroy"+rand+".png"));
+        BufferedImage myPicture = ImageIO.read(new File("image/ImageShowcase/BrickDestroy"+ rand +".png"));
         Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);
 
         int x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point

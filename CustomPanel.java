@@ -23,102 +23,97 @@ public class CustomPanel extends JPanel implements ActionListener {
     /**
      * JComboBox for the level number.
      */
-    private JComboBox level;
+    private final JComboBox level;
     /**
      * JComboBox for the ball count.
      */
-    private JComboBox ballCount;
+    private final JComboBox ballCount;
     /**
      * JComboBox for the level type.
      */
-    private JComboBox levelGen;
+    private final JComboBox levelGen;
     /**
      * JComboBox for the number of rows of bricks.
      */
-    private JComboBox row;
+    private final JComboBox row;
     /**
      * JComboBox for the bricks in a row.
      */
-    private JComboBox brickRow;
+    private final JComboBox brickRow;
     /**
      * JComboBox for the number of brick types.
      */
-    private JComboBox brickType;
+    private final JComboBox brickType;
     /**
      * JComboBox for the first brick type to spawn.
      */
-    private JComboBox brick1;
+    private final JComboBox brick1;
     /**
      * JComboBox for the second brick type to spawn.
      */
-    private JComboBox brick2;
+    private final JComboBox brick2;
     /**
      * JComboBox for the third brick type to spawn.
      */
-    private JComboBox brick3;
+    private final JComboBox brick3;
     /**
      * JComboBox for the fourth brick type to spawn.
      */
-    private JComboBox brick4;
+    private final JComboBox brick4;
 
     /**
      * JComboBox for the level orientation.
      */
-    private JComboBox playerOrientation;
+    private final JComboBox playerOrientation;
 
     /**
      * JButton to reset settings to default.
      */
-    private JButton reset;
+    private final JButton reset;
     /**
      * JButton to save current settings.
      */
-    private JButton save;
+    private final JButton save;
     /**
      * JButton to set all levels to True Random level type.
      */
-    private JButton trueRandom;
+    private final JButton trueRandom;
     /**
      * JButton to set all levels to Ordered (Min) level type.
      */
-    private JButton minimalOrdered;
+    private final JButton minimalOrdered;
     /**
      * JButton to set all levels to Default level type.
      */
-    private JButton allDefault;
+    private final JButton allDefault;
     /**
      * JButton to randomise all settings.
      */
-    private JButton randomise;
+    private final JButton randomise;
 
     /**
      * JLabel to show current level number.
      */
-    private JLabel levelNum;
+    private final JLabel levelNum;
     /**
      * JLabel to show current level type.
      */
-    private JLabel levelChoice;
+    private final JLabel levelChoice;
 
     /**
      * JLabel to show current level number.
      */
-    private JLabel levelOrientation;
+    private final JLabel levelOrientation;
 
     /**
      * JLabel to show current level orientation.
      */
-    private JLabel levelOrientationChoice;
-
-    /**
-     * Randomizer to get randomised settings when JButton randomise is pressed.
-     */
-    private Random rnd;
+    private final JLabel levelOrientationChoice;
 
     /**
      * Double array of Integer to hold all player choices to send to GameBoard for level generation.
      */
-    private int[][] choice = new int[5][10];
+    private final int[][] choice = new int[5][10];
 
     /**
      * This constructor is used to generate all the JComboBoxes, JButtons and JLabels on the CustomPanel for
@@ -447,7 +442,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         }
         else if(e.getSource()==randomise){
 
-            rnd = new Random(); //get random number
+            Random rnd = new Random(); //get random number
             for(int i = 0; i < 5;i++){
                 choice[i][0] = rnd.nextInt(9);
                 choice[i][1] = rnd.nextInt(10);

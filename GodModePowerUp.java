@@ -7,18 +7,15 @@ public class GodModePowerUp {
 
     private Point midPoint;
 
-    private int diameter;
-
-    private Color inner = Color.RED;
-    private Color border = Color.BLACK;
+    private final Color inner = Color.RED;
+    private final Color border = Color.BLACK;
 
     private boolean spawned = false;
     private boolean collected = false;
 
     public GodModePowerUp(Point midPoint, int diameter){
         this.midPoint = midPoint;
-        this.diameter = diameter;
-        this.powerUp = new Ellipse2D.Double(midPoint.x-diameter/2,midPoint.y-diameter/2,diameter,diameter);
+        this.powerUp = new Ellipse2D.Double(midPoint.x - diameter/2,midPoint.y - diameter/2,diameter,diameter);
     }
 
     public Point getMidPoint() {

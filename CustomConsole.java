@@ -23,15 +23,15 @@ public class CustomConsole extends JDialog {
     /**
      * JFrame which is used to center the CustomConsole.
      */
-    private JFrame owner;
+    private final JFrame owner;
     /**
      * The CustomPanel which is contained within CustomConsole.
      */
-    private CustomPanel customPanel;
+    private final CustomPanel customPanel;
     /**
      * HomeMenu which is repainted when CustomConsole closes.
      */
-    private HomeMenu homeMenu;
+    private final HomeMenu homeMenu;
 
     /**
      * Double array of Integer to hold all player choices to send to GameBoard for level generation.
