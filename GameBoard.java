@@ -36,6 +36,9 @@ public class GameBoard {
     private boolean pauseFlag = true;
     private boolean endFlag = false;
 
+    private Point ballStartPoint;
+    private Point playerStartPoint;
+
     public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
         this.area = area;
@@ -346,5 +349,21 @@ public class GameBoard {
 
     public void setEndFlag(boolean endFlag) {
         this.endFlag = endFlag;
+    }
+
+    public Point getBallStartPoint() {
+        return ballStartPoint;
+    }
+
+    public void setBallStartPoint(Point ballStartPoint) {
+        this.ballStartPoint = ballStartPoint;
+    }
+
+    public Point getPlayerStartPoint() {
+        return playerStartPoint;
+    }
+
+    public void setPlayerStartPoint(Point playerStartPoint) {
+        this.playerStartPoint = playerStartPoint;
     }
 }

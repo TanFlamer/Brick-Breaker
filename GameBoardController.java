@@ -38,9 +38,6 @@ public class GameBoardController {
     private final int[][] choice;
     private final Dimension area;
 
-    private Point startPoint;
-    private Point playerStartPoint;
-
     public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
         this.gameBoard = gameBoard;
         this.brickBreaker = brickBreaker;
@@ -51,15 +48,6 @@ public class GameBoardController {
         this.powerUp = gameBoard.getPowerUp();
         this.choice = gameBoard.getChoice();
         this.area = area;
-
-        if(choice[0][9]==0) {
-            this.startPoint = ball.getCenter(); //start point = initial ball position
-            this.playerStartPoint = player.getMidPoint();
-        }
-        else if (choice[0][9]==1){
-            this.startPoint = new Point(area.width/2,20); //start point = initial ball position
-            this.playerStartPoint = new Point(area.width/2,10); //start point = initial ball position
-        }
         nextLevel(false);
     }
 
@@ -286,16 +274,16 @@ public class GameBoardController {
     public void ballReset(){ //when ball is lost
 
         if(choice[gameBoard.getLevel()-1][9]==0) {
-            startPoint = new Point(area.width/2,area.height-20); //start point = initial ball position
-            playerStartPoint = new Point(area.width/2,area.height-20);
+            gameBoard.setBallStartPoint(new Point(area.width/2,area.height-20));
+            gameBoard.setPlayerStartPoint(new Point(area.width/2,area.height-20));
         }
         else if (choice[gameBoard.getLevel()-1][9]==1){
-            startPoint = new Point(area.width/2,20); //start point = initial ball position
-            playerStartPoint = new Point(area.width/2,10); //start point = initial ball position
+            gameBoard.setBallStartPoint(new Point(area.width/2,20));
+            gameBoard.setPlayerStartPoint(new Point(area.width/2,10));
         }
 
-        ballMoveTo(startPoint);
-        playerMoveTo(playerStartPoint);
+        ballMoveTo(gameBoard.getBallStartPoint());
+        playerMoveTo(gameBoard.getPlayerStartPoint());
 
         setBallSpeed();
         gameBoard.setBallLost(false);
