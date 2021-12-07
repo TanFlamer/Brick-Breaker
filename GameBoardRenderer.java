@@ -1,30 +1,80 @@
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 
+/**
+ * Public class GameBoardRenderer is responsible for rendering all the graphics in the game. The renderer renders
+ * everything from the bricks, ball and player to the game messages and the pause menu.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class GameBoardRenderer implements Renderer {
 
+    /**
+     * White colour to clear the background.
+     */
     private static final Color BG_COLOR = Color.WHITE;
-
+    /**
+     * Continue string.
+     */
     private static final String CONTINUE = "Continue";
+    /**
+     * Restart string
+     */
     private static final String RESTART = "Restart";
+    /**
+     * Exit string.
+     */
     private static final String EXIT = "Exit";
+    /**
+     * Pause Menu String
+     */
     private static final String PAUSE = "Pause Menu";
-
+    /**
+     * Text size of 30.
+     */
     private static final int TEXT_SIZE = 30;
+    /**
+     * Menu words colour of green.
+     */
     private static final Color MENU_COLOR = new Color(0,255,0);
-
+    /**
+     * Font for pause menu words.
+     */
     private final Font menuFont;
+    /**
+     * Integer to record length of string "Pause Menu" to center the pause menu title.
+     */
     private int strLen = 0;
-
+    /**
+     * GameBoard to get all information needed to draw the ball, bricks, player and game messages.
+     */
     private final GameBoard gameBoard;
+    /**
+     * Dimensions of the game screen to draw the pause menu options.
+     */
     private final Dimension area;
 
+    /**
+     * This constructor loads in the GameBoard so that renderer can get all information for rendering and the screen
+     * dimensions to draw the pause menu.
+     * @param gameBoard GameBoard to get all information needed to draw the ball, bricks, player and game messages.
+     * @param area Dimensions of the game screen to draw the pause menu options.
+     */
     public GameBoardRenderer(GameBoard gameBoard,Dimension area) {
         this.gameBoard = gameBoard;
         this.area = area;
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
     }
 
+    /**
+     * This method is used to render the graphics for the entire game screen. The game screen is first cleared with a
+     * white background. Then, a gray background is loaded. The game condition, score and time strings are drawn in
+     * blue and then the ball, bricks, player and power up are drawn. Finally, if the pause menu is loaded,the pause
+     * menu is drawn with its buttons.
+     * @param g This parameter is used to control the graphics such as colour, composite and font.
+     */
     @Override
     public void render(Graphics g) {
 
@@ -53,12 +103,21 @@ public class GameBoardRenderer implements Renderer {
             drawMenu(g2d); //colour pause menu
     }
 
+    /**
+     * This method is used to clear the background by filling it with white colour.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void clear(Graphics2D g2d){ //clear colour
 
         g2d.setColor(BG_COLOR); //get white colour
         g2d.fillRect(0,0, area.width, area.height); //fill frame with white colour
     }
 
+    /**
+     * This method is used to draw the bricks by filling inner colour and drawing outer colour.
+     * @param brick This parameter tells the method what colour to use for the bricks.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawBrick(Brick brick,Graphics2D g2d){
 
         g2d.setColor(brick.getInner()); //get brick inner colour
@@ -68,6 +127,11 @@ public class GameBoardRenderer implements Renderer {
         g2d.draw(brick.getBrickFace()); //draw brick border with colour
     }
 
+    /**
+     * This method is used to draw the ball by filling inner colour and drawing outer colour.
+     * @param ball This parameter tells the method what colour to use for the ball.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawBall(Ball ball,Graphics2D g2d){
 
         Shape s = ball.getBallFace(); //get ball face
@@ -79,6 +143,11 @@ public class GameBoardRenderer implements Renderer {
         g2d.draw(s); //draw ball border with colour
     }
 
+    /**
+     * This method is used to draw the player by filling inner colour and drawing outer colour.
+     * @param p This parameter tells the method what colour to use for the player.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawPlayer(Player p,Graphics2D g2d){
 
         Shape s = p.getPlayerFace(); //get player shape
@@ -90,6 +159,11 @@ public class GameBoardRenderer implements Renderer {
         g2d.draw(s); //draw player border with colour
     }
 
+    /**
+     * This method is used to draw the game messages to show game condition such as number of bricks and balls left
+     * and game focus.
+     * @param g2d This parameter is used to control the colour and font of the game messages.
+     */
     private void drawMessages(Graphics2D g2d){
 
         String message = null;
@@ -146,6 +220,11 @@ public class GameBoardRenderer implements Renderer {
         }
     }
 
+    /**
+     * This method is used to draw a red circle power up which triggers God mode for the player for 10 seconds
+     * when collected.
+     * @param g2d This parameter is used to control the graphics such as colour.
+     */
     private void drawPowerUp(GodModePowerUp powerUp,Graphics2D g2d){
 
         Shape s = powerUp.getPowerUp();
@@ -157,11 +236,19 @@ public class GameBoardRenderer implements Renderer {
         g2d.draw(s);
     }
 
+    /**
+     * This method is used to draw the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour, composite and font.
+     */
     private void drawMenu(Graphics2D g2d){ //colour pause menu
         obscureGameBoard(g2d); //fill pause menu with black colour
         drawPauseMenu(g2d); //draw pause menu
     }
 
+    /**
+     * This method is used to add black composite to the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour, composite and font.
+     */
     private void obscureGameBoard(Graphics2D g2d){ //fill pause menu with black colour
 
         Composite tmp = g2d.getComposite(); //hold current composite
@@ -175,6 +262,10 @@ public class GameBoardRenderer implements Renderer {
         g2d.setComposite(tmp); //reset composite
     }
 
+    /**
+     * This method is used to draw the strings and buttons of the pause menu.
+     * @param g2d This parameter is used to control the graphics such as colour and font.
+     */
     private void drawPauseMenu(Graphics2D g2d){
 
         Font tmpFont = g2d.getFont(); //hold current font

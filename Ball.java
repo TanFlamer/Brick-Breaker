@@ -58,10 +58,10 @@ public class Ball {
     private final Color border = inner.darker().darker();
 
     /**
-     * This constructor creates a ball at the given center point and given radius. The other 4 points of the ball are
+     * This constructor creates a ball at the given center point and given diameter. The other 4 points of the ball are
      * defined relative to the center point.
      * @param center This is the center point of the new ball.
-     * @param diameter This is the diameter of the ball.
+     * @param diameter This is the diameter of the new ball.
      */
     public Ball(Point center,int diameter){
         this.center = center;
@@ -112,7 +112,7 @@ public class Ball {
 
     /**
      * This method is used to return the center point of the ball.
-     * @return The center point is returned.
+     * @return The center point of the ball is returned.
      */
     public Point getCenter() {
         return center;

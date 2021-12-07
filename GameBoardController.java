@@ -6,24 +6,67 @@ import java.awt.geom.RectangularShape;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
+/**
+ * Public class GameBoardController is responsible for manipulating all the entity behaviour in the game. All movement
+ * and collision are processed here, all score and time are calculated here and all flags are triggered here.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class GameBoardController {
 
+    /**
+     * The move amount of the player.
+     */
     private static final int DEF_MOVE_AMOUNT = 5;
-
+    /**
+     * The code for impact to the top of brick.
+     */
     public static final int UP_IMPACT = 100;
+    /**
+     * The code for impact to the bottom of brick.
+     */
     public static final int DOWN_IMPACT = 200;
+    /**
+     * The code for impact to the left of brick.
+     */
     public static final int LEFT_IMPACT = 300;
+    /**
+     * The code for impact to the right of brick.
+     */
     public static final int RIGHT_IMPACT = 400;
-
+    /**
+     * The code for the left side of the brick.
+     */
     public static final int LEFT = 10;
+    /**
+     * The code for the right side of the brick.
+     */
     public static final int RIGHT = 20;
+    /**
+     * The code for the top side of the brick.
+     */
     public static final int UP = 30;
+    /**
+     * The code for the bottom side of the brick.
+     */
     public static final int DOWN = 40;
-
+    /**
+     * The code to choose a random point of the vertical side of the brick.
+     */
     public static final int VERTICAL = 100;
+    /**
+     * The code to choose a random point of the horizontal side of the brick.
+     */
     public static final int HORIZONTAL = 200;
-
+    /**
+     * The depth of the crack.
+     */
     public static final int DEF_CRACK_DEPTH = 1;
+    /**
+     * The steps of the crack.
+     */
     public static final int DEF_STEPS = 35;
 
     private static final Random random = new Random();

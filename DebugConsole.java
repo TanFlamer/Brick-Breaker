@@ -46,15 +46,20 @@ public class DebugConsole extends JDialog {
      */
     private final DebugPanel debugPanel;
     /**
-     * GameBoard which is repainted when DebugConsole closes.
+     * GameBoard which used to get ball speed for the JSlider.
      */
     private final GameBoard gameBoard;
-
+    /**
+     * BrickBreaker which is repainted after DebugConsole closes.
+     */
     private final BrickBreaker brickBreaker;
+
     /**
      * This constructor is used to load the DebugPanel into the DebugConsole and to add in window listeners.
-     *
      * @param owner JFrame which is used to center the DebugConsole.
+     * @param gameEngine GameEngine to fetch the GameBoard.
+     * @param brickBreaker BrickBreaker which is repainted after DebugConsole closes.
+     * @param gameSounds GameSounds to control BGM when DebugConsole opens and closes.
      */
     public DebugConsole(JFrame owner,GameEngine gameEngine,BrickBreaker brickBreaker,GameSounds gameSounds){
 

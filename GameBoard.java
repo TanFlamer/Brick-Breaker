@@ -1,44 +1,147 @@
 import java.awt.*;
 import java.util.Random;
 
+/**
+ * Public class GameBoard is responsible for loading in all entities of the game such as bricks,ball and player. All
+ * state information about the entities such as position , game information such as score and time and game flags are
+ * saved here. The controller manipulates the information here while the renderer renders the information here. The
+ * information is read and manipulated using setters and getters.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class GameBoard {
 
+    /**
+     * Number of levels in the game.
+     */
     public static final int LEVELS_COUNT = 5;
 
+    /**
+     * Diameter of the ball.
+     */
     public static final int BALL_DIAMETER = 10;
+    /**
+     * Diameter of the powerup.
+     */
     public static final int POWER_UP_DIAMETER = 20;
 
+    /**
+     * BrickID for Clay Bricks.
+     */
     private static final int CLAY = 1;
+    /**
+     * BrickID for Steel Bricks.
+     */
     private static final int STEEL = 2;
+    /**
+     * BrickID for Cement Bricks.
+     */
     private static final int CEMENT = 3;
+    /**
+     * BrickID for Concrete Bricks.
+     */
     private static final int CONCRETE = 4;
 
+    /**
+     * This is the randomizer to simulate randomness for the custom levels.
+     */
     private static final Random random = new Random();
+    /**
+     * This is the double array of Bricks to hold the bricks generated for all 5 levels.
+     */
     private final Brick[][] bricks;
+    /**
+     * This is the array of Bricks to hold the current bricks of a level.
+     */
     private Brick[] brick;
+    /**
+     * Double array of integer to record player scores and times.
+     */
     private final int[][] scoreAndTime;
+    /**
+     * This is the double array to hold all the choices of the player in the custom console to create the custom levels.
+     */
     private final int[][] choice;
+    /**
+     * This is the area of the game screen and is used to generate brick position.
+     */
     private final Dimension area;
-    private Player player;
+    /**
+     * This is the player in the game.
+     */
+    private final Player player;
+    /**
+     * This is the ball used in the game.
+     */
     private final Ball ball;
+    /**
+     * This is the power up in the game.
+     */
     private final GodModePowerUp powerUp;
 
+    /**
+     * This is the current level number.
+     */
     private int level = 0;
+    /**
+     * This is the message flag to signal type of message to render in game.
+     */
     private int messageFlag = 0;
+    /**
+     * This is the current brick count.
+     */
     private int brickCount = 0;
+    /**
+     * This is the current ball count.
+     */
     private int ballCount = 3;
+    /**
+     * This is the God Mode time left.
+     */
     private int godModeTimeLeft = 0;
+    /**
+     * This is the number of power up spawns left.
+     */
     private int powerUpSpawns = 0;
+    /**
+     * This is the current start time used to count in-game time.
+     */
     private int startTime = 0;
 
+    /**
+     * This is the flag to signal if pause menu is loaded.
+     */
     private boolean showPauseMenu = false;
+    /**
+     * This is the flag to signal if ball is lost.
+     */
     private boolean ballLost = false;
+    /**
+     * This is the flag to signal if game is paused.
+     */
     private boolean pauseFlag = true;
+    /**
+     * This is the flag to signal if game has ended.
+     */
     private boolean endFlag = false;
 
+    /**
+     * This is the start point of the ball.
+     */
     private Point ballStartPoint;
+    /**
+     * This is the start point of the player.
+     */
     private Point playerStartPoint;
 
+    /**
+     * This constructor loads in the game entities such as bricks, ball and player. The score and time are also
+     * initialised. The choices of the player from the CustomConsole are used to generate the levels.
+     * @param choice The choices of the player in the custom console to create the custom levels.
+     * @param area The area of the game screen used to spawn the game entities.
+     */
     public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
         this.area = area;
@@ -49,6 +152,17 @@ public class GameBoard {
         scoreAndTime = new int[LEVELS_COUNT+1][2];
     }
 
+    /**
+     * This method controls the generation for all the custom levels and returns an array of Bricks for a custom level.
+     *
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @param choice The choices of the player in the custom console to create the custom levels.
+     * @param brickRow This is the number of bricks in a row entered by the player. It is used unless the player chooses
+     *                 a level type which uses random number of bricks in a row.
+     * @param level This is the level number and is used to check the level custom choices.
+     * @return The method returns an array of Bricks which is used for the generation of a custom level.
+     */
     private Brick[] makeAllLevel(Rectangle drawArea, int[][] choice, int brickRow, int level){
 
         int randRow,randBrickRow;
@@ -112,10 +226,34 @@ public class GameBoard {
         return tmp;
     }
 
+    /**
+     * This method is used to generate an array of 31 bricks in 3 lines, all of which are the same type. This
+     * method is used to generate an array of Clay Bricks for the first default level. By studying the code closely,
+     * we can conclude that this method works exactly the same as the method for making the other 3 default chessboard
+     * levels if we specify both typeA and typeB brick to be the same. So, the method body is replaced with the
+     * method call for the makeChessboardLevel to improve readability.
+     *
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @return This method returns an array of Clay Bricks for the first default level.
+     */
     private Brick[] makeSingleTypeLevel(Rectangle drawArea){
         return makeChessboardLevel(drawArea, GameBoard.CLAY, GameBoard.CLAY, 0);
     }
 
+    /**
+     * This method is used to generate an array of 31 bricks in 3 lines. The bricks are of 2 different types
+     * depending on the conditions specified. This method controls the generation of the other 3 default levels.
+     * For even rows, even bricks are of typeA while odd bricks are of typeB. For odd rows, bricks 6, 7 and 11
+     * are of typeA while the rest are typeB. The brick generation code has been rewritten to improve readability.
+     *
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @param typeA This is the first type of brick to be generated for bricks satisfying certain conditions.
+     * @param typeB This is the second type of brick to be generated for bricks satisfying certain conditions.
+     * @param level This is the level number and is used to check the level orientation.
+     * @return This method returns an array of Bricks for the other 3 default levels.
+     */
     private Brick[] makeChessboardLevel(Rectangle drawArea, int typeA, int typeB, int level){
 
         int brickOnLine = 30 / 3; //number of bricks on single line (number of bricks/number of lines)
@@ -147,6 +285,18 @@ public class GameBoard {
         return tmp;
     }
 
+    /**
+     * This method is used to calculate the brick positions for brick generation. The level orientation must be
+     * checked to make sure that the bricks are spawned in the right places.
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @param i This is the number of the current brick being generated.
+     * @param brickOnLine This is the number of bricks on an even line.
+     * @param brickLength This is the length of a brick.
+     * @param brickHeight This is the height of a brick.
+     * @param level This is the level number and is used to check the level orientation.
+     * @return This method returns the new brick position for brick generation.
+     */
     private Point getBrickLocation(Rectangle drawArea, int i, int brickOnLine,int brickLength, int brickHeight, int level){
 
         Point p = new Point();
@@ -180,6 +330,18 @@ public class GameBoard {
         return p;
     }
 
+    /**
+     * This method is used to create 5 levels to be loaded into the game. At first, the 5 default levels are created
+     * and loaded into the double array of Bricks. Then, the level type entered by the player is read. If the level
+     * type for that level entered is not default, a custom level is generated and overwrites the array of Bricks
+     * for that level.
+     *
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @param choice This is the double array containing all the choices selected by the player in the custom console to
+     *               control generation of custom levels.
+     * @return The method returns a double array of Bricks which contain the bricks generated for all 4 level.
+     */
     private Brick[][] makeCustomLevels(Rectangle drawArea, int[][] choice){
 
         Brick[][] tmp = makeDefaultLevels(drawArea); //get default levels
@@ -196,6 +358,13 @@ public class GameBoard {
         return tmp;
     }
 
+    /**
+     * This method creates the 5 default levels and loads them into a double array of Bricks.
+     *
+     * @param drawArea This is the area of the game screen. It is used to get the width of the screen so that
+     *                 brick length can be determined by dividing the number of bricks.
+     * @return The method returns a double array of Bricks which contain the bricks generated for all default 4 level.
+     */
     private Brick[][] makeDefaultLevels(Rectangle drawArea){
         Brick[][] tmp = new Brick[LEVELS_COUNT][]; //4 levels with 31 bricks each
         //get column for each 2d-array
@@ -207,162 +376,291 @@ public class GameBoard {
         return tmp;
     }
 
+    /**
+     * This method is used to create a brick of a certain type with a given size at a given point.
+     * @param point This is the top-left corner of the new brick.
+     * @param size This is the dimensions of the new brick.
+     * @param type This is the type of the new brick.
+     * @return This method returns a new brick of a certain type with a given size at a given point.
+     */
     private Brick makeBrick(Point point, Dimension size, int type){ //make new bricks
         return new Brick(type,point.x,point.y,size.width,size.height,area);
     }
 
+    /**
+     * This method returns the double array of Bricks.
+     * @return The double array of Bricks is returned.
+     */
     public Brick[][] getBricks() {
         return bricks;
     }
-
+    /**
+     * This method returns the player.
+     * @return The player is returned.
+     */
     public Player getPlayer() {
         return player;
     }
-
-    public void setPlayer(Player player){
-        this.player = player;
-    }
-
+    /**
+     * This method returns the ball.
+     * @return The ball is returned.
+     */
     public Ball getBall() {
         return ball;
     }
-
+    /**
+     * This method returns the choices of the player in the CustomConsole.
+     * @return The choices of the player in the CustomConsole is returned.
+     */
     public int[][] getChoice(){
         return choice;
     }
-
+    /**
+     * This method returns the level number.
+     * @return The level number is returned.
+     */
     public int getLevel(){
         return level;
     }
 
+    /**
+     * This method changes the current level number.
+     * @param level This is the new level number.
+     */
     public void setLevel(int level) {
         this.level = level;
     }
-
+    /**
+     * This method returns the current brick count.
+     * @return The current brick count is returned.
+     */
     public int getBrickCount(){
         return brickCount;
     }
 
+    /**
+     * This method changes the current brick count.
+     * @param brickCount This is the new brick count.
+     */
     public void setBrickCount(int brickCount) {
         this.brickCount = brickCount;
     }
-
+    /**
+     * This method returns the current ball count.
+     * @return The current ball count is returned.
+     */
     public int getBallCount(){
         return ballCount;
     }
-
+    /**
+     * This method changes the current ball count.
+     * @param ballCount This is the new ball count.
+     */
     public void setBallCount(int ballCount) {
         this.ballCount = ballCount;
     }
-
+    /**
+     * This method returns the current array of Bricks.
+     * @return The current array of Bricks is returned.
+     */
     public Brick[] getBrick() {
         return brick;
     }
-
+    /**
+     * This method changes the current array of Bricks.
+     * @param brick This is the new array of Bricks.
+     */
     public void setBrick(Brick[] brick) {
         this.brick = brick;
     }
-
+    /**
+     * This method returns all the scores and times of the player.
+     * @return All the scores and times of the player are returned.
+     */
     public int[][] getScoreAndTime() {
         return scoreAndTime;
     }
 
+    /**
+     * This method returns the score of the given level.
+     * @param level The level of the score to be returned.
+     * @return The score of the given level is returned.
+     */
     public int getScore(int level){
         return scoreAndTime[level][0];
     }
-
+    /**
+     * This method returns the time of the given level.
+     * @param level The level of the time to be returned.
+     * @return The time of the given level is returned.
+     */
     public int getTime(int level){
         return scoreAndTime[level][1];
     }
-
+    /**
+     * This method changes the score of the given level.
+     * @param level The level of the score to be changed.
+     * @param score The new score of the level.
+     */
     public void setScore(int level, int score) {
         this.scoreAndTime[level][0] = score;
     }
-
+    /**
+     * This method changes the time of the given level.
+     * @param level The level of the time to be changed.
+     * @param time The new time of the level.
+     */
     public void setTime(int level, int time) {
         this.scoreAndTime[level][1] = time;
     }
 
+    /**
+     * This method returns the message code to render the game message.
+     * @return The message code to render the game message is returned.
+     */
     public int getMessageFlag() {
         return messageFlag;
     }
 
+    /**
+     * This method changes the message code.
+     * @param messageFlag This is the new message code.
+     */
     public void setMessageFlag(int messageFlag) {
         this.messageFlag = messageFlag;
     }
 
+    /**
+     * This method returns the power up.
+     * @return The power up is returned.
+     */
     public GodModePowerUp getPowerUp() {
         return powerUp;
     }
-
+    /**
+     * This method returns the God Mode time left.
+     * @return The God Mode time left is returned.
+     */
     public int getGodModeTimeLeft() {
         return godModeTimeLeft;
     }
 
+    /**
+     * This method changes the God Mode time left.
+     * @param godModeTimeLeft This is the new God Mode time left.
+     */
     public void setGodModeTimeLeft(int godModeTimeLeft) {
         this.godModeTimeLeft = godModeTimeLeft;
     }
-
+    /**
+     * This method returns the pause menu flag.
+     * @return The pause menu flag is returned.
+     */
     public boolean isShowPauseMenu() {
         return showPauseMenu;
     }
-
+    /**
+     * This method changes the pause menu flag.
+     * @param showPauseMenu This is the new pause menu flag.
+     */
     public void setShowPauseMenu(boolean showPauseMenu) {
         this.showPauseMenu = showPauseMenu;
     }
-
+    /**
+     * This method returns the God Mode orb spawns left.
+     * @return The God Mode orb spawns left is returned.
+     */
     public int getPowerUpSpawns() {
         return powerUpSpawns;
     }
-
+    /**
+     * This method changes the God Mode orb spawns left.
+     * @param powerUpSpawns This is the new God Mode orb spawns left.
+     */
     public void setPowerUpSpawns(int powerUpSpawns) {
         this.powerUpSpawns = powerUpSpawns;
     }
-
+    /**
+     * This method returns the start time of the game.
+     * @return The start time of the game is returned.
+     */
     public int getStartTime() {
         return startTime;
     }
-
+    /**
+     * This method changes the start time of the game.
+     * @param startTime This is the new start time of the game.
+     */
     public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
-
+    /**
+     * This method returns the ball lost flag.
+     * @return The ball lost flag is returned.
+     */
     public boolean isBallLost() {
         return ballLost;
     }
-
+    /**
+     * This method changes the ball lost flag.
+     * @param ballLost This is the new ball lost flag.
+     */
     public void setBallLost(boolean ballLost) {
         this.ballLost = ballLost;
     }
-
+    /**
+     * This method returns the game pause flag.
+     * @return The game pause flag is returned.
+     */
     public boolean isPauseFlag() {
         return pauseFlag;
     }
-
+    /**
+     * This method changes the game pause flag.
+     * @param pauseFlag This is the new game pause flag.
+     */
     public void setPauseFlag(boolean pauseFlag) {
         this.pauseFlag = pauseFlag;
     }
-
+    /**
+     * This method returns the game end flag.
+     * @return The game end flag is returned.
+     */
     public boolean isEndFlag() {
         return endFlag;
     }
-
+    /**
+     * This method changes the game end flag.
+     * @param endFlag This is the new game end flag.
+     */
     public void setEndFlag(boolean endFlag) {
         this.endFlag = endFlag;
     }
-
+    /**
+     * This method returns the ball start point.
+     * @return The ball start point is returned.
+     */
     public Point getBallStartPoint() {
         return ballStartPoint;
     }
-
+    /**
+     * This method changes the ball start point.
+     * @param ballStartPoint This is the new ball start point.
+     */
     public void setBallStartPoint(Point ballStartPoint) {
         this.ballStartPoint = ballStartPoint;
     }
-
+    /**
+     * This method returns the player start point.
+     * @return The player start point is returned.
+     */
     public Point getPlayerStartPoint() {
         return playerStartPoint;
     }
-
+    /**
+     * This method changes the player start point.
+     * @param playerStartPoint This is the new player start point.
+     */
     public void setPlayerStartPoint(Point playerStartPoint) {
         this.playerStartPoint = playerStartPoint;
     }

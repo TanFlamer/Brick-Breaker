@@ -43,12 +43,14 @@ public class DebugPanel extends JPanel {
      * JSlider to set ball vertical speed.
      */
     private JSlider ballYSpeed;
-
+    /**
+     * Controller to get methods to add functionality to the debug options.
+     */
     private final GameBoardController controller;
 
     /**
      * This constructor is used to initialize the DebugPanel and add the JButtons and JSliders.
-     *
+     * @param gameEngine GameEngine to fetch the controller to add functionality to the debug options.
      */
     public DebugPanel(GameEngine gameEngine){
 
