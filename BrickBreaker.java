@@ -51,10 +51,6 @@ public class BrickBreaker extends JComponent {
      */
     private final GameEngine engine;
     /**
-     * DebugConsole to debug the game.
-     */
-    private final DebugConsole debugConsole;
-    /**
      * The dimensions of the game screen to draw the pause menu.
      */
     private final Dimension area;
@@ -74,7 +70,6 @@ public class BrickBreaker extends JComponent {
         GameEngine engine = new GameEngine(owner,choice,this,gameSounds,area);
         this.engine = engine;
         this.initialize(owner);
-        debugConsole = new DebugConsole(owner,engine,this,gameSounds);
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
 
         // Game loop.
@@ -106,12 +101,12 @@ public class BrickBreaker extends JComponent {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                handleEvent(keyEvent);
+                engine.handleEvent(keyEvent);
             }
 
             @Override
             public void keyReleased(KeyEvent keyEvent) { //if key released, stop player
-                engine.getController().stop();
+                engine.handleReleaseEvent(keyEvent);
             }
         });
 
@@ -164,51 +159,6 @@ public class BrickBreaker extends JComponent {
                 }
             }
         });
-    }
-
-    /**
-     * This method is used to respond to the key inputs by the player.
-     * @param keyEvent The key presses by the player to get the key codes.
-     */
-    public void handleEvent(KeyEvent keyEvent) {
-
-        switch(keyEvent.getKeyCode()){
-
-            case KeyEvent.VK_A: //press A
-                engine.getController().moveLeft(); //player moves left
-                break;
-
-            case KeyEvent.VK_D: //press D
-                engine.getController().moveRight(); //player moves right
-                break;
-
-            case KeyEvent.VK_ESCAPE: //press esc
-                if(!engine.getGameBoard().isEnded()) {
-                    engine.getGameBoard().setShowPauseMenu(!engine.getGameBoard().isShowPauseMenu());
-                    repaint(); //repaint components
-                }
-                if(engine.getGameBoard().isNotPaused())
-                    engine.getController().reversePauseFlag();
-                break;
-
-            case KeyEvent.VK_SPACE: //press space
-                if(!engine.getGameBoard().isShowPauseMenu()) //if game not paused
-                    engine.getController().reversePauseFlag();
-                break;
-
-            case KeyEvent.VK_F1: //press f1 + alt + shift
-                if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
-                    if(engine.getGameBoard().isNotPaused()){
-                        engine.getController().reversePauseFlag();
-                    }
-                    if(!engine.getGameBoard().isEnded())
-                        debugConsole.setVisible(true); //show debug console
-                }
-                break;
-
-            default: //press anything else
-                engine.getController().stop(); //stop player
-        }
     }
 
     /**

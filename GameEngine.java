@@ -2,6 +2,7 @@ package Main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 
 /**
@@ -26,6 +27,10 @@ public class GameEngine {
      * Renderer to render game graphics.
      */
     private final GameBoardRenderer renderer;
+    /**
+     * DebugConsole to debug the game.
+     */
+    private final DebugConsole debugConsole;
 
     /**
      * This constructor initialises the GameBoard, Controller and Renderer so that the game data can be saved,
@@ -40,6 +45,55 @@ public class GameEngine {
         gameBoard = new GameBoard(choice,area);
         controller = new GameBoardController(owner,gameBoard,brickBreaker,gameSounds,area);
         renderer = new GameBoardRenderer(gameBoard,area);
+        debugConsole = new DebugConsole(owner,this,brickBreaker,gameSounds);
+    }
+
+    /**
+     * This method is used to respond to the key inputs by the player.
+     * @param keyEvent The key presses by the player to get the key codes.
+     */
+    public void handleEvent(KeyEvent keyEvent) {
+
+        switch(keyEvent.getKeyCode()){
+
+            case KeyEvent.VK_A: //press A
+                controller.moveLeft(); //player moves left
+                break;
+
+            case KeyEvent.VK_D: //press D
+                controller.moveRight(); //player moves right
+                break;
+
+            case KeyEvent.VK_ESCAPE: //press esc
+                if(!gameBoard.isEnded()) {
+                    gameBoard.setShowPauseMenu(!gameBoard.isShowPauseMenu());
+                }
+                if(gameBoard.isNotPaused())
+                    controller.reversePauseFlag();
+                break;
+
+            case KeyEvent.VK_SPACE: //press space
+                if(!gameBoard.isShowPauseMenu()) //if game not paused
+                    controller.reversePauseFlag();
+                break;
+
+            case KeyEvent.VK_F1: //press f1 + alt + shift
+                if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
+                    if(gameBoard.isNotPaused()){
+                        controller.reversePauseFlag();
+                    }
+                    if(!gameBoard.isEnded())
+                        debugConsole.setVisible(true); //show debug console
+                }
+                break;
+
+            default: //press anything else
+                controller.stop(); //stop player
+        }
+    }
+
+    public void handleReleaseEvent(KeyEvent keyEvent){
+        controller.stop();
     }
 
     /**
