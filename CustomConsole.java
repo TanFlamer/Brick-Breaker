@@ -42,6 +42,7 @@ public class CustomConsole extends JDialog {
      * This constructor is used to load the CustomPanel into the CustomConsole and to add in window listeners.
      * @param owner JFrame which is used to center the CustomConsole.
      * @param homeMenu HomeMenu which is repainted when CustomConsole closes.
+     * @param gameSounds The BGM and sound effects of the game.
      */
     public CustomConsole(JFrame owner,HomeMenu homeMenu,GameSounds gameSounds) {
 
@@ -58,6 +59,7 @@ public class CustomConsole extends JDialog {
 
     /**
      * This method is used to set the CustomConsole title and to add in window listeners.
+     * @param gameSounds This is used to add BGM to CustomConsole.
      */
     private void initialize(GameSounds gameSounds) {
 

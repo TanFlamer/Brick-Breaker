@@ -39,10 +39,21 @@ public class GameFrame extends JFrame {
      */
     private static final String DEF_TITLE = "Brick Destroy";
 
+    /**
+     * The width of the HomeMenu and HighScore.
+     */
     private static final int MENU_WIDTH = 450;
+    /**
+     * The height of the HomeMenu and HighScore.
+     */
     private static final int MENU_HEIGHT = 300;
-
+    /**
+     * The width of the game screen.
+     */
     private static final int GAME_WIDTH = 600;
+    /**
+     * The height of the game screen.
+     */
     private static final int GAME_HEIGHT = 450;
 
     /**
@@ -67,6 +78,9 @@ public class GameFrame extends JFrame {
      */
     private final InfoScreen infoScreen;
 
+    /**
+     * GameSounds to play BGM and sound effects for the game.
+     */
     private final GameSounds gameSounds;
 
     /**
@@ -74,6 +88,9 @@ public class GameFrame extends JFrame {
      */
     private boolean gaming;
 
+    /**
+     * The choices of the player from the CustomConsole to customise the game.
+     */
     int[][] choice;
 
     /**

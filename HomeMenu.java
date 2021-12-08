@@ -391,6 +391,7 @@ public class HomeMenu extends JComponent {
     /**
      * This method is responsible for painting and repainting the menu face of the HomeMenu.
      * @param g2d This graphics class is used to paint the menu face of the HomeMenu.
+     * @throws IOException This IOException is thrown if the image for the HomeMenu does not exist.
      */
     private void drawContainer(Graphics2D g2d) throws IOException {
 

@@ -4,24 +4,68 @@ import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.io.FileNotFoundException;
 
+/**
+ * Public class BrickBreaker is responsible for loading in the GameEngine to start generating the game. The gamer timer
+ * is also started and loops through update and draw cycles to simulate gameplay. Game listeners can be found here,
+ * and they keep track of the key inputs and mouse inputs on the pause menu. The detection boxes for the pause menu
+ * options are created here. The DebugConsole is also created here.
+ *
+ * @author TanZhunXian
+ * @version 1.0
+ * @since 28/11/2021
+ */
 public class BrickBreaker extends JComponent {
 
+    /**
+     * Continue button area.
+     */
     private Rectangle continueButtonRect;
+    /**
+     * Exit button area.
+     */
     private Rectangle exitButtonRect;
+    /**
+     * Restart button area.
+     */
     private Rectangle restartButtonRect;
-
+    /**
+     * Continue string to get an estimate of options area.
+     */
     private static final String CONTINUE = "Continue";
-
+    /**
+     * Text size of 30 for the font to get an estimate of options area.
+     */
     private static final int TEXT_SIZE = 30;
-
+    /**
+     * Font for pause menu to get an estimate of options area.
+     */
     private final Font menuFont;
-
+    /**
+     * Timer to loop through update and draw cycles.
+     */
     private Timer gameTimer;
-
+    /**
+     * GameEngine to get the results of user inputs.
+     */
     private final GameEngine engine;
+    /**
+     * DebugConsole to debug the game.
+     */
     private final DebugConsole debugConsole;
+    /**
+     * The dimensions of the game screen to draw the pause menu.
+     */
     private final Dimension area;
 
+    /**
+     * This constructor is used to start the game by calling the GameEngine. The game timer is also started to start the
+     * update and draw cycles. Game listeners are also added to keep track and respond to user inputs. The DebugConsole
+     * is also loaded in.
+     * @param owner The JFrame screen used to center the DebugConsole and the game.
+     * @param choice The custom choice of the player in customising the game levels.
+     * @param gameSounds The BGM and sound effects of the game.
+     * @param area The area of the game screen to draw the pause menu.
+     */
     public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds,Dimension area) {
         super();
         this.area = area;
@@ -41,12 +85,17 @@ public class BrickBreaker extends JComponent {
 
             repaint();
 
-            if(engine.getGameBoard().isEndFlag())
+            if(engine.getGameBoard().isEnded())
                 gameTimer.stop();
         });
         gameTimer.start();
     }
 
+    /**
+     * This method is used to add listeners to the JFrame to receive player inputs for the game.
+     * @param owner This parameter is used to set the mouse cursor to hand cursor when pause menu is opened and
+     *              mouse cursor is inside an option.
+     */
     private void initialize(JFrame owner) { //initialize JFrame
         this.setPreferredSize(area); //set frame size
         this.setFocusable(true); //set focusable
@@ -115,6 +164,10 @@ public class BrickBreaker extends JComponent {
         });
     }
 
+    /**
+     * This method is used to respond to the key inputs by the player.
+     * @param keyEvent The key presses by the player to get the key codes.
+     */
     public void handleEvent(KeyEvent keyEvent) {
 
         switch(keyEvent.getKeyCode()){
@@ -128,11 +181,11 @@ public class BrickBreaker extends JComponent {
                 break;
 
             case KeyEvent.VK_ESCAPE: //press esc
-                if(!engine.getGameBoard().isEndFlag()) {
+                if(!engine.getGameBoard().isEnded()) {
                     engine.getGameBoard().setShowPauseMenu(!engine.getGameBoard().isShowPauseMenu());
                     repaint(); //repaint components
                 }
-                if(!engine.getGameBoard().isPauseFlag())
+                if(engine.getGameBoard().isNotPaused())
                     engine.getController().reversePauseFlag();
                 break;
 
@@ -143,10 +196,10 @@ public class BrickBreaker extends JComponent {
 
             case KeyEvent.VK_F1: //press f1 + alt + shift
                 if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
-                    if(!engine.getGameBoard().isPauseFlag()){
+                    if(engine.getGameBoard().isNotPaused()){
                         engine.getController().reversePauseFlag();
                     }
-                    if(!engine.getGameBoard().isEndFlag())
+                    if(!engine.getGameBoard().isEnded())
                         debugConsole.setVisible(true); //show debug console
                 }
                 break;
@@ -156,12 +209,21 @@ public class BrickBreaker extends JComponent {
         }
     }
 
+    /**
+     * This method is used to draw the graphics for the entire game. The game renderer is called from here to render
+     * the game. The detection boxes for the pause menu options are also drawn here.
+     * @param g This parameter is used to get the graphics to draw the game.
+     */
     public void paint(Graphics g) {
         engine.render(g);
         drawPauseMenuChoices(g);
         Toolkit.getDefaultToolkit().sync();
     }
 
+    /**
+     * This method is used to draw the detection boxes for the pause menu options.
+     * @param g This parameter is used to get the graphics to draw the detection boxes for the pause menu options.
+     */
     private void drawPauseMenuChoices(Graphics g){
 
         Graphics2D g2d = (Graphics2D)g;
@@ -192,8 +254,12 @@ public class BrickBreaker extends JComponent {
         }
     }
 
+    /**
+     * This method is used to signal to the game that the focus is lost and to show the focus lost message and pause the
+     * game.
+     */
     public void onLostFocus(){
-        if(!engine.getGameBoard().isPauseFlag()){
+        if(engine.getGameBoard().isNotPaused()){
             engine.getController().reversePauseFlag();
         }
         engine.getGameBoard().setMessageFlag(5);
