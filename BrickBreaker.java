@@ -85,7 +85,7 @@ public class BrickBreaker extends JComponent {
 
             repaint();
 
-            if(engine.getGameBoard().isEndFlag())
+            if(engine.getGameBoard().isEnded())
                 gameTimer.stop();
         });
         gameTimer.start();
@@ -181,11 +181,11 @@ public class BrickBreaker extends JComponent {
                 break;
 
             case KeyEvent.VK_ESCAPE: //press esc
-                if(!engine.getGameBoard().isEndFlag()) {
+                if(!engine.getGameBoard().isEnded()) {
                     engine.getGameBoard().setShowPauseMenu(!engine.getGameBoard().isShowPauseMenu());
                     repaint(); //repaint components
                 }
-                if(!engine.getGameBoard().isPauseFlag())
+                if(engine.getGameBoard().isNotPaused())
                     engine.getController().reversePauseFlag();
                 break;
 
@@ -196,10 +196,10 @@ public class BrickBreaker extends JComponent {
 
             case KeyEvent.VK_F1: //press f1 + alt + shift
                 if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
-                    if(!engine.getGameBoard().isPauseFlag()){
+                    if(engine.getGameBoard().isNotPaused()){
                         engine.getController().reversePauseFlag();
                     }
-                    if(!engine.getGameBoard().isEndFlag())
+                    if(!engine.getGameBoard().isEnded())
                         debugConsole.setVisible(true); //show debug console
                 }
                 break;
@@ -259,7 +259,7 @@ public class BrickBreaker extends JComponent {
      * game.
      */
     public void onLostFocus(){
-        if(!engine.getGameBoard().isPauseFlag()){
+        if(engine.getGameBoard().isNotPaused()){
             engine.getController().reversePauseFlag();
         }
         engine.getGameBoard().setMessageFlag(5);

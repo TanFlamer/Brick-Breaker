@@ -70,7 +70,7 @@ public class Ball {
         this.down = new Point(center.x,center.y + diameter/2);
         this.left = new Point(center.x - diameter/2,center.y);
         this.right = new Point(center.x + diameter/2,center.y);
-        this.ballFace = new Ellipse2D.Double(center.x-diameter/2,center.y-diameter/2,diameter,diameter);
+        this.ballFace = new Ellipse2D.Double(center.x - (double) diameter/2,center.y - (double) diameter/2,diameter,diameter);
     }
 
     /**

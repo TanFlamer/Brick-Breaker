@@ -95,7 +95,7 @@ public class GameBoardController {
     }
 
     public void update() throws FileNotFoundException {
-        if(!gameBoard.isPauseFlag()&&!gameBoard.isEndFlag()) {
+        if(gameBoard.isNotPaused()&&!gameBoard.isEnded()) {
             powerUpRandomSpawn();
             movePlayer();
             moveBall();
@@ -137,8 +137,8 @@ public class GameBoardController {
     }
 
     public void reversePauseFlag(){
-        gameBoard.setPauseFlag(!gameBoard.isPauseFlag());
-        if(!gameBoard.isPauseFlag()){
+        gameBoard.setPauseFlag(gameBoard.isNotPaused());
+        if(gameBoard.isNotPaused()){
             gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
             gameBoard.setMessageFlag(0);
             gameSounds.getBgm().start();
@@ -223,7 +223,7 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("BallLost");
             }
 
-            if(!gameBoard.isPauseFlag())
+            if(gameBoard.isNotPaused())
                 reversePauseFlag();
         }
         else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
@@ -236,12 +236,12 @@ public class GameBoardController {
                 ballReset();
                 gameBoard.setMessageFlag(2);
                 nextLevel(true);
-                if(!gameBoard.isPauseFlag())
+                if(gameBoard.isNotPaused())
                     reversePauseFlag();
             }
             else {
                 gameSounds.playSoundEffect("LastLevel");
-                if(!gameBoard.isPauseFlag())
+                if(gameBoard.isNotPaused())
                     reversePauseFlag();
                 new ScoreBoard(owner,brickBreaker,0,gameBoard.getScoreAndTime(),choice);
                 gameBoard.setMessageFlag(3);

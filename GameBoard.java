@@ -23,7 +23,7 @@ public class GameBoard {
      */
     public static final int BALL_DIAMETER = 10;
     /**
-     * Diameter of the powerup.
+     * Diameter of the power up.
      */
     public static final int POWER_UP_DIAMETER = 20;
 
@@ -307,23 +307,23 @@ public class GameBoard {
 
             if(choice[level][9]==0){
                 x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
-                y = i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+                y = (double) i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
             }
             else if(choice[level][9]==1){
                 x = drawArea.getWidth() - ((i%twoRows)+1)*brickLength;
-                y = drawArea.getHeight() - (2*(i/twoRows)+1)*brickHeight;
+                y = drawArea.getHeight() - (2*((double) i/twoRows)+1)*brickHeight;
             }
         }
         else{ //odd row
 
             int posX = i % twoRows - brickOnLine; //get position of brick on odd row
             if(choice[level][9]==0){
-                x = (posX * brickLength) - (brickLength / 2); // x = get corner X-coordinate of brick
-                y = (i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+                x = (posX * brickLength) - ((double) brickLength / 2); // x = get corner X-coordinate of brick
+                y = ((double) i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
             }
             else if(choice[level][9]==1){
-                x = drawArea.getWidth() + brickLength/2 - (posX+1)*brickLength;
-                y = drawArea.getHeight() - 2*(i/twoRows+1)*brickHeight;
+                x = drawArea.getWidth() + (double) brickLength/2 - (posX+1)*brickLength;
+                y = drawArea.getHeight() - 2*((double) i/twoRows+1)*brickHeight;
             }
         }
         p.setLocation(x,y); //set corner coordinate of brick
@@ -609,11 +609,11 @@ public class GameBoard {
         this.ballLost = ballLost;
     }
     /**
-     * This method returns the game pause flag.
-     * @return The game pause flag is returned.
+     * This method returns the not of the game pause flag.
+     * @return The not of the game pause flag is returned.
      */
-    public boolean isPauseFlag() {
-        return pauseFlag;
+    public boolean isNotPaused() {
+        return !pauseFlag;
     }
     /**
      * This method changes the game pause flag.
@@ -626,7 +626,7 @@ public class GameBoard {
      * This method returns the game end flag.
      * @return The game end flag is returned.
      */
-    public boolean isEndFlag() {
+    public boolean isEnded() {
         return endFlag;
     }
     /**

@@ -23,48 +23,48 @@ public class CustomPanel extends JPanel implements ActionListener {
     /**
      * JComboBox for the level number.
      */
-    private final JComboBox level;
+    private final JComboBox<String> level;
     /**
      * JComboBox for the ball count.
      */
-    private final JComboBox ballCount;
+    private final JComboBox<String> ballCount;
     /**
      * JComboBox for the level type.
      */
-    private final JComboBox levelGen;
+    private final JComboBox<String> levelGen;
     /**
      * JComboBox for the number of rows of bricks.
      */
-    private final JComboBox row;
+    private final JComboBox<String> row;
     /**
      * JComboBox for the bricks in a row.
      */
-    private final JComboBox brickRow;
+    private final JComboBox<String> brickRow;
     /**
      * JComboBox for the number of brick types.
      */
-    private final JComboBox brickType;
+    private final JComboBox<String> brickType;
     /**
      * JComboBox for the first brick type to spawn.
      */
-    private final JComboBox brick1;
+    private final JComboBox<String> brick1;
     /**
      * JComboBox for the second brick type to spawn.
      */
-    private final JComboBox brick2;
+    private final JComboBox<String> brick2;
     /**
      * JComboBox for the third brick type to spawn.
      */
-    private final JComboBox brick3;
+    private final JComboBox<String> brick3;
     /**
      * JComboBox for the fourth brick type to spawn.
      */
-    private final JComboBox brick4;
+    private final JComboBox<String> brick4;
 
     /**
      * JComboBox for the level orientation.
      */
-    private final JComboBox playerOrientation;
+    private final JComboBox<String> playerOrientation;
 
     /**
      * JButton to reset settings to default.
@@ -239,8 +239,8 @@ public class CustomPanel extends JPanel implements ActionListener {
      * @param choice This array of strings are the choices for the JComboBoxes.
      * @return This method returns a JComboBox with the given array of strings as their options.
      */
-    private JComboBox makeComboBox(String[] choice){ //make buttons and add listener
-        return new JComboBox(choice);
+    private JComboBox<String> makeComboBox(String[] choice){ //make buttons and add listener
+        return new JComboBox<>(choice);
     }
 
     /**

@@ -44,7 +44,7 @@ public class GodModePowerUp {
      */
     public GodModePowerUp(Point midPoint, int diameter){
         this.midPoint = midPoint;
-        this.powerUp = new Ellipse2D.Double(midPoint.x - diameter/2,midPoint.y - diameter/2,diameter,diameter);
+        this.powerUp = new Ellipse2D.Double(midPoint.x - (double) diameter/2,midPoint.y - (double) diameter/2,diameter,diameter);
     }
 
     /**
