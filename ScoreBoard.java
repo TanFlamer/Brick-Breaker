@@ -84,6 +84,7 @@ public class ScoreBoard extends JDialog implements ActionListener {
      * removed so that the rankings shown are accurate.
      *
      * @param owner JFrame used to center the ScoreBoard.
+     * @param brickBreaker BrickBreaker which is repainted after ScoreBoard is closed.
      * @param level Integer to get current level number.
      * @param scoreAndTime Double array of integers to record player time and score for each level and the whole game.
      * @param choice Double array of integers to get player choice to generate level category.

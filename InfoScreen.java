@@ -41,6 +41,7 @@ public class InfoScreen extends JDialog {
      *
      * @param owner JFrame used to center the InfoScreen.
      * @param homeMenu HomeMenu which is repainted when InfoScreen closes.
+     * @param gameSounds GameSounds to control BGM when InfoScreen opens and closes.
      * @throws IOException This constructor throws IOException if the image for InfoScreen do not exist.
      */
     public InfoScreen(JFrame owner,HomeMenu homeMenu,GameSounds gameSounds) throws IOException {
@@ -261,6 +262,7 @@ public class InfoScreen extends JDialog {
 
     /**
      * This method is used to set the InfoScreen title and to add in window listeners.
+     * @param gameSounds This is used to add BGM to InfoScreen.
      */
     private void initialize(GameSounds gameSounds) {
 

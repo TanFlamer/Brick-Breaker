@@ -77,6 +77,8 @@ public class DebugConsole extends JDialog {
 
     /**
      * This method is used to set the DebugConsole title and to add in window listeners.
+     * @param gameSounds This is used to add BGM to DebugConsole.
+     * @param gameEngine This is used to load back level BGM after DebugConsole closes.
      */
     private void initialize(GameSounds gameSounds,GameEngine gameEngine){ //call debug console
 

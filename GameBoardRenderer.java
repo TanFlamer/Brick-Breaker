@@ -223,6 +223,7 @@ public class GameBoardRenderer implements Renderer {
     /**
      * This method is used to draw a red circle power up which triggers God mode for the player for 10 seconds
      * when collected.
+     * @param powerUp This parameter tells the method what colour to use for the power up.
      * @param g2d This parameter is used to control the graphics such as colour.
      */
     private void drawPowerUp(GodModePowerUp powerUp,Graphics2D g2d){

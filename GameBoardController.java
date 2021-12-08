@@ -7,8 +7,9 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 
 /**
- * Public class GameBoardController is responsible for manipulating all the entity behaviour in the game. All movement
- * and collision are processed here, all score and time are calculated here and all flags are triggered here.
+ * Public class GameBoardController is responsible for processing all the entity behaviour in the game. All movement
+ * and collision are processed here, all score and time are calculated here and all flags are triggered here. After
+ * the data is processed, the new data is loaded into the GameBoard so that it can be rendered by the renderer.
  *
  * @author TanZhunXian
  * @version 1.0
@@ -69,18 +70,58 @@ public class GameBoardController {
      */
     public static final int DEF_STEPS = 35;
 
+    /**
+     * Randomizer to get random values for power up position, crack path and brick damage probability.
+     */
     private static final Random random = new Random();
 
+    /**
+     * GameBoard to get all game data.
+     */
     private final GameBoard gameBoard;
+    /**
+     * BrickBreaker to repaint after ScoreBoard closes.
+     */
     private final BrickBreaker brickBreaker;
+    /**
+     * GameSounds to add BGM and sound effects to the game.
+     */
     private final GameSounds gameSounds;
+    /**
+     * JFrame to center ScoreBoard on screen.
+     */
     private final JFrame owner;
+    /**
+     * Player to manipulate movement.
+     */
     private final Player player;
+    /**
+     * Ball to manipulate movement and collision.
+     */
     private final Ball ball;
+    /**
+     * Power up to manipulate position, spawn and collection.
+     */
     private final GodModePowerUp powerUp;
+    /**
+     * Choices of player in CustomConsole to correctly manipulate game data.
+     */
     private final int[][] choice;
+    /**
+     * Dimensions of game screen to set game boundaries.
+     */
     private final Dimension area;
 
+    /**
+     * This constructor loads in GameBoard where the game data is kept. Game data is read using getters to be
+     * manipulated. After that, the old data is overwritten by the new manipulated data by using setters. Game sounds
+     * such as BGM and sound effects are also added by loading in GameSounds.
+     * @param owner JFrame to center ScoreBoard on screen.
+     * @param gameBoard GameBoard to get all game data.
+     * @param brickBreaker BrickBreaker to repaint after ScoreBoard closes.
+     * @param gameSounds GameSounds to add BGM and sound effects to the game.
+     * @param area Dimensions of game screen to set game boundaries.
+     */
     public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
         this.gameBoard = gameBoard;
         this.brickBreaker = brickBreaker;
