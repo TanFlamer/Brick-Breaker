@@ -134,10 +134,17 @@ public class GameEngine {
         }
     }
 
+    /**
+     * This method is used to respond to the key releases by the player.
+     */
     public void handleReleaseEvent(){
         controller.stop();
     }
 
+    /**
+     * This method is used to respond to the mouse clicks by the player.
+     * @param mouseEvent The mouse clicks by the player.
+     */
     public void handleMouseClick(MouseEvent mouseEvent){
 
         Point p = mouseEvent.getPoint(); //get mouse click point
@@ -157,6 +164,10 @@ public class GameEngine {
         }
     }
 
+    /**
+     * This method is used to respond to the mouse motion of the player.
+     * @param mouseEvent The mouse motion of the player.
+     */
     public void handleMouseMotion(MouseEvent mouseEvent){
 
         Point p = mouseEvent.getPoint(); //get mouse position

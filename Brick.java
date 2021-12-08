@@ -22,7 +22,7 @@ public class Brick {
      * This variable is used to hold the backup shape of the individual brick. It is used to override the brick face
      * during repairs to remove the crack.
      */
-    private final Shape brickFaceNew;
+    private Shape brickFaceNew;
     /**
      * The border colour of the brick.
      */
@@ -31,6 +31,10 @@ public class Brick {
      * The inner colour of the brick.
      */
     private Color inner;
+    /**
+     * The full strength of the brick.
+     */
+    private final int brickID;
     /**
      * The full strength of the brick.
      */
@@ -62,8 +66,7 @@ public class Brick {
     /**
      * The general path to hold the crack formed.
      */
-    private final GeneralPath crack = new GeneralPath();
-
+    private GeneralPath crack;
 
     /**
      * This constructor is used to create a new brick with the given brickID, position and dimensions. Two brick faces
@@ -79,12 +82,12 @@ public class Brick {
      */
     public Brick(int brickID, int x, int y, int width, int height, Dimension area){
 
-        getBrickInfo(brickID);
+        getBrickInfo(brickID,x,y,width,height);
+        this.brickID = brickID;
         this.broken = false;
         this.strength = fullStrength;
         this.score = scoreMultiplier * area.width/width;
         this.brickFace = new Rectangle(new Point(x,y), new Dimension(width,height));
-        this.brickFaceNew = new Rectangle(new Point(x,y), new Dimension(width,height));
     }
 
     /**
@@ -94,7 +97,7 @@ public class Brick {
      * colour, score multiplier and full strength are also defined here.
      * @param brickID The brickID of the new brick.
      */
-    public void getBrickInfo(int brickID){
+    public void getBrickInfo(int brickID, int x, int y, int width, int height){
 
         switch (brickID) {
             case 1 -> {
@@ -123,6 +126,8 @@ public class Brick {
                 crackable = true;
                 border = new Color(217, 199, 175);
                 inner = new Color(147, 147, 147);
+                crack = new GeneralPath();
+                brickFaceNew = new Rectangle(new Point(x,y), new Dimension(width,height));
             }
             case 4 -> {
                 //Concrete Brick
@@ -132,6 +137,8 @@ public class Brick {
                 crackable = true;
                 border = new Color(24, 22, 16);
                 inner = new Color(50, 46, 46);
+                crack = new GeneralPath();
+                brickFaceNew = new Rectangle(new Point(x,y), new Dimension(width,height));
             }
         }
     }
@@ -248,5 +255,13 @@ public class Brick {
      */
     public int getScore() {
         return score;
+    }
+
+    /**
+     * This method returns the brick ID of the brick.
+     * @return The brick ID of the brick is returned.
+     */
+    public int getBrickID() {
+        return brickID;
     }
 }

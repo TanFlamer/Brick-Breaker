@@ -579,8 +579,10 @@ public class GameBoardController {
     public void repair(Brick b){ //repair brick
         b.setBroken(false);
         b.setStrength(b.getFullStrength());
-        b.getCrack().reset(); //remove crack
-        b.setBrickFace(b.getBrickFaceNew());
+        if(b.getBrickID()==3||b.getBrickID()==4) {
+            b.getCrack().reset(); //remove crack
+            b.setBrickFace(b.getBrickFaceNew());
+        }
     }
 
     /**
