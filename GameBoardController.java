@@ -140,6 +140,14 @@ public class GameBoardController {
         nextLevel(false);
     }
 
+    /**
+     * This method controls and updates the entire game. First, a power up is spawned if available. Then, the player
+     * and ball are moved. After that, any impacts between the player, ball and bricks are checked and processed.
+     * Then, the time and score are calculated and the game messages are updated. Finally, the game checks to see
+     * if the game has done anything special like losing the ball or destroying all the walls and responds accordingly.
+     * The method is not accessed when game is paused or has ended.
+     * @throws FileNotFoundException This method throws FileNotFoundException when audio file is not found.
+     */
     public void update() throws FileNotFoundException {
         if(gameBoard.isNotPaused()&&!gameBoard.isEnded()) {
             powerUpRandomSpawn();
@@ -155,6 +163,12 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method defines the movement of the player. The new position of the player is calculated by adding the move
+     * amount of the player to the old position of the player. The new position of the player is then set as the old
+     * position. The player is then moved to this new position. By calling this method in quick succession, movement
+     * can be simulated.
+     */
     public void movePlayer(){ //move player
         double x = player.getMidPoint().getX() + player.getMoveAmount(); //get player location after move
         if(x < player.getMin() || x > player.getMax()) //if X-coordinate exceeds min or max value
@@ -163,6 +177,11 @@ public class GameBoardController {
         player.getPlayerFace().setLocation(player.getMidPoint().x - (int)player.getPlayerFace().getWidth()/2,player.getMidPoint().y); //set new player location
     }
 
+    /**
+     * This method defines the movement of the ball. The new position of the ball is calculated by adding the speed of
+     * the ball to the old position of the ball. The ball is then moved to this new position. By calling this method
+     * in quick succession, movement can be simulated.
+     */
     public void moveBall(){ //move ball according to speed
         RectangularShape tmp = (RectangularShape) ball.getBallFace();
         ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
@@ -174,18 +193,31 @@ public class GameBoardController {
         ball.setBallFace(tmp);
     }
 
+    /**
+     * This method moves player to the left by the default move amount.
+     */
     public void moveLeft(){ //move player left by default amount
         player.setMoveAmount(-DEF_MOVE_AMOUNT);
     }
 
+    /**
+     * This method moves player to the right by the default move amount.
+     */
     public void moveRight(){ //move player right by default amount
         player.setMoveAmount(DEF_MOVE_AMOUNT);
     }
 
+    /**
+     * This method stops the player movement by setting move amount to 0.
+     */
     public void stop(){ //move player right by default amount
         player.setMoveAmount(0);
     }
 
+    /**
+     * This method reverses the game pause flag. If the game is paused, the game resumes and vice versa. If the game
+     * resumes, the start time is updated, message flag updated and BGM starts. If it is paused, BGM stops playing.
+     */
     public void reversePauseFlag(){
         gameBoard.setPauseFlag(gameBoard.isNotPaused());
         if(gameBoard.isNotPaused()){
@@ -198,6 +230,11 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method sets the ball speed to a random value. For horizontal speed the range is -2 to 2. For vertical speed,
+     * if the player is at the bottom, the range is -1 to -2. If the player is at the top, the range is 1 to 2. The
+     * ball can never have a speed of 0 in either direction.
+     */
     public void setBallSpeed(){
         int speedX,speedY;
         do{
@@ -214,14 +251,26 @@ public class GameBoardController {
         ball.setSpeedY(speedY);
     }
 
+    /**
+     * This method reverses the horizontal speed of the ball to simulate collision and deflection.
+     */
     public void reverseX(){
         ball.setSpeedX(-ball.getSpeedX());
     }
 
+    /**
+     * This method reverses the vertical speed of the ball to simulate collision and deflection.
+     */
     public void reverseY(){
         ball.setSpeedY(-ball.getSpeedY());
     }
 
+    /**
+     * This method calculates the current level score and time and the total level score and time. The score is counted
+     * based on the number of bricks broken. The time is incremented by the second by using a start time. When current
+     * time exceeds start time, 1 second is added and the start time is reset. This allows the player to pause the game
+     * as the start time is also reset when game is resumed.
+     */
     public void calculateScoreAndTime(){
 
         gameBoard.setScore(0,returnPreviousLevelsScore());
@@ -243,6 +292,10 @@ public class GameBoardController {
         gameBoard.setTime(gameBoard.getLevel(),gameBoard.getTime(0) - returnPreviousLevelsTime());
     }
 
+    /**
+     * This method returns the total score of the previous levels.
+     * @return The total score of the previous levels is returned.
+     */
     public int returnPreviousLevelsScore(){
         int total = 0;
         for(int i = gameBoard.getLevel();i > 1; i--){
@@ -251,6 +304,10 @@ public class GameBoardController {
         return total;
     }
 
+    /**
+     * This method returns the total tie of the previous levels.
+     * @return The total time of the previous levels is returned.
+     */
     public int returnPreviousLevelsTime(){
         int total = 0;
         for(int i = gameBoard.getLevel();i > 1; i--){
@@ -259,6 +316,11 @@ public class GameBoardController {
         return total;
     }
 
+    /**
+     * This method checks the game to see if any special conditions are fulfilled such as losing the ball, breaking
+     * all the bricks or collecting the power up and processes the game accordingly.
+     * @throws FileNotFoundException This method throws FileNotFoundException when audio file is not found.
+     */
     public void gameChecks() throws FileNotFoundException {
 
         if(gameBoard.isBallLost()){ //ball is lost
@@ -313,6 +375,11 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method resets the data of the whole level. First, the bricks are all repaired and the ball and player are
+     * moved back to their initial position. The level and total time and scores are then reset. Finally, the power up
+     * spawns are also reset.
+     */
     public void resetLevelData(){
         wallReset();
         ballReset();
@@ -323,6 +390,14 @@ public class GameBoardController {
         gameBoard.setPowerUpSpawns(0);
     }
 
+    /**
+     * This method loads the next level into the game. The boolean parameter checks to see if the player has completed
+     * the last level. If the player has not, the scores and time of the last level are reset. If the player has, the
+     * scores and time are untouched. The method repairs all broken blocks of the current level before loading in the
+     * bricks of the new level. Player and ball are moved to their default position and brick count and ball count are
+     * reset. The player cannot load past the 5th level.
+     * @param trueProgression This parameter checks to see if the player has completed the last level.
+     */
     public void nextLevel(boolean trueProgression){
         if(gameBoard.getLevel()==5)
             return;
@@ -339,6 +414,12 @@ public class GameBoardController {
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
+    /**
+     * This method loads the previous level into the game. The previous level data is reset with this method. The
+     * method repairs all broken blocks of the current level before loading in the bricks of the previous level. Player
+     * and ball are moved to their default position and brick count and ball count are reset. The player cannot load
+     * before the 1st level.
+     */
     public void previousLevel(){
         if(gameBoard.getLevel()==1)
             return;
@@ -351,16 +432,27 @@ public class GameBoardController {
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
+    /**
+     * This method resets the total level score and time by overriding it with the previous level scores and times.
+     */
     public void resetTotalScoreAndTime(){
         gameBoard.setScore(0,returnPreviousLevelsScore());
         gameBoard.setTime(0,returnPreviousLevelsTime());
     }
 
+    /**
+     * This method resets the current level score and time.
+     */
     public void resetLevelScoreAndTime(){
         gameBoard.setScore(gameBoard.getLevel(),0);
         gameBoard.setTime(gameBoard.getLevel(),0);
     }
 
+    /**
+     * This method is used to reset the player and the ball to the default starting position. It is triggered when
+     * the current ball has left the page border. This can occur with the bottom or top border depending on the player
+     * orientation. The ball is reset with a new horizontal and vertical speed. The ball lost flag is then set to false.
+     */
     public void ballReset(){ //when ball is lost
 
         if(choice[gameBoard.getLevel()-1][9]==0) {
@@ -379,6 +471,11 @@ public class GameBoardController {
         gameBoard.setBallLost(false);
     }
 
+    /**
+     * This method is used to move the ball to a given point. The given point is set as the new midpoint of the ball
+     * and the ball is then moved to this point.
+     * @param p This is the new center point of the ball.
+     */
     public void ballMoveTo(Point p){ //teleport ball to point p
         ball.setCenter(p);
 
@@ -390,6 +487,11 @@ public class GameBoardController {
         ball.setBallFace(tmp);
     }
 
+    /**
+     * This method is used to move the player to a given point. The given point is set as the new midpoint of the
+     * player and the player is then moved to this point.
+     * @param p This is the new center point of the player.
+     */
     public void playerMoveTo(Point p){ //teleport player to point p
         player.setMidPoint(p);
 
@@ -401,6 +503,11 @@ public class GameBoardController {
         player.setPlayerFace(tmp);
     }
 
+    /**
+     * This method is used to move the power up to a given point. The given point is set as the new midpoint of the
+     * power up and the power up is then moved to this point.
+     * @param p This is the new center point of the power up.
+     */
     public void powerUpMoveTo(Point p){
         powerUp.setMidPoint(p);
 
@@ -413,6 +520,11 @@ public class GameBoardController {
         powerUp.setPowerUp(tmp);
     }
 
+    /**
+     * This method is used to spawn a power up at a random point of a line. The player accumulates a power up spawn
+     * every minute. The next power up will spawn after the last one is collected and used and if the player has a spare
+     * power up spawn.
+     */
     public void powerUpRandomSpawn(){
         int x,y;
 
@@ -431,10 +543,19 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method checks to see if the power up is collected by checking to see if any of the 5 points of the ball are
+     * inside the power up.
+     * @return This method returns a boolean to signal if the power up is collected.
+     */
     public boolean powerUpCollected(){
         return (powerUp.getPowerUp().contains(ball.getCenter())||powerUp.getPowerUp().contains(ball.getUp())||powerUp.getPowerUp().contains(ball.getDown())||powerUp.getPowerUp().contains(ball.getLeft())||powerUp.getPowerUp().contains(ball.getRight()));
     }
 
+    /**
+     * This method is used to reset the condition of a level. All the bricks are repaired by removing the cracks
+     * and setting their broken flag to false. The brick count and ball count is also reset.
+     */
     public void wallReset(){
         for(Brick b : bricks[gameBoard.getLevel()-1])
             repair(b); //reset brick to full strength
@@ -442,6 +563,9 @@ public class GameBoardController {
         resetBallCount();
     }
 
+    /**
+     * This method is used to reset number of balls the player has.
+     */
     public void resetBallCount(){
         if(choice[gameBoard.getLevel()-1][8]!=0) {
             gameBoard.setBallCount(choice[gameBoard.getLevel()-1][8]);
@@ -451,6 +575,11 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method is used to repair the bricks by setting their broken flag to false and resetting their strength. The
+     * crack on the bricks are also removed if they are present.
+     * @param b The brick to be repaired.
+     */
     public void repair(Brick b){ //repair brick
         b.setBroken(false);
         b.setStrength(b.getFullStrength());
@@ -458,6 +587,16 @@ public class GameBoardController {
         b.setBrickFace(b.getBrickFaceNew());
     }
 
+    /**
+     * This method checks for any impact of the ball with the player. If player face contains the bottom side of
+     * the ball inside and orientation of the player is at the bottom, then impact has occurred. If player face
+     * contains the top side of the ball inside and orientation of the player is at the top, then impact
+     * has occurred.
+     *
+     * @param b The ball which is checked for impact with the player.
+     * @param playerPosition The orientation of the player in game.
+     * @return A boolean to signify if impact between the ball and player has occurred is returned.
+     */
     public boolean ballPlayerImpact(Ball b, int playerPosition){ //scan to see if player contains bottom side of ball
         if(playerPosition==0){
             return player.getPlayerFace().contains(b.getCenter()) && player.getPlayerFace().contains(b.getDown());
@@ -468,6 +607,21 @@ public class GameBoardController {
         return false;
     }
 
+    /**
+     * This method is used to check for any impacts of the ball and define all the behaviours when impact with
+     * the ball occurs. If impact occurs with the player, vertical direction of ball is reversed. If impact occurs
+     * with a brick, the method below will compute the outcome. If impact occurs with the left and right page borders,
+     * horizontal direction of ball is reversed. For a game with bottom player orientation, if impact occurs with the
+     * top page border, vertical direction of ball is reversed. For a game with top player orientation, if impact occurs
+     * with the bottom page border, vertical direction of ball is reversed. Finally, if ball leaves the bottom page
+     * border on bottom player orientation or leaves the top page border on top player orientation, ball is lost,
+     * ball count decreases and player and ball position are reset.
+     *
+     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
+     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
+     * @param playerPosition This is the level orientation of the level and is used to determine the action taken
+     *                       when ball collides with top and bottom page border.
+     */
     public void findImpacts(boolean collected, int playerPosition){ //impact method
         if(ballPlayerImpact(ball,playerPosition)){ //if player hits ball
             gameSounds.playSoundEffect("Bounce");
@@ -502,6 +656,19 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method is used to check for any impacts of the ball and the bricks. If impact occurs with a brick, it
+     * checks if the brick is already broken. If brick is already broken, no impact occurs and the ball just passes
+     * through. If brick is not broken, impact occurs and brick count will decrease if the brick is broken. The
+     * direction of impact between the ball and brick are taken and the direction of motion of the ball is reversed.
+     * If power up has been collected then ball deflection is disabled and bricks are destroyed instantly on collision
+     * with the ball.
+     *
+     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
+     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
+     * @return This method returns a boolean to signify if the brick impacted by the ball is unbroken at the start
+     *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
+     */
     private boolean impactWall(boolean collected){ //method to check impact with wall
         for(Brick b : bricks[gameBoard.getLevel()-1]){
             //Vertical Impact
@@ -531,11 +698,25 @@ public class GameBoardController {
         return false;
     }
 
+    /**
+     * This method is used to check for any impacts of the ball and the left and right page border.
+     * @return This method returns a boolean to signify if the ball is leaving the left or right page border.
+     */
     private boolean impactBorder(){ //if ball impacts left or right border
         Point2D p = ball.getCenter();
         return ((p.getX() < 0) ||(p.getX() > area.width));
     }
 
+    /**
+     * This method checks to see if impact occurs between the ball and brick. If the brick is already broken, then
+     * no impact occurs. If the brick is scanned to see if any points of the ball is contained within the brick face.
+     * If there is, then collision has occurred and the direction of collision is returned.
+     *
+     * @param b This is the ball that is checked against the bricks.
+     * @param brick This is the brick that is checked.
+     * @return This method returns 0 if no collision occurs, else it returns a code to signify the direction
+     *         of collision.
+     */
     public final int findImpact(Ball b,Brick brick){ //get direction of impact
         if(brick.isBroken()) //if already broken return 0
             return 0;
@@ -551,6 +732,17 @@ public class GameBoardController {
         return out; //return direction of impact
     }
 
+    /**
+     * This method is used to check if an impact occurs with a brick. If the brick is already broken then
+     * no impact occurs. If the brick is unbroken, impact occurs and the condition of the brick is returned.
+     * If the brick is crackable, the point of impact and crack direction are used to generate a crack and
+     * update the brick.
+     *
+     * @param point The point of impact of the ball and the brick.
+     * @param dir The direction of travel of the crack.
+     * @param b This is the brick that is checked.
+     * @return This method returns a boolean to signify the condition of the brick.
+     */
     public boolean setImpact(Point2D point, int dir, Brick b) { //get point of impact and impact direction
         if(b.isBroken()) //if already broken then no impact
             return false;
@@ -565,8 +757,15 @@ public class GameBoardController {
         return b.isBroken(); //signal broken
     }
 
+    /**
+     * This method causes an impact to the brick if the random probability is less than the damage probability. If
+     * impact occurs, then brick strength is reduced and brick broken condition is updated. There are different
+     * sound effects for successful and unsuccessful impacts.
+     * @param b This is the brick that is checked.
+     * @return This method returns a boolean to signal if impact is successful.
+     */
     private boolean impact(Brick b){
-        if(random.nextDouble() < b.getBreakProbability()){ //if random probability less than STEEL_PROBABILITY
+        if(random.nextDouble() < b.getBreakProbability()){ //if random probability less than DAMAGE_PROBABILITY
             gameSounds.playSoundEffect("Damage");
             b.setStrength(b.getStrength()-1); //reduce brick strength
             b.setBroken(b.getStrength() == 0); //if strength = 0, signal brick broken
@@ -576,6 +775,12 @@ public class GameBoardController {
         return false;
     }
 
+    /**
+     * This method creates a crack from the impact point in the given direction.
+     * @param point The impact point of the ball and brick.
+     * @param direction The direction of travel of the crack in the brick.
+     * @param b This is the brick to be cracked.
+     */
     private void makeCrack(Point2D point, int direction, Brick b){ //get point of impact and crack direction
 
         Rectangle bounds = b.getBrickFace().getBounds(); //get brick bounds
@@ -613,6 +818,12 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method creates a crack from the impact point to the randomly selected end point.
+     * @param start The impact point between the ball and brick.
+     * @param end A randomly selected point on the other side of the brick from the point of impact.
+     * @param b This is the brick to be cracked.
+     */
     private void makeCrack(Point start, Point end, Brick b){ //make crack
 
         GeneralPath path = new GeneralPath(); //path of crack
@@ -635,6 +846,10 @@ public class GameBoardController {
         b.getCrack().append(path,true); //connect crack to brick
     }
 
+    /**
+     * This method appends the new crack to the brick and updates the brick face.
+     * @param b This is the brick to be cracked.
+     */
     private void updateBrick(Brick b){
         if(!b.isBroken()){ //if brick is not broken
             GeneralPath gp = b.getCrack(); //draw crack
@@ -643,6 +858,13 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * This method selects a random point between 2 points in a given direction to generate the crack.
+     * @param from The first point that makes up a line with the second point.
+     * @param to The second point that makes up a line with the first point.
+     * @param direction The direction of the line.
+     * @return This method returns a random point on the other side of the brick from the point of impact.
+     */
     private Point makeRandomPoint(Point from,Point to, int direction){ //select random point between 2 given points
 
         Point out = new Point(); //new point
@@ -661,11 +883,19 @@ public class GameBoardController {
         return out; //return new point
     }
 
+    /**
+     * This method chooses a random point for the next step of the crack to travel to.
+     * @return A random point for the next step of the crack to travel to is returned.
+     */
     private int randomInBounds(){ //get random addition to Y-coordinate
         int n = (DEF_CRACK_DEPTH * 2) + 1;
         return random.nextInt(n) - DEF_CRACK_DEPTH; //return random number between -bound to bound
     }
 
+    /**
+     * This method generates the game messages depending on the message flags and game data. The messages are then
+     * rendered into the game.
+     */
     private void generateGameMessages(){
 
         String message = null;
