@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.Random;
+import java.lang.Math;
 
 /**
  * Public class GameBoard is responsible for loading in all entities of the game such as bricks,ball and player. All
@@ -52,10 +53,6 @@ public class GameBoard {
      * This is the double array of Bricks to hold the bricks generated for all 5 levels.
      */
     private final Brick[][] bricks;
-    /**
-     * This is the array of Bricks to hold the current bricks of a level.
-     */
-    private Brick[] brick;
     /**
      * Double array of integer to record player scores and times.
      */
@@ -135,6 +132,10 @@ public class GameBoard {
      * This is the start point of the player.
      */
     private Point playerStartPoint;
+    /**
+     * This is the String array to hold the game messages.
+     */
+    private final String[] gameMessages;
 
     /**
      * This constructor loads in the game entities such as bricks, ball and player. The score and time are also
@@ -150,6 +151,7 @@ public class GameBoard {
         powerUp = new GodModePowerUp(new Point(area.width/2,area.height/2),POWER_UP_DIAMETER);
         bricks = makeCustomLevels(new Rectangle(0,0,area.width,area.height), choice);
         scoreAndTime = new int[LEVELS_COUNT+1][2];
+        gameMessages = new String[6];
     }
 
     /**
@@ -262,7 +264,7 @@ public class GameBoard {
         int centerRight = brickOnLine / 2 + 1; // 10/2 + 1 = 5 + 1 = 6
 
         double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
-        double brickHgt = brickLen / (double) 3; //get brick height (brick length/brick size ratio)
+        double brickHgt = brickLen / 3; //get brick height (brick length/brick size ratio)
 
         Brick[] tmp  = new Brick[30+(3/2)]; //array of Bricks which account for extra brick in odd rows
 
@@ -307,23 +309,23 @@ public class GameBoard {
 
             if(choice[level][9]==0){
                 x = i % twoRows * brickLength; // x = get corner X-coordinate of brick
-                y = (double) i / twoRows * 2 * brickHeight; // y = get corner Y-coordinate of brick
+                y = Math.floor((double) i / twoRows) * 2 * brickHeight; // y = get corner Y-coordinate of brick
             }
             else if(choice[level][9]==1){
                 x = drawArea.getWidth() - ((i%twoRows)+1)*brickLength;
-                y = drawArea.getHeight() - (2*((double) i/twoRows)+1)*brickHeight;
+                y = drawArea.getHeight() - (2*(Math.floor((double) i / twoRows))+1)*brickHeight;
             }
         }
         else{ //odd row
 
             int posX = i % twoRows - brickOnLine; //get position of brick on odd row
             if(choice[level][9]==0){
-                x = (posX * brickLength) - ((double) brickLength / 2); // x = get corner X-coordinate of brick
-                y = ((double) i / twoRows * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
+                x = (posX * brickLength) - ((double)brickLength / 2); // x = get corner X-coordinate of brick
+                y = (Math.floor((double) i / twoRows) * 2 + 1) * brickHeight; // y = get corner Y-coordinate of brick
             }
             else if(choice[level][9]==1){
-                x = drawArea.getWidth() + (double) brickLength/2 - (posX+1)*brickLength;
-                y = drawArea.getHeight() - 2*((double) i/twoRows+1)*brickHeight;
+                x = drawArea.getWidth() + (double)brickLength/2 - (posX+1)*brickLength;
+                y = drawArea.getHeight() - 2*(Math.floor((double) i / twoRows)+1)*brickHeight;
             }
         }
         p.setLocation(x,y); //set corner coordinate of brick
@@ -458,20 +460,6 @@ public class GameBoard {
      */
     public void setBallCount(int ballCount) {
         this.ballCount = ballCount;
-    }
-    /**
-     * This method returns the current array of Bricks.
-     * @return The current array of Bricks is returned.
-     */
-    public Brick[] getBrick() {
-        return brick;
-    }
-    /**
-     * This method changes the current array of Bricks.
-     * @param brick This is the new array of Bricks.
-     */
-    public void setBrick(Brick[] brick) {
-        this.brick = brick;
     }
     /**
      * This method returns all the scores and times of the player.
@@ -663,5 +651,21 @@ public class GameBoard {
      */
     public void setPlayerStartPoint(Point playerStartPoint) {
         this.playerStartPoint = playerStartPoint;
+    }
+    /**
+     * This method returns the message specified with the code.
+     * @param num The code of the message to be returned.
+     * @return The message specified with the code is returned.
+     */
+    public String getGameMessages(int num) {
+        return gameMessages[num];
+    }
+    /**
+     * This method changes the specified game message with a new game message.
+     * @param num The code of the message to be changed.
+     * @param gameMessage The new game message.
+     */
+    public void setGameMessages(int num,String gameMessage) {
+        this.gameMessages[num] = gameMessage;
     }
 }

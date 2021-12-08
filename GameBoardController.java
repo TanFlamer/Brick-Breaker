@@ -8,7 +8,7 @@ import java.util.Random;
 
 /**
  * Public class GameBoardController is responsible for processing all the entity behaviour in the game. All movement
- * and collision are processed here, all score and time are calculated here and all flags are triggered here. After
+ * and collision are processed here, all score and time are calculated here and all flags are processed here. After
  * the data is processed, the new data is loaded into the GameBoard so that it can be rendered by the renderer.
  *
  * @author TanZhunXian
@@ -92,6 +92,10 @@ public class GameBoardController {
      */
     private final JFrame owner;
     /**
+     * This is the double array of Bricks to hold the bricks generated for all 5 levels.
+     */
+    private final Brick[][] bricks;
+    /**
      * Player to manipulate movement.
      */
     private final Player player;
@@ -127,6 +131,7 @@ public class GameBoardController {
         this.brickBreaker = brickBreaker;
         this.gameSounds = gameSounds;
         this.owner = owner;
+        this.bricks = gameBoard.getBricks();
         this.player = gameBoard.getPlayer();
         this.ball = gameBoard.getBall();
         this.powerUp = gameBoard.getPowerUp();
@@ -142,7 +147,11 @@ public class GameBoardController {
             moveBall();
             findImpacts(powerUp.isCollected(), choice[gameBoard.getLevel()-1][9]);
             calculateScoreAndTime();
+            generateGameMessages();
             gameChecks();
+        }
+        else {
+            generateGameMessages();
         }
     }
 
@@ -216,7 +225,7 @@ public class GameBoardController {
     public void calculateScoreAndTime(){
 
         gameBoard.setScore(0,returnPreviousLevelsScore());
-        for(Brick b: gameBoard.getBrick()){
+        for(Brick b: bricks[gameBoard.getLevel()-1]){
             if(b.isBroken()){
                 gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
             }
@@ -272,7 +281,7 @@ public class GameBoardController {
             gameSounds.playSoundEffect("NextLevel");
             new ScoreBoard(owner,brickBreaker,gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
 
-            if(gameBoard.getLevel() < gameBoard.getBricks().length){ //if level left / level number < total level
+            if(gameBoard.getLevel() < bricks.length){ //if level left / level number < total level
                 wallReset();
                 ballReset();
                 gameBoard.setMessageFlag(2);
@@ -324,9 +333,8 @@ public class GameBoardController {
         if(!trueProgression)
             resetLevelScoreAndTime();
 
-        gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
         gameBoard.setLevel(gameBoard.getLevel()+1);
-        gameBoard.setBrickCount(gameBoard.getBrick().length);
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetLevelData();
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
@@ -337,10 +345,8 @@ public class GameBoardController {
 
         resetLevelScoreAndTime();
         wallReset();
-        gameBoard.setLevel(gameBoard.getLevel()-2);
-        gameBoard.setBrick(gameBoard.getBricks()[gameBoard.getLevel()]);
-        gameBoard.setLevel(gameBoard.getLevel()+1);
-        gameBoard.setBrickCount(gameBoard.getBrick().length);
+        gameBoard.setLevel(gameBoard.getLevel()-1);
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetLevelData();
         gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
@@ -430,9 +436,9 @@ public class GameBoardController {
     }
 
     public void wallReset(){
-        for(Brick b : gameBoard.getBrick())
+        for(Brick b : bricks[gameBoard.getLevel()-1])
             repair(b); //reset brick to full strength
-        gameBoard.setBrickCount(gameBoard.getBrick().length);
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetBallCount();
     }
 
@@ -497,7 +503,7 @@ public class GameBoardController {
     }
 
     private boolean impactWall(boolean collected){ //method to check impact with wall
-        for(Brick b : gameBoard.getBrick()){
+        for(Brick b : bricks[gameBoard.getLevel()-1]){
             //Vertical Impact
             switch (findImpact(ball,b)) {
                 case UP_IMPACT -> {
@@ -658,5 +664,50 @@ public class GameBoardController {
     private int randomInBounds(){ //get random addition to Y-coordinate
         int n = (DEF_CRACK_DEPTH * 2) + 1;
         return random.nextInt(n) - DEF_CRACK_DEPTH; //return random number between -bound to bound
+    }
+
+    private void generateGameMessages(){
+
+        String message = null;
+        if(gameBoard.getMessageFlag()==0)
+            message = String.format("Bricks: %d  Balls %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
+        else if(gameBoard.getMessageFlag()==1)
+            message = "Game over"; //show game over message
+        else if(gameBoard.getMessageFlag()==2)
+            message = "Go to Next Level";
+        else if(gameBoard.getMessageFlag()==3)
+            message = "ALL WALLS DESTROYED";
+        else if(gameBoard.getMessageFlag()==4)
+            message = "Restarting Game...";
+        else if(gameBoard.getMessageFlag()==5)
+            message = "Focus Lost";
+
+        gameBoard.setGameMessages(0,message);
+
+        String totalScore = String.format("Total Score %d", gameBoard.getScoreAndTime()[0][0]);
+        gameBoard.setGameMessages(1,totalScore);
+        String levelScore = String.format("Level %d Score %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
+        gameBoard.setGameMessages(2,levelScore);
+
+        int systemClock = gameBoard.getScoreAndTime()[0][1];
+        int totalMinutes = systemClock/60;
+        int totalSeconds = systemClock%60;
+
+        int levelClock = gameBoard.getScoreAndTime()[gameBoard.getLevel()][1];
+        int levelMinutes = levelClock/60;
+        int levelSeconds = levelClock%60;
+
+        String totalTime = String.format("Total Time %02d:%02d", totalMinutes, totalSeconds);
+        gameBoard.setGameMessages(3,totalTime);
+        String levelTime = String.format("Level %d Time %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
+        gameBoard.setGameMessages(4,levelTime);
+
+        String godMode;
+        if(gameBoard.getPowerUp().isCollected())
+            godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
+        else
+            godMode = String.format("God Mode Orbs Left %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
+
+        gameBoard.setGameMessages(5,godMode);
     }
 }

@@ -87,12 +87,12 @@ public class GameBoardRenderer implements Renderer {
 
         drawMessages(g2d);
 
-        for(Brick b : gameBoard.getBrick()) { //loop through bricks
+        for(Brick b : gameBoard.getBricks()[gameBoard.getLevel()-1]) { //loop through bricks
             if(!b.isBroken())
                 drawBrick(b, g2d); //colour brick
         }
 
-        if(!gameBoard.getPowerUp().isCollected()&&gameBoard.getPowerUp().isSpawned()){
+        if(!gameBoard.getPowerUp().isCollected() && gameBoard.getPowerUp().isSpawned()){
             drawPowerUp(gameBoard.getPowerUp(),g2d);
         }
 
@@ -166,57 +166,23 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawMessages(Graphics2D g2d){
 
-        String message = null;
-        if(gameBoard.getMessageFlag()==0)
-            message = String.format("Bricks: %d  Balls %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
-        else if(gameBoard.getMessageFlag()==1)
-            message = "Game over"; //show game over message
-        else if(gameBoard.getMessageFlag()==2)
-            message = "Go to Next Level";
-        else if(gameBoard.getMessageFlag()==3)
-            message = "ALL WALLS DESTROYED";
-        else if(gameBoard.getMessageFlag()==4)
-            message = "Restarting Game...";
-        else if(gameBoard.getMessageFlag()==5)
-            message = "Focus Lost";
-
-        String totalScore = String.format("Total Score %d", gameBoard.getScoreAndTime()[0][0]);
-        String levelScore = String.format("Level %d Score %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
-
-        int systemClock = gameBoard.getScoreAndTime()[0][1];
-        int totalMinutes = systemClock/60;
-        int totalSeconds = systemClock%60;
-
-        int levelClock = gameBoard.getScoreAndTime()[gameBoard.getLevel()][1];
-        int levelMinutes = levelClock/60;
-        int levelSeconds = levelClock%60;
-
-        String totalTime = String.format("Total Time %02d:%02d", totalMinutes, totalSeconds);
-        String levelTime = String.format("Level %d Time %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
-
-        String godMode;
-        if(gameBoard.getPowerUp().isCollected())
-            godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
-        else
-            godMode = String.format("God Mode Orbs Left %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
-
         g2d.setColor(Color.BLUE); //set blue colour
 
-        if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==0) {
-            g2d.drawString(message, 250, 225); //set message colour as blue
-            g2d.drawString(totalScore, 250, 240); //set message colour as blue
-            g2d.drawString(levelScore, 250, 255); //set message colour as blue
-            g2d.drawString(totalTime, 250, 270); //set message colour as blue
-            g2d.drawString(levelTime, 250, 285); //set message colour as blue
-            g2d.drawString(godMode, 250, 300); //set message colour as blue
+        if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==0 && gameBoard.getGameMessages(0)!=null) {
+            g2d.drawString(gameBoard.getGameMessages(0), 250, 225); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(1), 250, 240); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(2), 250, 255); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(3), 250, 270); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(4), 250, 285); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(5), 250, 300); //set message colour as blue
         }
-        else if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==1){
-            g2d.drawString(message, 250, 150); //set message colour as blue
-            g2d.drawString(totalScore, 250, 165); //set message colour as blue
-            g2d.drawString(levelScore, 250, 180); //set message colour as blue
-            g2d.drawString(totalTime, 250, 195); //set message colour as blue
-            g2d.drawString(levelTime, 250, 210); //set message colour as blue
-            g2d.drawString(godMode, 250, 225); //set message colour as blue
+        else if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==1 && gameBoard.getGameMessages(0)!=null){
+            g2d.drawString(gameBoard.getGameMessages(0), 250, 150); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(1), 250, 165); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(2), 250, 180); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(3), 250, 195); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(4), 250, 210); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(5), 250, 225); //set message colour as blue
         }
     }
 
