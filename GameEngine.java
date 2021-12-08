@@ -61,27 +61,31 @@ public class GameEngine {
     /**
      * Renderer to render game graphics.
      */
-    private final GameBoardRenderer renderer;
+    private final Renderer renderer;
     /**
      * DebugConsole to debug the game.
      */
     private final DebugConsole debugConsole;
+    /**
+     * GameSounds to play BGM and sound effects for the game.
+     */
+    private final GameSounds gameSounds;
 
     /**
      * This constructor initialises the GameBoard, Controller and Renderer so that the game data can be saved,
      * manipulated and rendered.
      * @param owner JFrame used to center screen in ScoreBoard.
      * @param choice Player choice from custom console to be generated into levels in GameBoard.
-     * @param brickBreaker BrickBreaker to be repainted after ScoreBoard closes.
      * @param gameSounds GameSounds to add BGM and sound effects to the game.
      * @param area Dimensions of the game screen to set game boundaries and draw pause menu.
      */
-    public GameEngine(JFrame owner,int[][] choice,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
+    public GameEngine(JFrame owner, int[][] choice, GameSounds gameSounds, Dimension area) {
         gameBoard = new GameBoard(choice,area);
-        controller = new GameBoardController(owner,gameBoard,brickBreaker,gameSounds,area);
+        controller = new GameBoardController(owner,gameBoard,gameSounds,area);
         renderer = new GameBoardRenderer(gameBoard,area);
-        debugConsole = new DebugConsole(owner,this,brickBreaker,gameSounds);
+        debugConsole = new DebugConsole(owner,this, gameSounds);
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
+        this.gameSounds = gameSounds;
         this.owner = owner;
         this.area = area;
     }
@@ -146,6 +150,7 @@ public class GameEngine {
             gameBoard.setMessageFlag(4);
             controller.resetLevelData();
             gameBoard.setShowPauseMenu(false); //close pause menu
+            gameSounds.setBgm("BGM"+gameBoard.getLevel());
         }
         else if(exitButtonRect.contains(p)){ //if exit pressed
             System.exit(0); //close game

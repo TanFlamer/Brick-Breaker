@@ -82,10 +82,6 @@ public class GameBoardController {
      */
     private final GameBoard gameBoard;
     /**
-     * BrickBreaker to repaint after ScoreBoard closes.
-     */
-    private final BrickBreaker brickBreaker;
-    /**
      * GameSounds to add BGM and sound effects to the game.
      */
     private final GameSounds gameSounds;
@@ -124,13 +120,11 @@ public class GameBoardController {
      * such as BGM and sound effects are also added by loading in GameSounds.
      * @param owner JFrame to center ScoreBoard on screen.
      * @param gameBoard GameBoard to get all game data.
-     * @param brickBreaker BrickBreaker to repaint after ScoreBoard closes.
      * @param gameSounds GameSounds to add BGM and sound effects to the game.
      * @param area Dimensions of game screen to set game boundaries.
      */
-    public GameBoardController(JFrame owner,GameBoard gameBoard,BrickBreaker brickBreaker,GameSounds gameSounds,Dimension area) {
+    public GameBoardController(JFrame owner,GameBoard gameBoard,GameSounds gameSounds,Dimension area) {
         this.gameBoard = gameBoard;
-        this.brickBreaker = brickBreaker;
         this.gameSounds = gameSounds;
         this.owner = owner;
         this.bricks = gameBoard.getBricks();
@@ -157,8 +151,8 @@ public class GameBoardController {
             moveBall();
             findImpacts(powerUp.isCollected(), choice[gameBoard.getLevel()-1][9]);
             calculateScoreAndTime();
-            generateGameMessages();
             gameChecks();
+            generateGameMessages();
         }
         else {
             generateGameMessages();
@@ -343,7 +337,7 @@ public class GameBoardController {
         else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
 
             gameSounds.playSoundEffect("NextLevel");
-            new ScoreBoard(owner,brickBreaker,gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
+            new ScoreBoard(owner, gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
 
             if(gameBoard.getLevel() < bricks.length){ //if level left / level number < total level
                 wallReset();
@@ -357,7 +351,7 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("LastLevel");
                 if(gameBoard.isNotPaused())
                     reversePauseFlag();
-                new ScoreBoard(owner,brickBreaker,0,gameBoard.getScoreAndTime(),choice);
+                new ScoreBoard(owner, 0,gameBoard.getScoreAndTime(),choice);
                 gameBoard.setMessageFlag(3);
                 gameBoard.setEndFlag(true);
             }

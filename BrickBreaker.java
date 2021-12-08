@@ -42,7 +42,7 @@ public class BrickBreaker extends JComponent {
     public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds,Dimension area) {
         super();
         this.area = area;
-        GameEngine engine = new GameEngine(owner,choice,this,gameSounds,area);
+        GameEngine engine = new GameEngine(owner,choice,gameSounds,area);
         this.engine = engine;
         this.initialize();
 

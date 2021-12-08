@@ -50,10 +50,6 @@ public class ScoreBoard extends JDialog implements ActionListener {
      */
     private final JFrame owner;
     /**
-     * BrickBreaker to repaint after window closes.
-     */
-    private final BrickBreaker brickBreaker;
-    /**
      * JButton to be pressed to save player data.
      */
     private final JButton saveName;
@@ -85,21 +81,19 @@ public class ScoreBoard extends JDialog implements ActionListener {
      * removed so that the rankings shown are accurate.
      *
      * @param owner JFrame used to center the ScoreBoard.
-     * @param brickBreaker BrickBreaker which is repainted after ScoreBoard is closed.
      * @param level Integer to get current level number.
      * @param scoreAndTime Double array of integers to record player time and score for each level and the whole game.
      * @param choice Double array of integers to get player choice to generate level category.
      * @throws FileNotFoundException This constructor throws FileNotFoundException when the highscore list for
      *                               that level does not exist.
      */
-    public ScoreBoard(JFrame owner, BrickBreaker brickBreaker, int level, int[][] scoreAndTime, int[][] choice) throws FileNotFoundException {
+    public ScoreBoard(JFrame owner, int level, int[][] scoreAndTime, int[][] choice) throws FileNotFoundException {
 
         String[] column = {"Ranking","Name","Category","Time","Score"};
 
         JLabel jLabel;
 
         this.owner = owner;
-        this.brickBreaker = brickBreaker;
         this.choice = choice;
         this.scoreAndTime = scoreAndTime;
         this.level = level;
@@ -312,14 +306,6 @@ public class ScoreBoard extends JDialog implements ActionListener {
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         this.addWindowListener(new WindowAdapter() {
-            /**
-             * This window listener is called when the ScoreBoard is closing and repaints the GameBoard.
-             * @param windowEvent This parameter is used to track the ScoreBoard window.
-             */
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                brickBreaker.repaint();
-            }
 
             /**
              * This window listener is called when the ScoreBoard is activated and centers the ScoreBoard on
