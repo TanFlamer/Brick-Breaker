@@ -1,4 +1,4 @@
-/*
+package Main;/*
  *  Brick Destroy - A simple Arcade video game
  *   Copyright (C) 2017  Filippo Ranza
  *

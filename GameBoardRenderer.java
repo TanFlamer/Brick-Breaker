@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 

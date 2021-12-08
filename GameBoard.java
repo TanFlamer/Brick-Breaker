@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 import java.util.Random;
 import java.lang.Math;
