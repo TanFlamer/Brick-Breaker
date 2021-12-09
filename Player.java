@@ -23,11 +23,11 @@ public class Player {
     /**
      * The move amount of the player.
      */
-    private int moveAmount;
+    private int moveAmount = 0;
     /**
      * The vertical move amount of the player.
      */
-    private int verticalMoveAmount;
+    private int verticalMoveAmount = 0;
     /**
      * The min position of the player on the screen.
      */
@@ -63,8 +63,6 @@ public class Player {
      */
     public Player(Point midPoint,int width,int height,Dimension area){
         this.midPoint = midPoint;
-        moveAmount = 0;
-        verticalMoveAmount = 0;
         min = width / 2;
         max = min + area.width - width;
         top = 0;
