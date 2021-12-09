@@ -1,5 +1,6 @@
 package Main;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -235,7 +236,7 @@ public class GameBoardController {
         if(gameBoard.isNotPaused()){
             gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
             gameBoard.setMessageFlag(0);
-            gameSounds.getBgm().start();
+            gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
         }
         else {
             gameSounds.getBgm().stop();

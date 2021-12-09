@@ -16,6 +16,7 @@ package Main;/*
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -154,7 +155,7 @@ public class GameFrame extends JFrame {
                 /*the first time the frame loses focus is because it has been disposed to install the GameBoard,
                   so went it regains the focus it's ready to play. of course calling a method such as 'onLostFocus'
                   is useful only if the GameBoard as been displayed at least once*/
-                gameSounds.getBgm().start();
+                gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
             }
 
             /**

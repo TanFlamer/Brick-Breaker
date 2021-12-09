@@ -37,13 +37,12 @@ public class GameSounds {
         try{
             Clip bgm = AudioSystem.getClip();
             bgm.open(AudioSystem.getAudioInputStream(song));
-            bgm.loop(Clip.LOOP_CONTINUOUSLY);
             this.bgm = bgm;
         }
         catch (Exception e){
             e.printStackTrace();
         }
-        bgm.start();
+        bgm.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     /**
