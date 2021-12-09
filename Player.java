@@ -64,6 +64,7 @@ public class Player {
     public Player(Point midPoint,int width,int height,Dimension area){
         this.midPoint = midPoint;
         moveAmount = 0;
+        verticalMoveAmount = 0;
         min = width / 2;
         max = min + area.width - width;
         top = 0;
