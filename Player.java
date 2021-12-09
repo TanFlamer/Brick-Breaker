@@ -155,18 +155,36 @@ public class Player {
         return inner;
     }
 
+    /**
+     * This method is used to return the top max position of the player on the screen.
+     * @return The top max position of the player is returned.
+     */
     public int getTop() {
         return top;
     }
 
+    /**
+     * This method is used to return the bottom min position of the player on the screen.
+     * @return The bottom min position of the player is returned.
+     */
     public int getBottom() {
         return bottom;
     }
 
+    /**
+     * This method is used to return the vertical move amount of the player. It is the amount that the player moves in the
+     * next update cycle.
+     * @return The vertical move amount of the player is returned.
+     */
     public int getVerticalMoveAmount() {
         return verticalMoveAmount;
     }
 
+    /**
+     * This method is change the vertical move amount of the player. It is the amount that the player moves in the
+     * next update cycle.
+     * @param verticalMoveAmount This is the amount the player moves vertically in the next update cycle.
+     */
     public void setVerticalMoveAmount(int verticalMoveAmount) {
         this.verticalMoveAmount = verticalMoveAmount;
     }

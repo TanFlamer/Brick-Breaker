@@ -61,12 +61,14 @@ public class CustomPanel extends JPanel implements ActionListener {
      * JComboBox for the fourth brick type to spawn.
      */
     private final JComboBox<String> brick4;
-
     /**
      * JComboBox for the level orientation.
      */
     private final JComboBox<String> playerOrientation;
-
+    /**
+     * JComboBox for the level orientation.
+     */
+    private final JComboBox<String> freeMovement;
     /**
      * JButton to reset settings to default.
      */
@@ -100,21 +102,27 @@ public class CustomPanel extends JPanel implements ActionListener {
      * JLabel to show current level type.
      */
     private final JLabel levelChoice;
-
     /**
      * JLabel to show current level number.
      */
     private final JLabel levelOrientation;
-
     /**
      * JLabel to show current level orientation.
      */
     private final JLabel levelOrientationChoice;
+    /**
+     * JLabel to show current level number.
+     */
+    private final JLabel movementOption;
+    /**
+     * JLabel to show current movement choice.
+     */
+    private final JLabel movementOptionChoice;
 
     /**
      * Double array of Integer to hold all player choices to send to GameBoard for level generation.
      */
-    private final int[][] choice = new int[5][10];
+    private final int[][] choice = new int[5][11];
 
     /**
      * This constructor is used to generate all the JComboBoxes, JButtons and JLabels on the CustomPanel for
@@ -129,9 +137,10 @@ public class CustomPanel extends JPanel implements ActionListener {
         String[] Num = {"1","2","3","4","5"};
         String[] brickNum = {"1","2","3","4"};
         String[] brickTypes = {"Clay","Steel","Cement","Concrete"};
-        String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4","Player Position"};
+        String[] labels = {"Level","Number of Balls","Level Generation","Rows of Bricks","Bricks in a Row","Types of Bricks","Brick 1","Brick 2","Brick 3","Brick 4","Player Position","Free Movement"};
         String[] buttonLabels = {"Reset","Save","True Random","Ordered (Minimal)","Default","Randomise All"};
         String[] playerPosition = {"Bottom","Top"};
+        String[] movementMode = {"Disabled","Enabled"};
 
         initialize();
 
@@ -139,6 +148,10 @@ public class CustomPanel extends JPanel implements ActionListener {
         level = makeComboBox(Num);
         level.addActionListener(this);
         this.add(level);
+
+        makeJLabels(labels[11]);
+        freeMovement = makeComboBox(movementMode);
+        this.add(freeMovement);
 
         makeJLabels(labels[10]);
         playerOrientation = makeComboBox(playerPosition);
@@ -225,6 +238,12 @@ public class CustomPanel extends JPanel implements ActionListener {
 
         levelOrientationChoice = makeLabels((String)playerOrientation.getSelectedItem());
         this.add(levelOrientationChoice);
+
+        movementOption = makeLabels("Level "+ level.getSelectedItem() +" Free Movement:");
+        this.add(movementOption);
+
+        movementOptionChoice = makeLabels((String)freeMovement.getSelectedItem());
+        this.add(movementOptionChoice);
     }
 
     /**
@@ -232,7 +251,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      */
     private void initialize(){ //initialize debug panel
         this.setBackground(DEF_BKG); //set background colour
-        this.setLayout(new GridLayout(16,2)); //set layout
+        this.setLayout(new GridLayout(18,2)); //set layout
     }
 
     /**
@@ -333,6 +352,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         brick4.setSelectedIndex(choice[level.getSelectedIndex()][7]);
         ballCount.setSelectedIndex(choice[level.getSelectedIndex()][8]);
         playerOrientation.setSelectedIndex(choice[level.getSelectedIndex()][9]);
+        freeMovement.setSelectedIndex(choice[level.getSelectedIndex()][10]);
     }
 
     /**
@@ -344,6 +364,8 @@ public class CustomPanel extends JPanel implements ActionListener {
         levelChoice.setText((String)levelGen.getSelectedItem());
         levelOrientation.setText("Level "+ level.getSelectedItem() +" Orientation:");
         levelOrientationChoice.setText((String)playerOrientation.getSelectedItem());
+        movementOption.setText("Level "+ level.getSelectedItem() +" Free Movement:");
+        movementOptionChoice.setText((String)freeMovement.getSelectedItem());
     }
 
     /**
@@ -403,6 +425,7 @@ public class CustomPanel extends JPanel implements ActionListener {
             brick4.setSelectedIndex(0);
             ballCount.setSelectedIndex(0);
             playerOrientation.setSelectedIndex(0);
+            freeMovement.setSelectedIndex(0);
         }
         else if(e.getSource()==save){
             choice[level.getSelectedIndex()][0] = levelGen.getSelectedIndex();
@@ -415,6 +438,7 @@ public class CustomPanel extends JPanel implements ActionListener {
             choice[level.getSelectedIndex()][7] = brick4.getSelectedIndex();
             choice[level.getSelectedIndex()][8] = ballCount.getSelectedIndex();
             choice[level.getSelectedIndex()][9] = playerOrientation.getSelectedIndex();
+            choice[level.getSelectedIndex()][10] = freeMovement.getSelectedIndex();
             resetMessage();
         }
         else if(e.getSource()==trueRandom){
@@ -455,6 +479,7 @@ public class CustomPanel extends JPanel implements ActionListener {
                 choice[i][7] = rnd.nextInt(4);
                 choice[i][8] = rnd.nextInt(11);
                 choice[i][9] = rnd.nextInt(2);
+                choice[i][10] = rnd.nextInt(2);
             }
             setIndex();
             resetMessage();

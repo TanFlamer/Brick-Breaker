@@ -353,7 +353,8 @@ public class GameBoardController {
         else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
 
             gameSounds.playSoundEffect("NextLevel");
-            new ScoreBoard(owner, gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
+            if(choice[gameBoard.getLevel()-1][10]==0)
+                new ScoreBoard(owner,gameBoard.getLevel(),gameBoard.getScoreAndTime(),choice);
 
             if(gameBoard.getLevel() < bricks.length){ //if level left / level number < total level
                 wallReset();
@@ -367,7 +368,8 @@ public class GameBoardController {
                 gameSounds.playSoundEffect("LastLevel");
                 if(gameBoard.isNotPaused())
                     reversePauseFlag();
-                new ScoreBoard(owner, 0,gameBoard.getScoreAndTime(),choice);
+                if(choice[0][10]==0&&choice[1][10]==0&&choice[2][10]==0&&choice[3][10]==0&&choice[4][10]==0)
+                    new ScoreBoard(owner, 0,gameBoard.getScoreAndTime(),choice);
                 gameBoard.setMessageFlag(3);
                 gameBoard.setEndFlag(true);
             }

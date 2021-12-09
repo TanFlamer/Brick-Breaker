@@ -70,6 +70,10 @@ public class GameEngine {
      * GameSounds to play BGM and sound effects for the game.
      */
     private final GameSounds gameSounds;
+    /**
+     * Choices of player in CustomConsole to correctly manipulate game data.
+     */
+    private final int[][] choice;
 
     /**
      * This constructor initialises the GameBoard, Controller and Renderer so that the game data can be saved,
@@ -85,6 +89,7 @@ public class GameEngine {
         renderer = new GameBoardRenderer(gameBoard,area);
         debugConsole = new DebugConsole(owner,this, gameSounds);
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
+        this.choice = choice;
         this.gameSounds = gameSounds;
         this.owner = owner;
         this.area = area;
@@ -107,11 +112,13 @@ public class GameEngine {
                 break;
 
             case KeyEvent.VK_W: //press D
-                controller.moveUp(); //player moves up
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.moveUp(); //player moves up
                 break;
 
             case KeyEvent.VK_S: //press D
-                controller.moveDown(); //player moves down
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.moveDown(); //player moves down
                 break;
 
             case KeyEvent.VK_ESCAPE: //press esc
