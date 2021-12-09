@@ -129,11 +129,11 @@ public class GameBoard {
     /**
      * This is the start point of the ball.
      */
-    private Point ballStartPoint;
+    private Point ballStartPoint = new Point(0,0);
     /**
      * This is the start point of the player.
      */
-    private Point playerStartPoint;
+    private Point playerStartPoint = new Point(0,0);
     /**
      * This is the String array to hold the game messages.
      */
