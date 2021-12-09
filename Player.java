@@ -25,6 +25,10 @@ public class Player {
      */
     private int moveAmount;
     /**
+     * The move amount of the player.
+     */
+    private int verticalMoveAmount;
+    /**
      * The min position of the player on the screen.
      */
     private final int min;
@@ -32,6 +36,14 @@ public class Player {
      * The max position of the player on the screen.
      */
     private final int max;
+    /**
+     * The max top position of the player on the screen.
+     */
+    private final int top;
+    /**
+     * The min bottom position of the player on the screen.
+     */
+    private final int bottom;
     /**
      * The border colour of the brick.
      */
@@ -54,6 +66,8 @@ public class Player {
         moveAmount = 0;
         min = width / 2;
         max = min + area.width - width;
+        top = 0;
+        bottom = area.height - height;
         playerFace = new Rectangle(new Point((int) (midPoint.getX() - (width / 2)), (int) midPoint.getY()),new Dimension(width,height)); //make rectangle player
     }
 
@@ -139,5 +153,21 @@ public class Player {
      */
     public Color getInner() {
         return inner;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public int getBottom() {
+        return bottom;
+    }
+
+    public int getVerticalMoveAmount() {
+        return verticalMoveAmount;
+    }
+
+    public void setVerticalMoveAmount(int verticalMoveAmount) {
+        this.verticalMoveAmount = verticalMoveAmount;
     }
 }

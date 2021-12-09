@@ -149,7 +149,7 @@ public class GameBoardController {
             powerUpRandomSpawn();
             movePlayer();
             moveBall();
-            findImpacts(powerUp.isCollected(), choice[gameBoard.getLevel()-1][9]);
+            findImpacts(powerUp.isCollected());
             calculateScoreAndTime();
             gameChecks();
             generateGameMessages();
@@ -167,9 +167,10 @@ public class GameBoardController {
      */
     public void movePlayer(){ //move player
         double x = player.getMidPoint().getX() + player.getMoveAmount(); //get player location after move
-        if(x < player.getMin() || x > player.getMax()) //if X-coordinate exceeds min or max value
+        double y = player.getMidPoint().getY() + player.getVerticalMoveAmount(); //get player location after move
+        if(x < player.getMin() || x > player.getMax() || y < player.getTop() || y > player.getBottom()) //if X-coordinate exceeds min or max value
             return; //stop player from moving
-        player.setMidPoint(new Point((int)x,(int)player.getMidPoint().getY())); //else set new ball point
+        player.setMidPoint(new Point((int)x,(int)y)); //set new player point
         player.getPlayerFace().setLocation(player.getMidPoint().x - (int)player.getPlayerFace().getWidth()/2,player.getMidPoint().y); //set new player location
     }
 
@@ -204,10 +205,25 @@ public class GameBoardController {
     }
 
     /**
+     * This method moves player up by the default move amount.
+     */
+    public void moveUp(){ //move player right by default amount
+        player.setVerticalMoveAmount(-DEF_MOVE_AMOUNT);
+    }
+
+    /**
+     * This method moves player down by the default move amount.
+     */
+    public void moveDown(){ //move player right by default amount
+        player.setVerticalMoveAmount(DEF_MOVE_AMOUNT);
+    }
+
+    /**
      * This method stops the player movement by setting move amount to 0.
      */
     public void stop(){ //move player right by default amount
         player.setMoveAmount(0);
+        player.setVerticalMoveAmount(0);
     }
 
     /**
@@ -592,17 +608,10 @@ public class GameBoardController {
      * has occurred.
      *
      * @param b The ball which is checked for impact with the player.
-     * @param playerPosition The orientation of the player in game.
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean ballPlayerImpact(Ball b, int playerPosition){ //scan to see if player contains bottom side of ball
-        if(playerPosition==0){
-            return player.getPlayerFace().contains(b.getCenter()) && player.getPlayerFace().contains(b.getDown());
-        }
-        else if (playerPosition==1){
-            return player.getPlayerFace().contains(b.getCenter()) && player.getPlayerFace().contains(b.getUp());
-        }
-        return false;
+    public boolean ballPlayerImpact(Ball b){ //scan to see if player contains bottom side of ball
+        return player.getPlayerFace().contains(b.getCenter()) && (player.getPlayerFace().contains(b.getDown())||player.getPlayerFace().contains(b.getUp()));
     }
 
     /**
@@ -617,11 +626,9 @@ public class GameBoardController {
      *
      * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
      *                  of the ball is disabled and bricks are destroyed on touch with the ball.
-     * @param playerPosition This is the level orientation of the level and is used to determine the action taken
-     *                       when ball collides with top and bottom page border.
      */
-    public void findImpacts(boolean collected, int playerPosition){ //impact method
-        if(ballPlayerImpact(ball,playerPosition)){ //if player hits ball
+    public void findImpacts(boolean collected){ //impact method
+        if(ballPlayerImpact(ball)){ //if player hits ball
             gameSounds.playSoundEffect("Bounce");
             reverseY(); //reverse Y-direction
         }

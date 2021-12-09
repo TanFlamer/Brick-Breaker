@@ -106,6 +106,14 @@ public class GameEngine {
                 controller.moveRight(); //player moves right
                 break;
 
+            case KeyEvent.VK_W: //press D
+                controller.moveUp(); //player moves up
+                break;
+
+            case KeyEvent.VK_S: //press D
+                controller.moveDown(); //player moves down
+                break;
+
             case KeyEvent.VK_ESCAPE: //press esc
                 if(!gameBoard.isEnded()) {
                     gameBoard.setShowPauseMenu(!gameBoard.isShowPauseMenu());
