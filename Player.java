@@ -25,7 +25,7 @@ public class Player {
      */
     private int moveAmount;
     /**
-     * The move amount of the player.
+     * The vertical move amount of the player.
      */
     private int verticalMoveAmount;
     /**
