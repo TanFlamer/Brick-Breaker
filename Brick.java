@@ -107,6 +107,8 @@ public class Brick {
                 crackable = false;
                 border = Color.GRAY;
                 inner = new Color(178, 34, 34).darker();
+                crack = null;
+                brickFaceNew = null;
             }
             case 2 -> {
                 //Steel Brick
@@ -116,6 +118,8 @@ public class Brick {
                 crackable = false;
                 border = Color.BLACK;
                 inner = new Color(203, 203, 201);
+                crack = null;
+                brickFaceNew = null;
             }
             case 3 -> {
                 //Cement Brick
