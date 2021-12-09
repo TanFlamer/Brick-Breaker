@@ -34,10 +34,6 @@ public class Brick {
     /**
      * The full strength of the brick.
      */
-    private final int brickID;
-    /**
-     * The full strength of the brick.
-     */
     private int fullStrength;
     /**
      * The current strength of the brick.
@@ -69,9 +65,8 @@ public class Brick {
     private GeneralPath crack;
 
     /**
-     * This constructor is used to create a new brick with the given brickID, position and dimensions. Two brick faces
-     * are also created so that 1 can serve as a backup when repairing the cracked brick. The brickID identifies the
-     * 4 different bricks.
+     * This constructor is used to create a new brick with the given brickID, position and dimensions. The brickID
+     * identifies the 4 different bricks.
      * @param brickID The ID of the brick to be created.
      * @param x The x-coordinate of the top-left corner of the new brick.
      * @param y The y-coordinate of the top-left corner of the new brick.
@@ -83,7 +78,6 @@ public class Brick {
     public Brick(int brickID, int x, int y, int width, int height, Dimension area){
 
         getBrickInfo(brickID,x,y,width,height);
-        this.brickID = brickID;
         this.broken = false;
         this.strength = fullStrength;
         this.score = scoreMultiplier * area.width/width;
@@ -94,8 +88,13 @@ public class Brick {
      * This method is used to identify which type of new brick to create. All bricks are similar with only a few key
      * differences. The Clay and Cement bricks are just Steel and Concrete bricks but with 100% damage probability.
      * Similarly, the Cement and Concrete bricks are just crackable Clay and Steel bricks. The other attributes such as
-     * colour, score multiplier and full strength are also defined here.
+     * colour, score multiplier and full strength are also defined here. A crack is defined here is the brick is
+     * crackable. A second brick face is created to serve as a backup when repairing the cracked brick.
      * @param brickID The brickID of the new brick.
+     * @param x The x-coordinate of the top-left corner of the new brick.
+     * @param y The y-coordinate of the top-left corner of the new brick.
+     * @param width The width of the new brick.
+     * @param height The height of the new brick.
      */
     public void getBrickInfo(int brickID, int x, int y, int width, int height){
 
@@ -255,13 +254,5 @@ public class Brick {
      */
     public int getScore() {
         return score;
-    }
-
-    /**
-     * This method returns the brick ID of the brick.
-     * @return The brick ID of the brick is returned.
-     */
-    public int getBrickID() {
-        return brickID;
     }
 }

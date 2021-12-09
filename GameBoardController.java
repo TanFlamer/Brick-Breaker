@@ -579,7 +579,7 @@ public class GameBoardController {
     public void repair(Brick b){ //repair brick
         b.setBroken(false);
         b.setStrength(b.getFullStrength());
-        if(b.getBrickID()==3||b.getBrickID()==4) {
+        if(b.isCrackable()) {
             b.getCrack().reset(); //remove crack
             b.setBrickFace(b.getBrickFaceNew());
         }
@@ -633,7 +633,8 @@ public class GameBoardController {
             reverseX(); //reverse X-direction
         }
         else if(choice[gameBoard.getLevel()-1][9]==0){
-            if(ball.getCenter().getY() < 0){ //if ball hits top border
+
+            if(ball.getCenter().getY() < 0||(ball.getCenter().getY() > area.height && collected)){ //if ball hits top border
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
@@ -643,13 +644,14 @@ public class GameBoardController {
             }
         }
         else if(choice[gameBoard.getLevel()-1][9]==1){
-            if(ball.getCenter().getY() < 0){ //if ball hits top border
-                gameBoard.setBallCount(gameBoard.getBallCount()-1);
-                gameBoard.setBallLost(true);
-            }
-            else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
+
+            if(ball.getCenter().getY() > area.height||(ball.getCenter().getY() < 0 && collected)){ //if ball hits top border
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
+            }
+            else if(ball.getCenter().getY() < 0){ //if ball hits bottom border
+                gameBoard.setBallCount(gameBoard.getBallCount()-1);
+                gameBoard.setBallLost(true);
             }
         }
     }
@@ -849,11 +851,9 @@ public class GameBoardController {
      * @param b This is the brick to be cracked.
      */
     private void updateBrick(Brick b){
-        if(!b.isBroken()){ //if brick is not broken
-            GeneralPath gp = b.getCrack(); //draw crack
-            gp.append(b.getBrickFace(),false); //append crack to brick
-            b.setBrickFace(gp);
-        }
+        GeneralPath gp = b.getCrack(); //draw crack
+        gp.append(b.getBrickFace(),false); //append crack to brick
+        b.setBrickFace(gp);
     }
 
     /**
