@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class BallTest {
 
+    /**
+     * Ball object used in the tests.
+     */
     Ball ball;
 
     /**
@@ -34,64 +37,97 @@ class BallTest {
     }
 
     /**
-     *
+     * This tests the getter for ball face.
      */
     @Test
     void getBallFace() {
         assertEquals(ball.getBallFace(),new Ellipse2D.Double(95,95,10,10));
     }
 
+    /**
+     * This tests the getter for ball center point.
+     */
     @Test
     void getCenter() {
         assertEquals(ball.getCenter(),new Point(100,100));
     }
 
+    /**
+     * This tests the getter for ball horizontal speed.
+     */
     @Test
     void getSpeedX() {
         assertEquals(ball.getSpeedX(),0);
     }
 
+    /**
+     * This tests the getter for ball vertical speed.
+     */
     @Test
     void getSpeedY() {
         assertEquals(ball.getSpeedY(),0);
     }
 
+    /**
+     * This tests the getter for ball inner colour.
+     */
     @Test
     void getInner() {
         assertEquals(ball.getInner(),new Color(255, 219, 88));
     }
 
+    /**
+     * This tests the getter for ball border colour.
+     */
     @Test
     void getBorder() {
         assertEquals(ball.getBorder(),ball.getInner().darker().darker());
     }
 
+    /**
+     * This tests the getter for ball top point.
+     */
     @Test
     void getUp() {
         assertEquals(ball.getUp(),new Point(100,95));
     }
 
+    /**
+     * This tests the getter for ball bottom point.
+     */
     @Test
     void getDown() {
         assertEquals(ball.getDown(),new Point(100,105));
     }
 
+    /**
+     * This tests the getter for ball left point.
+     */
     @Test
     void getLeft() {
         assertEquals(ball.getLeft(),new Point(95,100));
     }
 
+    /**
+     * This tests the getter for ball right point.
+     */
     @Test
     void getRight() {
         assertEquals(ball.getRight(),new Point(105,100));
     }
 
+    /**
+     * This tests the setter for ball center point using the tested getter.
+     */
     @Test
     void setCenter() {
         ball.setCenter(new Point(50,50));
         assertEquals(ball.getCenter(),new Point(50,50));
     }
 
+    /**
+     * This tests the setter for ball top, bottom, left and right points using the tested getters.
+     */
     @Test
     void setPoints() {
         ball.setPoints(new Point(50,50));
@@ -101,18 +137,27 @@ class BallTest {
         assertEquals(ball.getRight(),new Point(55,50));
     }
 
+    /**
+     * This tests the setter for ball face using the tested getter.
+     */
     @Test
     void setBallFace() {
         ball.setBallFace(new Ellipse2D.Double(45,45,10,10));
         assertEquals(ball.getBallFace(),new Ellipse2D.Double(45,45,10,10));
     }
 
+    /**
+     * This tests the setter for ball horizontal speed using the tested getter.
+     */
     @Test
     void setSpeedX() {
         ball.setSpeedX(2);
         assertEquals(ball.getSpeedX(),2);
     }
 
+    /**
+     * This tests the setter for ball vertical speed using the tested getter.
+     */
     @Test
     void setSpeedY() {
         ball.setSpeedY(2);

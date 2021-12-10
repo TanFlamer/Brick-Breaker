@@ -395,4 +395,20 @@ class GameBoardControllerTest {
     @Test
     void setImpact() {
     }
+
+    @Test
+    void addSpeedX() {
+    }
+
+    @Test
+    void minusSpeedX() {
+    }
+
+    @Test
+    void addSpeedY() {
+    }
+
+    @Test
+    void minusSpeedY() {
+    }
 }

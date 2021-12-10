@@ -86,7 +86,7 @@ public class GameBoardRenderer implements Renderer {
         clear(g2d);
 
         g2d.setColor(Color.GRAY);
-        g2d.fillRect(0, 0, 600, 450);
+        g2d.fillRect(0, 0, area.width, area.height);
 
         drawMessages(g2d);
 
