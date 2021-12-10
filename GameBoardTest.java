@@ -144,7 +144,7 @@ class GameBoardTest {
     }
 
     /**
-     * This tests the getter for the power up spawns left.
+     * This tests the getter for the power up spawns.
      */
     @Test
     void getPowerUpSpawns() {
@@ -289,7 +289,7 @@ class GameBoardTest {
     }
 
     /**
-     * This tests the setter for power up spawns left using the tested getter.
+     * This tests the setter for power up spawns using the tested getter.
      */
     @Test
     void setPowerUpSpawns() {

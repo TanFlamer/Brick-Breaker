@@ -57,8 +57,44 @@ class GameBoardControllerTest {
         controller = null;
     }
 
+    /**
+     * This tests the update method of the controller. The test returns true if the correct output is returned.
+     */
     @Test
-    void update() {
+    void update() throws FileNotFoundException {
+        //prepare power up spawn
+        gameBoard.setLevel(2);
+        gameBoard.setTime(2,100);
+        gameBoard.setPowerUpSpawns(1);
+        gameBoard.getPowerUp().setCollected(false);
+        gameBoard.getPowerUp().setSpawned(false);
+
+        //prepare player
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        controller.moveUp();
+        controller.moveLeft();
+
+        //prepare ball
+        gameBoard.getBall().setCenter(new Point(100,100));
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
+        controller.addSpeedX();
+        controller.addSpeedX();
+        controller.minusSpeedY();
+        controller.minusSpeedY();
+
+        //unpause game and update
+        gameBoard.setPauseFlag(false);
+        controller.update();
+
+        //compare results
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(195,195));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(102,98));
+        assertTrue(gameBoard.getPowerUp().isSpawned());
+        assertFalse(gameBoard.getPowerUp().isCollected());
+        assertEquals(gameBoard.getPowerUpSpawns(),2);
+        assertEquals(gameBoard.getPowerUp().getMidPoint().y,325);
+        assertTrue(gameBoard.getPowerUp().getMidPoint().x>=100 && gameBoard.getPowerUp().getMidPoint().x<=500);
     }
 
     /**
@@ -621,17 +657,54 @@ class GameBoardControllerTest {
         assertThrows(ArrayIndexOutOfBoundsException.class,()-> controller.resetLevelScoreAndTime());
     }
 
+    /**
+     * This tests the gameChecks method of the controller. The test returns true if correct output is returned.
+     */
     @Test
     void gameChecks() throws FileNotFoundException {
-        gameBoard.setLevel(2);
+        //ball lost but ball left
+        gameBoard.setBrickCount(20);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(true);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
         controller.gameChecks();
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
+        assertEquals(gameBoard.getBrickCount(),20);
+        assertEquals(gameBoard.getBallCount(),2);
         assertEquals(gameBoard.getMessageFlag(),0);
+        assertFalse(gameBoard.isBallLost());
         assertFalse(gameBoard.isNotPaused());
         assertFalse(gameBoard.isEnded());
-        assertFalse(gameBoard.getPowerUp().isSpawned());
+
+        //ball lost but ball finished
+        gameBoard.setBrickCount(20);
+        gameBoard.setBallCount(0);
+        gameBoard.setBallLost(true);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        controller.gameChecks();
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
+        assertEquals(gameBoard.getBrickCount(),31);
+        assertEquals(gameBoard.getBallCount(),3);
+        assertEquals(gameBoard.getMessageFlag(),1);
+        assertFalse(gameBoard.isBallLost());
+        assertFalse(gameBoard.isNotPaused());
+        assertFalse(gameBoard.isEnded());
+
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setGodModeTimeLeft(0);
+        controller.gameChecks();
         assertFalse(gameBoard.getPowerUp().isCollected());
+
+        //cannot test level progression because ScoreBoard is called
     }
 
+    /**
+     * This tests the resetLevelData method of the controller. The test returns true if the level data is reset.
+     */
     @Test
     void resetLevelData() {
         gameBoard.setBrickCount(20);
@@ -650,6 +723,9 @@ class GameBoardControllerTest {
         gameBoard.setTime(3,40);
         gameBoard.setScore(4,400);
         gameBoard.setTime(4,50);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
         controller.resetLevelData();
         assertEquals(gameBoard.getBrickCount(),31);
         assertEquals(gameBoard.getBallCount(),3);
@@ -668,11 +744,14 @@ class GameBoardControllerTest {
     }
 
     /**
-     * This tests the nextLevel method of the controller. The test returns true if the controller performs the
-     * correct set of actions for both cases when trueProgression is true and false. //not yet
+     * This tests the nextLevel method of the controller. The test returns true if the controller gives the
+     * correct set of outputs for both cases when trueProgression is true and false.
      */
     @Test
     void nextLevel() {
+        //true progression on
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
         gameBoard.setBrickCount(0);
         gameBoard.setBallCount(2);
         gameBoard.setBallLost(true);
@@ -685,6 +764,9 @@ class GameBoardControllerTest {
         gameBoard.setTime(1,20);
         gameBoard.setScore(2,200);
         gameBoard.setTime(2,30);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
         controller.nextLevel(true);
         assertEquals(gameBoard.getLevel(),3);
         assertEquals(gameBoard.getBrickCount(),31);
@@ -695,16 +777,99 @@ class GameBoardControllerTest {
         assertTrue(gameBoard.getBall().getSpeedY()>=-2 && gameBoard.getBall().getSpeedY()<=0);
         assertFalse(gameBoard.isBallLost());
         assertEquals(gameBoard.getScore(0),300);
-        assertEquals(gameBoard.getScore(3),0);
+        assertEquals(gameBoard.getScore(1),100);
+        assertEquals(gameBoard.getScore(2),200);
         assertEquals(gameBoard.getTime(0),50);
-        assertEquals(gameBoard.getTime(3),0);
+        assertEquals(gameBoard.getTime(1),20);
+        assertEquals(gameBoard.getTime(2),30);
         assertFalse(gameBoard.getPowerUp().isSpawned());
         assertFalse(gameBoard.getPowerUp().isCollected());
         assertEquals(gameBoard.getPowerUpSpawns(),0);
+
+        //true progression off
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
+        gameBoard.setBrickCount(0);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(true);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        gameBoard.setLevel(2);
+        gameBoard.setScore(0,300);
+        gameBoard.setTime(0,50);
+        gameBoard.setScore(1,100);
+        gameBoard.setTime(1,20);
+        gameBoard.setScore(2,200);
+        gameBoard.setTime(2,30);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
+        controller.nextLevel(false);
+        assertEquals(gameBoard.getLevel(),3);
+        assertEquals(gameBoard.getBrickCount(),31);
+        assertEquals(gameBoard.getBallCount(),3);
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
+        assertTrue(gameBoard.getBall().getSpeedX()>=-2 && gameBoard.getBall().getSpeedX()<=2);
+        assertTrue(gameBoard.getBall().getSpeedY()>=-2 && gameBoard.getBall().getSpeedY()<=0);
+        assertFalse(gameBoard.isBallLost());
+        assertEquals(gameBoard.getScore(0),100);
+        assertEquals(gameBoard.getScore(1),100);
+        assertEquals(gameBoard.getScore(2),0);
+        assertEquals(gameBoard.getTime(0),20);
+        assertEquals(gameBoard.getTime(1),20);
+        assertEquals(gameBoard.getTime(2),0);
+        assertFalse(gameBoard.getPowerUp().isSpawned());
+        assertFalse(gameBoard.getPowerUp().isCollected());
+        assertEquals(gameBoard.getPowerUpSpawns(),0);
+
+        //level 5
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
+        gameBoard.setBrickCount(0);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(true);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        gameBoard.setLevel(5);
+        gameBoard.setScore(0,300);
+        gameBoard.setTime(0,50);
+        gameBoard.setScore(1,100);
+        gameBoard.setTime(1,20);
+        gameBoard.setScore(2,200);
+        gameBoard.setTime(2,30);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
+        controller.nextLevel(false);
+        assertEquals(gameBoard.getLevel(),5);
+        assertEquals(gameBoard.getBrickCount(),0);
+        assertEquals(gameBoard.getBallCount(),2);
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(200,200));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(100,100));
+        assertEquals(gameBoard.getBall().getSpeedX(),0);
+        assertEquals(gameBoard.getBall().getSpeedY(),0);
+        assertTrue(gameBoard.isBallLost());
+        assertEquals(gameBoard.getScore(0),300);
+        assertEquals(gameBoard.getScore(1),100);
+        assertEquals(gameBoard.getScore(2),200);
+        assertEquals(gameBoard.getTime(0),50);
+        assertEquals(gameBoard.getTime(1),20);
+        assertEquals(gameBoard.getTime(2),30);
+        assertTrue(gameBoard.getPowerUp().isSpawned());
+        assertTrue(gameBoard.getPowerUp().isCollected());
+        assertEquals(gameBoard.getPowerUpSpawns(),1);
     }
 
+    /**
+     * This tests the previousLevel method of the controller. The test returns true if the controller gives the correct
+     * output for the method call.
+     */
     @Test
     void previousLevel() {
+        //other levels
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
         gameBoard.setBrickCount(20);
         gameBoard.setBallCount(2);
         gameBoard.setBallLost(true);
@@ -719,6 +884,9 @@ class GameBoardControllerTest {
         gameBoard.setTime(2,30);
         gameBoard.setScore(3,300);
         gameBoard.setTime(3,40);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
         controller.previousLevel();
         assertEquals(gameBoard.getLevel(),2);
         assertEquals(gameBoard.getBrickCount(),31);
@@ -729,14 +897,55 @@ class GameBoardControllerTest {
         assertTrue(gameBoard.getBall().getSpeedY()>=-2 && gameBoard.getBall().getSpeedY()<=0);
         assertFalse(gameBoard.isBallLost());
         assertEquals(gameBoard.getScore(0),100);
+        assertEquals(gameBoard.getScore(1),100);
         assertEquals(gameBoard.getScore(2),0);
+        assertEquals(gameBoard.getScore(3),0);
         assertEquals(gameBoard.getTime(0),20);
+        assertEquals(gameBoard.getTime(1),20);
         assertEquals(gameBoard.getTime(2),0);
+        assertEquals(gameBoard.getTime(3),0);
         assertFalse(gameBoard.getPowerUp().isSpawned());
         assertFalse(gameBoard.getPowerUp().isCollected());
         assertEquals(gameBoard.getPowerUpSpawns(),0);
+
+        //level 1
+        gameBoard.getBall().setSpeedX(0);
+        gameBoard.getBall().setSpeedY(0);
+        gameBoard.setBrickCount(20);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(true);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        gameBoard.setLevel(1);
+        gameBoard.setScore(0,100);
+        gameBoard.setTime(0,20);
+        gameBoard.setScore(1,100);
+        gameBoard.setTime(1,20);
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(true);
+        gameBoard.setPowerUpSpawns(1);
+        controller.previousLevel();
+        assertEquals(gameBoard.getLevel(),1);
+        assertEquals(gameBoard.getBrickCount(),20);
+        assertEquals(gameBoard.getBallCount(),2);
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(200,200));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(100,100));
+        assertEquals(gameBoard.getBall().getSpeedX(),0);
+        assertEquals(gameBoard.getBall().getSpeedY(),0);
+        assertTrue(gameBoard.isBallLost());
+        assertEquals(gameBoard.getScore(0),100);
+        assertEquals(gameBoard.getScore(1),100);
+        assertEquals(gameBoard.getTime(0),20);
+        assertEquals(gameBoard.getTime(1),20);
+        assertTrue(gameBoard.getPowerUp().isSpawned());
+        assertTrue(gameBoard.getPowerUp().isCollected());
+        assertEquals(gameBoard.getPowerUpSpawns(),1);
     }
 
+    /**
+     * This tests the ballReset method of the controller. The test returns true if the ball and player are moved to
+     * the correct location and the ball speed and lost flag are reset.
+     */
     @Test
     void ballReset() {
         gameBoard.getBall().setSpeedX(0);
@@ -752,6 +961,10 @@ class GameBoardControllerTest {
         assertFalse(gameBoard.isBallLost());
     }
 
+    /**
+     * This tests the ballMoveTo method of the controller. The test returns true if the ball moves to the correct
+     * location.
+     */
     @Test
     void ballMoveTo() {
         gameBoard.getBall().setCenter(new Point(100,100));
@@ -759,6 +972,10 @@ class GameBoardControllerTest {
         assertEquals(gameBoard.getBall().getCenter(),new Point(200,200));
     }
 
+    /**
+     * This tests the playerMoveTo method of the controller. The test returns true if the player moves to the correct
+     * location.
+     */
     @Test
     void playerMoveTo() {
         gameBoard.getPlayer().setMidPoint(new Point(200,200));
@@ -766,6 +983,10 @@ class GameBoardControllerTest {
         assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,300));
     }
 
+    /**
+     * This tests the powerUpMoveTo method of the controller. The test returns true if the power up moves to the correct
+     * location.
+     */
     @Test
     void powerUpMoveTo() {
         gameBoard.getPowerUp().setMidPoint(new Point(300,300));
@@ -775,7 +996,7 @@ class GameBoardControllerTest {
 
     /**
      * This tests the powerUpRandomSpawn method of the controller. The test returns true if the power up spawns
-     * correctly
+     * correctly.
      */
     @Test
     void powerUpRandomSpawn() {
@@ -788,6 +1009,8 @@ class GameBoardControllerTest {
         assertTrue(gameBoard.getPowerUp().isSpawned());
         assertFalse(gameBoard.getPowerUp().isCollected());
         assertEquals(gameBoard.getPowerUpSpawns(),2);
+        assertEquals(gameBoard.getPowerUp().getMidPoint().y,325);
+        assertTrue(gameBoard.getPowerUp().getMidPoint().x>=100 && gameBoard.getPowerUp().getMidPoint().x<=500);
     }
 
     /**
