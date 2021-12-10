@@ -640,11 +640,10 @@ public class GameBoardController {
      * contains the top side of the ball inside and orientation of the player is at the top, then impact
      * has occurred.
      *
-     * @param b The ball which is checked for impact with the player.
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean ballPlayerImpact(Ball b){ //scan to see if player contains bottom side of ball
-        return player.getPlayerFace().contains(b.getCenter()) && (player.getPlayerFace().contains(b.getDown())||player.getPlayerFace().contains(b.getUp()));
+    public boolean ballPlayerImpact(){ //scan to see if player contains bottom side of ball
+        return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown())||player.getPlayerFace().contains(ball.getUp()));
     }
 
     /**
@@ -661,7 +660,7 @@ public class GameBoardController {
      *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      */
     public void findImpacts(boolean collected){ //impact method
-        if(ballPlayerImpact(ball)){ //if player hits ball
+        if(ballPlayerImpact()){ //if player hits ball
             gameSounds.playSoundEffect("Bounce");
             reverseY(); //reverse Y-direction
         }
@@ -779,7 +778,7 @@ public class GameBoardController {
      * update the brick.
      *
      * @param point The point of impact of the ball and the brick.
-     * @param dir The direction of travel of the crack.
+     * @param dir The direction of the brick face impacted by the ball.
      * @param b This is the brick that is checked.
      * @return This method returns a boolean to signify the condition of the brick.
      */
