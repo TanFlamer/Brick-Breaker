@@ -1,7 +1,11 @@
 package Main;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Public class GameBoardRenderer is the View of the MVC design pattern and is responsible for rendering all the
@@ -58,17 +62,24 @@ public class GameBoardRenderer implements Renderer {
      * Dimensions of the game screen to draw the pause menu options.
      */
     private final Dimension area;
+    /**
+     * Image for Game background.
+     */
+    private final Image newImage;
 
     /**
      * This constructor loads in the GameBoard so that renderer can get all information for rendering and the screen
      * dimensions to draw the pause menu.
      * @param gameBoard GameBoard to get all information needed to draw the ball, bricks, player and game messages.
      * @param area Dimensions of the game screen to draw the pause menu options.
+     * @throws IOException This constructor throws IOException if game background image is not found.
      */
-    public GameBoardRenderer(GameBoard gameBoard,Dimension area) {
+    public GameBoardRenderer(GameBoard gameBoard,Dimension area) throws IOException {
         this.gameBoard = gameBoard;
         this.area = area;
         menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
+        BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerGameBackground.png"));
+        newImage = myPicture.getScaledInstance((int)area.getWidth(),(int)area.getHeight(), Image.SCALE_DEFAULT);
     }
 
     /**
@@ -85,8 +96,7 @@ public class GameBoardRenderer implements Renderer {
 
         clear(g2d);
 
-        g2d.setColor(Color.GRAY);
-        g2d.fillRect(0, 0, area.width, area.height);
+        g2d.drawImage(newImage,0,0,null);
 
         drawMessages(g2d);
 
@@ -169,24 +179,28 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawMessages(Graphics2D g2d){
 
-        g2d.setColor(Color.BLUE); //set blue colour
+        Font tmpFont = g2d.getFont(); //hold current font
+
+        g2d.setFont(new Font("Monospaced",Font.BOLD,16)); //set menu font
+        g2d.setColor(Color.BLACK); //set blue colour
 
         if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==0 && gameBoard.getGameMessages(0)!=null) {
-            g2d.drawString(gameBoard.getGameMessages(0), 250, 225); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(1), 250, 240); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(2), 250, 255); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(3), 250, 270); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(4), 250, 285); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(5), 250, 300); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(0), 210, 225); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(1), 210, 240); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(2), 210, 255); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(3), 210, 270); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(4), 210, 285); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(5), 210, 300); //set message colour as blue
         }
         else if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==1 && gameBoard.getGameMessages(0)!=null){
-            g2d.drawString(gameBoard.getGameMessages(0), 250, 150); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(1), 250, 165); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(2), 250, 180); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(3), 250, 195); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(4), 250, 210); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(5), 250, 225); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(0), 210, 150); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(1), 210, 165); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(2), 210, 180); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(3), 210, 195); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(4), 210, 210); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(5), 210, 225); //set message colour as blue
         }
+        g2d.setFont(tmpFont);
     }
 
     /**

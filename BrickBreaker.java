@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Public class BrickBreaker is responsible for loading in the GameEngine to start generating the game. The gamer timer
@@ -38,8 +39,9 @@ public class BrickBreaker extends JComponent {
      * @param choice The custom choice of the player in customising the game levels.
      * @param gameSounds The BGM and sound effects of the game.
      * @param area The area of the game screen to draw the pause menu.
+     * @throws IOException This constructor throws IOException if game background image is not found.
      */
-    public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds,Dimension area) {
+    public BrickBreaker(JFrame owner,int[][] choice,GameSounds gameSounds,Dimension area) throws IOException {
         super();
         this.area = area;
         GameEngine engine = new GameEngine(owner,choice,gameSounds,area);

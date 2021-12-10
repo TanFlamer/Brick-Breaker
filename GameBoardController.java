@@ -938,7 +938,7 @@ public class GameBoardController {
 
         String message = null;
         if(gameBoard.getMessageFlag()==0)
-            message = String.format("Bricks: %d  Balls %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
+            message = String.format("Bricks: %d  Balls: %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
         else if(gameBoard.getMessageFlag()==1)
             message = "Game over"; //show game over message
         else if(gameBoard.getMessageFlag()==2)
@@ -952,9 +952,9 @@ public class GameBoardController {
 
         gameBoard.setGameMessages(0,message);
 
-        String totalScore = String.format("Total Score %d", gameBoard.getScoreAndTime()[0][0]);
+        String totalScore = String.format("Total Score: %d", gameBoard.getScoreAndTime()[0][0]);
         gameBoard.setGameMessages(1,totalScore);
-        String levelScore = String.format("Level %d Score %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
+        String levelScore = String.format("Level %d Score: %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
         gameBoard.setGameMessages(2,levelScore);
 
         int systemClock = gameBoard.getScoreAndTime()[0][1];
@@ -965,16 +965,16 @@ public class GameBoardController {
         int levelMinutes = levelClock/60;
         int levelSeconds = levelClock%60;
 
-        String totalTime = String.format("Total Time %02d:%02d", totalMinutes, totalSeconds);
+        String totalTime = String.format("Total Time: %02d:%02d", totalMinutes, totalSeconds);
         gameBoard.setGameMessages(3,totalTime);
-        String levelTime = String.format("Level %d Time %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
+        String levelTime = String.format("Level %d Time: %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
         gameBoard.setGameMessages(4,levelTime);
 
         String godMode;
         if(gameBoard.getPowerUp().isCollected())
-            godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
+            godMode = String.format("God Mode Activated: %d", gameBoard.getGodModeTimeLeft());
         else
-            godMode = String.format("God Mode Orbs Left %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
+            godMode = String.format("God Mode Orbs Left: %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
 
         gameBoard.setGameMessages(5,godMode);
     }

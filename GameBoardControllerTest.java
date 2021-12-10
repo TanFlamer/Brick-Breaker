@@ -11,6 +11,11 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * GameBoardControllerTest tests to see if the methods of GameBoardController class are all working properly.
+ * The getters and setters of the other classes which have been tested and deemed to be in proper working condition
+ * are used to set up the test conditions for the tested methods because some methods tested do not give obvious results.
+ */
 class GameBoardControllerTest {
 
     GameFrame owner;
