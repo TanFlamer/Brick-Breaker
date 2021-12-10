@@ -346,7 +346,6 @@ class GameBoardControllerTest {
         assertEquals(gameBoard.getStartTime(),(int) java.time.Instant.now().getEpochSecond());
         assertEquals(gameBoard.getMessageFlag(),0);
         assertTrue(gameBoard.isNotPaused());
-        assertTrue(gameSounds.getBgm().isRunning());
 
         gameBoard.setPauseFlag(false);
         controller.reversePauseFlag();
