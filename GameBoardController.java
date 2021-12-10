@@ -10,9 +10,10 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 
 /**
- * Public class GameBoardController is responsible for processing all the entity behaviour in the game. All movement
- * and collision are processed here, all score and time are calculated here and all flags are processed here. After
- * the data is processed, the new data is loaded into the GameBoard so that it can be rendered by the renderer.
+ * Public class GameBoardController is the Controller of the MVC design pattern and is responsible for processing all
+ * the entity behaviour in the game. All movement and collision are processed here, all score and time are calculated
+ * here and all flags are processed here. After the data is processed, the new data is loaded into the GameBoard so
+ * that it can be rendered by the renderer.
  *
  * @author TanZhunXian
  * @version 1.0
@@ -173,22 +174,6 @@ public class GameBoardController {
     }
 
     /**
-     * This method defines the movement of the ball. The new position of the ball is calculated by adding the speed of
-     * the ball to the old position of the ball. The ball is then moved to this new position. By calling this method
-     * in quick succession, movement can be simulated.
-     */
-    public void moveBall(){ //move ball according to speed
-        RectangularShape tmp = (RectangularShape) ball.getBallFace();
-        ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
-
-        double w = tmp.getWidth(); //get ball width
-        double h = tmp.getHeight(); //get ball height
-
-        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h); //make rectangle shape
-        ball.setBallFace(tmp);
-    }
-
-    /**
      * This method moves player to the left by the default move amount.
      */
     public void moveLeft(){ //move player left by default amount
@@ -222,6 +207,54 @@ public class GameBoardController {
     public void stop(){ //move player right by default amount
         player.setMoveAmount(0);
         player.setVerticalMoveAmount(0);
+    }
+
+    /**
+     * This method defines the movement of the ball. The new position of the ball is calculated by adding the speed of
+     * the ball to the old position of the ball. The ball is then moved to this new position. By calling this method
+     * in quick succession, movement can be simulated.
+     */
+    public void moveBall(){ //move ball according to speed
+        RectangularShape tmp = (RectangularShape) ball.getBallFace();
+        ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
+
+        double w = tmp.getWidth(); //get ball width
+        double h = tmp.getHeight(); //get ball height
+
+        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h); //make rectangle shape
+        ball.setBallFace(tmp);
+    }
+
+    /**
+     * This method adds horizontal speed to the ball until max horizontal speed.
+     */
+    public void addSpeedX(){
+        if(gameBoard.getBall().getSpeedX()<4)
+            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()+1);
+    }
+
+    /**
+     * This method minus horizontal speed from the ball until min horizontal speed.
+     */
+    public void minusSpeedX(){
+        if(gameBoard.getBall().getSpeedX()>-4)
+            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()-1);
+    }
+
+    /**
+     * This method adds vertical speed to the ball until max vertical speed.
+     */
+    public void addSpeedY(){
+        if(gameBoard.getBall().getSpeedY()<4)
+            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()+1);
+    }
+
+    /**
+     * This method minus vertical speed from the ball until min vertical speed.
+     */
+    public void minusSpeedY(){
+        if(gameBoard.getBall().getSpeedY()>-4)
+            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()-1);
     }
 
     /**

@@ -4,8 +4,9 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 
 /**
- * Public class GameBoardRenderer is responsible for rendering all the graphics in the game. The renderer renders
- * everything from the bricks, ball and player to the game messages and the pause menu.
+ * Public class GameBoardRenderer is the View of the MVC design pattern and is responsible for rendering all the
+ * graphics in the game. The renderer renders everything from the bricks, ball and player to the game messages and the
+ * pause menu.
  *
  * @author TanZhunXian
  * @version 1.0

@@ -121,6 +121,26 @@ public class GameEngine {
                     controller.moveDown(); //player moves down
                 break;
 
+            case KeyEvent.VK_UP: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.minusSpeedY(); //player moves down
+                break;
+
+            case KeyEvent.VK_DOWN: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.addSpeedY(); //player moves down
+                break;
+
+            case KeyEvent.VK_LEFT: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.minusSpeedX(); //player moves down
+                break;
+
+            case KeyEvent.VK_RIGHT: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.addSpeedX(); //player moves down
+                break;
+
             case KeyEvent.VK_ESCAPE: //press esc
                 if(!gameBoard.isEnded()) {
                     gameBoard.setShowPauseMenu(!gameBoard.isShowPauseMenu());
