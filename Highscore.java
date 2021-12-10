@@ -1,5 +1,6 @@
 package Main;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -7,8 +8,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -139,19 +142,14 @@ public class Highscore extends JComponent {
      * Total HighScores string.
      */
     private static final String HIGHSCORE = "TOTAL HIGHSCORES";
-
-    /**
-     * Background colour of darker blue.
-     */
-    private static final Color BG_COLOR = Color.BLUE.darker().darker();
     /**
      * Text colour of purple.
      */
-    private static final Color TEXT_COLOR = new Color(115, 50, 241);
+    private static final Color TEXT_COLOR = new Color(255, 2, 248);
     /**
-     * Clicked button colour of brighter blue.
+     * Clicked button colour of brighter purple.
      */
-    private static final Color CLICKED_BUTTON_COLOR = BG_COLOR.brighter();
+    private static final Color CLICKED_BUTTON_COLOR = TEXT_COLOR.brighter();
     /**
      * Clicked text colour of white.
      */
@@ -173,7 +171,6 @@ public class Highscore extends JComponent {
      * Rectangle for the previous button.
      */
     private final Rectangle previousButton;
-
     /**
      * Font for the ranking list.
      */
@@ -204,6 +201,10 @@ public class Highscore extends JComponent {
      * Integer to choose which level highscores are chosen to be displayed.
      */
     private int level;
+    /**
+     * Image for Highscore background.
+     */
+    private final Image newImage;
 
     /**
      * This constructor is used to create a menu face to display the highscores for each level and the total
@@ -213,10 +214,13 @@ public class Highscore extends JComponent {
      * @param owner This GameFrame is used to link to HighScore so that HighScore can access ite methods.
      * @param area This is the size of the HomeMenu and is used to load HighScore with the same size.
      */
-    public Highscore(GameFrame owner,Dimension area) {
+    public Highscore(GameFrame owner,Dimension area) throws IOException {
 
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow();
+
+        BufferedImage myPicture = ImageIO.read(new File("image/HighScoreBackground.png"));
+        newImage = myPicture.getScaledInstance((int)area.getWidth(),(int)area.getHeight(), Image.SCALE_DEFAULT);
 
         this.addMouseListener(new MouseAdapter() {
 
@@ -312,7 +316,7 @@ public class Highscore extends JComponent {
 
         TitleFont = new Font("Noto Mono",Font.BOLD,20);
         InfoFont = new Font("Noto Mono",Font.PLAIN,17);
-        buttonFont = new Font("Monospaced",Font.PLAIN,backButton.height-2);
+        buttonFont = new Font("Monospaced",Font.BOLD,backButton.height-2);
 
         level = 0;
     }
@@ -336,7 +340,7 @@ public class Highscore extends JComponent {
      */
     private void drawScoreBoard(Graphics2D g2d) throws FileNotFoundException {
 
-        drawContainer(g2d); //draw main menu
+        g2d.drawImage(newImage,0,0,null);
         /*
         all the following method calls need a relative
         painting directly into the HomeMenu rectangle,
@@ -358,20 +362,6 @@ public class Highscore extends JComponent {
         g2d.translate(-x,-y); //move points back
         g2d.setFont(prevFont); //get previous font
         g2d.setColor(prevColor); //get previous colour
-    }
-
-    /**
-     * This method is responsible for painting and repainting the menu face of HighScore.
-     * @param g2d This graphics class is used to paint the menu face of the HighScore.
-     */
-    private void drawContainer(Graphics2D g2d){
-
-        Color prev = g2d.getColor(); //save previous colour
-
-        g2d.setColor(BG_COLOR); //get background colour
-        g2d.fill(menuFace); //fill menu with green
-
-        g2d.setColor(prev); //get previous colour
     }
 
     /**

@@ -75,15 +75,15 @@ public class HomeMenu extends JComponent {
     /**
      * Venetian Red border colour
      */
-    private static final Color BORDER_COLOR = new Color(200,8,21); //Venetian Red
+    private static final Color BORDER_COLOR = new Color(134, 4, 148); //Venetian Red
     /**
      * School bus yellow dash border colour
      */
-    private static final Color DASH_BORDER_COLOR = new  Color(255, 216, 0);//school bus yellow
+    private static final Color DASH_BORDER_COLOR = new Color(8, 39, 243);//school bus yellow
     /**
      * Purple text colour
      */
-    private static final Color TEXT_COLOR = new Color(130, 7, 127);//purple
+    private static final Color TEXT_COLOR = new Color(130, 7, 127, 255);//purple
     /**
      * Brighter green clicked button colour
      */
@@ -192,6 +192,10 @@ public class HomeMenu extends JComponent {
      * Boolean to check if PopUpImage clicked
      */
     private boolean imageClicked;
+    /**
+     * Image for HomeMenu background.
+     */
+    private final Image newImage;
 
     /**
      * This constructor is used to load all the buttons on the main menu and link them to their functions. Listeners
@@ -199,11 +203,15 @@ public class HomeMenu extends JComponent {
      *
      * @param owner This GameFrame is used to link with the HomeMenu so that HomeMenu can access its methods.
      * @param area This is the size of the HomeMenu.
+     * @throws IOException This constructor throws IOException if menu background image is not found.
      */
-    public HomeMenu(GameFrame owner,Dimension area){
+    public HomeMenu(GameFrame owner,Dimension area) throws IOException {
 
         this.setFocusable(true); //set focusable
         this.requestFocusInWindow();
+
+        BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerBackground.png"));
+        newImage = myPicture.getScaledInstance((int)area.getWidth(),(int)area.getHeight(), Image.SCALE_DEFAULT);
 
         this.addMouseListener(new MouseAdapter() {
 
@@ -216,7 +224,11 @@ public class HomeMenu extends JComponent {
             public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
                 Point p = mouseEvent.getPoint(); //get mouse coordinate
                 if(startButton.contains(p)){ //if mouse inside start button
-                    owner.enableGameBoard(); //start game
+                    try {
+                        owner.enableGameBoard(); //start game
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(menuButton.contains(p)){ //if mouse inside exit button
                     System.out.println("Goodbye " + System.getProperty("user.name"));
@@ -391,14 +403,10 @@ public class HomeMenu extends JComponent {
     /**
      * This method is responsible for painting and repainting the menu face of the HomeMenu.
      * @param g2d This graphics class is used to paint the menu face of the HomeMenu.
-     * @throws IOException This IOException is thrown if the image for the HomeMenu does not exist.
      */
-    private void drawContainer(Graphics2D g2d) throws IOException {
+    private void drawContainer(Graphics2D g2d) {
 
         Color prev = g2d.getColor(); //save previous colour
-
-        BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerBackground.png"));
-        Image newImage = myPicture.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
 
         g2d.drawImage(newImage,0,0,null);
 

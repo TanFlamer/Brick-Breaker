@@ -135,8 +135,9 @@ public class GameFrame extends JFrame {
      * This method is called when the player clicks the start button on the HomeMenu. The HomeMenu is removed and
      * the GameBoard is loaded. The game screen is centered, the game is initialized and window focus listeners
      * are added.
+     * @throws IOException This constructor throws IOException if game background image is not found.
      */
-    public void enableGameBoard() { //start game
+    public void enableGameBoard() throws IOException { //start game
         this.dispose();
         this.remove(homeMenu); //remove main menu
         brickBreaker = new BrickBreaker(this,choice,gameSounds,new Dimension(GAME_WIDTH, GAME_HEIGHT));

@@ -5,10 +5,11 @@ import java.util.Random;
 import java.lang.Math;
 
 /**
- * Public class GameBoard is responsible for loading in all entities of the game such as bricks,ball and player. All
- * state information about the entities such as position , game information such as score and time and game flags are
- * saved here. The controller manipulates the information here while the renderer renders the information here. The
- * information is read and manipulated using setters and getters.
+ * Public class GameBoard is the Model of the MVC design pattern and is responsible for holding all the entity
+ * information of the game such as bricks, ball and player. All state information about the entities such as position,
+ * game information such as score and time and game flags are saved here. The controller manipulates the information
+ * here while the renderer renders the information here. The information is read and manipulated using setters and
+ * getters.
  *
  * @author TanZhunXian
  * @version 1.0

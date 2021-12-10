@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Public class GameBoard is responsible for loading in the GameBoard, Controller and Renderer. It connects the game
@@ -82,8 +83,9 @@ public class GameEngine {
      * @param choice Player choice from custom console to be generated into levels in GameBoard.
      * @param gameSounds GameSounds to add BGM and sound effects to the game.
      * @param area Dimensions of the game screen to set game boundaries and draw pause menu.
+     * @throws IOException This constructor throws IOException if game background image is not found.
      */
-    public GameEngine(JFrame owner, int[][] choice, GameSounds gameSounds, Dimension area) {
+    public GameEngine(JFrame owner, int[][] choice, GameSounds gameSounds, Dimension area) throws IOException {
         gameBoard = new GameBoard(choice,area);
         controller = new GameBoardController(owner,gameBoard,gameSounds,area);
         renderer = new GameBoardRenderer(gameBoard,area);
@@ -119,6 +121,26 @@ public class GameEngine {
             case KeyEvent.VK_S: //press D
                 if(choice[gameBoard.getLevel()-1][10]==1)
                     controller.moveDown(); //player moves down
+                break;
+
+            case KeyEvent.VK_UP: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.minusSpeedY(); //player moves down
+                break;
+
+            case KeyEvent.VK_DOWN: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.addSpeedY(); //player moves down
+                break;
+
+            case KeyEvent.VK_LEFT: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.minusSpeedX(); //player moves down
+                break;
+
+            case KeyEvent.VK_RIGHT: //press D
+                if(choice[gameBoard.getLevel()-1][10]==1)
+                    controller.addSpeedX(); //player moves down
                 break;
 
             case KeyEvent.VK_ESCAPE: //press esc

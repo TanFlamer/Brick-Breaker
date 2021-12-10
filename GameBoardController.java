@@ -10,9 +10,10 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 
 /**
- * Public class GameBoardController is responsible for processing all the entity behaviour in the game. All movement
- * and collision are processed here, all score and time are calculated here and all flags are processed here. After
- * the data is processed, the new data is loaded into the GameBoard so that it can be rendered by the renderer.
+ * Public class GameBoardController is the Controller of the MVC design pattern and is responsible for processing all
+ * the entity behaviour in the game. All movement and collision are processed here, all score and time are calculated
+ * here and all flags are processed here. After the data is processed, the new data is loaded into the GameBoard so
+ * that it can be rendered by the renderer.
  *
  * @author TanZhunXian
  * @version 1.0
@@ -173,22 +174,6 @@ public class GameBoardController {
     }
 
     /**
-     * This method defines the movement of the ball. The new position of the ball is calculated by adding the speed of
-     * the ball to the old position of the ball. The ball is then moved to this new position. By calling this method
-     * in quick succession, movement can be simulated.
-     */
-    public void moveBall(){ //move ball according to speed
-        RectangularShape tmp = (RectangularShape) ball.getBallFace();
-        ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
-
-        double w = tmp.getWidth(); //get ball width
-        double h = tmp.getHeight(); //get ball height
-
-        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h); //make rectangle shape
-        ball.setBallFace(tmp);
-    }
-
-    /**
      * This method moves player to the left by the default move amount.
      */
     public void moveLeft(){ //move player left by default amount
@@ -222,6 +207,54 @@ public class GameBoardController {
     public void stop(){ //move player right by default amount
         player.setMoveAmount(0);
         player.setVerticalMoveAmount(0);
+    }
+
+    /**
+     * This method defines the movement of the ball. The new position of the ball is calculated by adding the speed of
+     * the ball to the old position of the ball. The ball is then moved to this new position. By calling this method
+     * in quick succession, movement can be simulated.
+     */
+    public void moveBall(){ //move ball according to speed
+        RectangularShape tmp = (RectangularShape) ball.getBallFace();
+        ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
+
+        double w = tmp.getWidth(); //get ball width
+        double h = tmp.getHeight(); //get ball height
+
+        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h); //make rectangle shape
+        ball.setBallFace(tmp);
+    }
+
+    /**
+     * This method adds horizontal speed to the ball until max horizontal speed.
+     */
+    public void addSpeedX(){
+        if(gameBoard.getBall().getSpeedX()<4)
+            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()+1);
+    }
+
+    /**
+     * This method minus horizontal speed from the ball until min horizontal speed.
+     */
+    public void minusSpeedX(){
+        if(gameBoard.getBall().getSpeedX()>-4)
+            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()-1);
+    }
+
+    /**
+     * This method adds vertical speed to the ball until max vertical speed.
+     */
+    public void addSpeedY(){
+        if(gameBoard.getBall().getSpeedY()<4)
+            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()+1);
+    }
+
+    /**
+     * This method minus vertical speed from the ball until min vertical speed.
+     */
+    public void minusSpeedY(){
+        if(gameBoard.getBall().getSpeedY()>-4)
+            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()-1);
     }
 
     /**
@@ -607,11 +640,10 @@ public class GameBoardController {
      * contains the top side of the ball inside and orientation of the player is at the top, then impact
      * has occurred.
      *
-     * @param b The ball which is checked for impact with the player.
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean ballPlayerImpact(Ball b){ //scan to see if player contains bottom side of ball
-        return player.getPlayerFace().contains(b.getCenter()) && (player.getPlayerFace().contains(b.getDown())||player.getPlayerFace().contains(b.getUp()));
+    public boolean ballPlayerImpact(){ //scan to see if player contains bottom side of ball
+        return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown())||player.getPlayerFace().contains(ball.getUp()));
     }
 
     /**
@@ -628,7 +660,7 @@ public class GameBoardController {
      *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      */
     public void findImpacts(boolean collected){ //impact method
-        if(ballPlayerImpact(ball)){ //if player hits ball
+        if(ballPlayerImpact()){ //if player hits ball
             gameSounds.playSoundEffect("Bounce");
             reverseY(); //reverse Y-direction
         }
@@ -746,7 +778,7 @@ public class GameBoardController {
      * update the brick.
      *
      * @param point The point of impact of the ball and the brick.
-     * @param dir The direction of travel of the crack.
+     * @param dir The direction of the brick face impacted by the ball.
      * @param b This is the brick that is checked.
      * @return This method returns a boolean to signify the condition of the brick.
      */
@@ -905,7 +937,7 @@ public class GameBoardController {
 
         String message = null;
         if(gameBoard.getMessageFlag()==0)
-            message = String.format("Bricks: %d  Balls %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
+            message = String.format("Bricks: %d  Balls: %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
         else if(gameBoard.getMessageFlag()==1)
             message = "Game over"; //show game over message
         else if(gameBoard.getMessageFlag()==2)
@@ -919,9 +951,9 @@ public class GameBoardController {
 
         gameBoard.setGameMessages(0,message);
 
-        String totalScore = String.format("Total Score %d", gameBoard.getScoreAndTime()[0][0]);
+        String totalScore = String.format("Total Score: %d", gameBoard.getScoreAndTime()[0][0]);
         gameBoard.setGameMessages(1,totalScore);
-        String levelScore = String.format("Level %d Score %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
+        String levelScore = String.format("Level %d Score: %d", gameBoard.getLevel(), gameBoard.getScoreAndTime()[gameBoard.getLevel()][0]);
         gameBoard.setGameMessages(2,levelScore);
 
         int systemClock = gameBoard.getScoreAndTime()[0][1];
@@ -932,16 +964,16 @@ public class GameBoardController {
         int levelMinutes = levelClock/60;
         int levelSeconds = levelClock%60;
 
-        String totalTime = String.format("Total Time %02d:%02d", totalMinutes, totalSeconds);
+        String totalTime = String.format("Total Time: %02d:%02d", totalMinutes, totalSeconds);
         gameBoard.setGameMessages(3,totalTime);
-        String levelTime = String.format("Level %d Time %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
+        String levelTime = String.format("Level %d Time: %02d:%02d", gameBoard.getLevel(), levelMinutes, levelSeconds);
         gameBoard.setGameMessages(4,levelTime);
 
         String godMode;
         if(gameBoard.getPowerUp().isCollected())
-            godMode = String.format("God Mode Activated %d", gameBoard.getGodModeTimeLeft());
+            godMode = String.format("God Mode Activated: %d", gameBoard.getGodModeTimeLeft());
         else
-            godMode = String.format("God Mode Orbs Left %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
+            godMode = String.format("God Mode Orbs Left: %d", (gameBoard.getScoreAndTime()[gameBoard.getLevel()][1]/60 + 1) - gameBoard.getPowerUpSpawns());
 
         gameBoard.setGameMessages(5,godMode);
     }
