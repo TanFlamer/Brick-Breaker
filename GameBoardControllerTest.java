@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * The getters and setters of the other classes which have been tested and deemed to be in proper working condition
  * are used to set up the test conditions for the tested methods because some methods tested do not give obvious
  * results. It is recommended to turn off volume when testing this class as BGM is repeatedly started and stopped.
- * When scoreboard appears, just close it to continue tests.
  */
 class GameBoardControllerTest {
 
