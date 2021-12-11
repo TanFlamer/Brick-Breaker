@@ -38,6 +38,15 @@ the game screen.
 Concrete bricks have been added to the game which combines the properties of Cement and Steel bricks. The Concrete brick
 is crackable, can take 2 hits and only has a 40% damage probability.
 
+### **_Added new background to the HomeMenu and game_**
+
+New backgrounds have been added to the HomeMenu and games to make the game look more exciting.
+
+### **_Added new counters in the game_**
+
+In addition to the brick count and ball count, the game now has counters for total score and time, level score and time
+and God Mode time. The words have been enlarged and font added to improve the look.
+
 ### **_Added new options to the HomeMenu_**
 
 New options such as an InfoScreen which explains the mechanics of the game, a PopUpMenu which shows a random screenshot
@@ -89,4 +98,3 @@ player from recording his score and time for that level and the total scores and
 
 From the custom console, the player is also able to choose the game orientation. Bottom is the default option. If the
 player choose top, the game is flipped upside down. The player is now on top and the brick is at the bottom.
-
