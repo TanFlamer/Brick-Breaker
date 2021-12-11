@@ -379,6 +379,7 @@ public class Highscore extends JComponent {
         Load(newScore,level); //load scores into linked list
 
         newScore.sort(new ScoreComp());
+        RemoveDuplicates(newScore);
         Renumber(newScore);
 
         g2d.setColor(TEXT_COLOR); //get text colour
@@ -576,6 +577,41 @@ public class Highscore extends JComponent {
 
         for(Score renum : holdScore){ //count number of treatment of each type
             renum.ranking = num++;
+        }
+    }
+
+    /**
+     * This method removes any duplicate entries in the rankings. The method checks for the same player name, score
+     * and level type and leaves only a single entry. Since this method is called after the rankings are resorted,
+     * only the best scores and best times for a person in each category is kept.
+     *
+     * @param holdScore The linked list where the duplicate entries are to be removed.
+     */
+    private void RemoveDuplicates(LinkedList<Score> holdScore){
+
+        String nameComp,categoryComp;
+        for(int i = 0; i < holdScore.size(); i++){
+
+            if(holdScore.get(i)!=null) {
+                nameComp = holdScore.get(i).name;
+                categoryComp = holdScore.get(i).levelType;
+            }
+            else {
+                break;
+            }
+
+            for(int j = 0; j < holdScore.size(); j++){
+
+                if(holdScore.get(j)!=null) {
+                    if ((nameComp.equalsIgnoreCase(holdScore.get(j).name) && categoryComp.equalsIgnoreCase(holdScore.get(j).levelType))&&(i!=j)){
+                        holdScore.remove(j);
+                        j--;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
         }
     }
 }

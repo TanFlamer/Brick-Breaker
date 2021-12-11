@@ -14,14 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * GameBoardControllerTest tests to see if the methods of GameBoardController class are all working properly.
  * The getters and setters of the other classes which have been tested and deemed to be in proper working condition
- * are used to set up the test conditions for the tested methods because some methods tested do not give obvious results.
+ * are used to set up the test conditions for the tested methods because some methods tested do not give obvious
+ * results. It is recommended to turn off volume when testing this class as BGM is repeatedly started and stopped.
+ * When scoreboard appears, just close it to continue tests.
  */
 class GameBoardControllerTest {
 
-    /**
-     * GameFrame used in the tests.
-     */
-    GameFrame owner;
     /**
      * GameBoard used in the tests.
      */
@@ -39,11 +37,10 @@ class GameBoardControllerTest {
      * A new GameBoardController with new created parameters is created before every test.
      */
     @BeforeEach
-    void setUp() throws IOException {
-        owner = new GameFrame();
+    void setUp() {
         gameBoard = new GameBoard(new int[5][11],new Dimension(600,450));
         gameSounds = new GameSounds();
-        controller = new GameBoardController(owner,gameBoard,gameSounds,new Dimension(600,450));
+        controller = new GameBoardController(null,gameBoard,gameSounds,new Dimension(600,450));
     }
 
     /**
@@ -51,7 +48,6 @@ class GameBoardControllerTest {
      */
     @AfterEach
     void tearDown() {
-        owner = null;
         gameBoard = null;
         gameSounds = null;
         controller = null;
@@ -63,8 +59,14 @@ class GameBoardControllerTest {
     @Test
     void update() throws FileNotFoundException {
         //prepare power up spawn
+        gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
         gameBoard.setLevel(2);
-        gameBoard.setTime(2,100);
+        gameBoard.setScore(0,300);
+        gameBoard.setTime(0,140);
+        gameBoard.setScore(1,200);
+        gameBoard.setTime(1,80);
+        gameBoard.setScore(2,100);
+        gameBoard.setTime(2,60);
         gameBoard.setPowerUpSpawns(1);
         gameBoard.getPowerUp().setCollected(false);
         gameBoard.getPowerUp().setSpawned(false);
@@ -75,26 +77,37 @@ class GameBoardControllerTest {
         controller.moveLeft();
 
         //prepare ball
-        gameBoard.getBall().setCenter(new Point(100,100));
+        gameBoard.getBall().setCenter(new Point(599,300));
         gameBoard.getBall().setSpeedX(0);
         gameBoard.getBall().setSpeedY(0);
         controller.addSpeedX();
         controller.addSpeedX();
         controller.minusSpeedY();
         controller.minusSpeedY();
+        assertEquals(gameBoard.getBall().getSpeedX(),2);
+        assertEquals(gameBoard.getBall().getSpeedY(),-2);
 
         //unpause game and update
         gameBoard.setPauseFlag(false);
         controller.update();
 
         //compare results
+        assertEquals(gameBoard.getScore(0),200);
+        assertEquals(gameBoard.getTime(0),140);
+        assertEquals(gameBoard.getScore(1),200);
+        assertEquals(gameBoard.getTime(1),80);
+        assertEquals(gameBoard.getScore(2),0);
+        assertEquals(gameBoard.getTime(2),60);
         assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(195,195));
-        assertEquals(gameBoard.getBall().getCenter(),new Point(102,98));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(601,298));
+        assertEquals(gameBoard.getBall().getSpeedX(),-2);
+        assertEquals(gameBoard.getBall().getSpeedY(),-2);
         assertTrue(gameBoard.getPowerUp().isSpawned());
         assertFalse(gameBoard.getPowerUp().isCollected());
         assertEquals(gameBoard.getPowerUpSpawns(),2);
         assertEquals(gameBoard.getPowerUp().getMidPoint().y,325);
         assertTrue(gameBoard.getPowerUp().getMidPoint().x>=100 && gameBoard.getPowerUp().getMidPoint().x<=500);
+        assertEquals(gameBoard.getMessageFlag(),0);
     }
 
     /**
@@ -660,14 +673,20 @@ class GameBoardControllerTest {
      * This tests the gameChecks method of the controller. The test returns true if correct output is returned.
      */
     @Test
-    void gameChecks() throws FileNotFoundException {
+    void gameChecks() throws IOException {
+        //setup GameFrame for only use
+        GameFrame owner = new GameFrame();
+        controller = new GameBoardController(owner,gameBoard,gameSounds,new Dimension(600,450));
+
         //ball lost but ball left
+        gameBoard.setLevel(2);
         gameBoard.setBrickCount(20);
         gameBoard.setBallCount(2);
         gameBoard.setBallLost(true);
         gameBoard.getPlayer().setMidPoint(new Point(200,200));
         gameBoard.getBall().setCenter(new Point(100,100));
         controller.gameChecks();
+        assertEquals(gameBoard.getLevel(),2);
         assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
         assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
         assertEquals(gameBoard.getBrickCount(),20);
@@ -677,13 +696,15 @@ class GameBoardControllerTest {
         assertFalse(gameBoard.isNotPaused());
         assertFalse(gameBoard.isEnded());
 
-        //ball lost but ball finished
+        //ball lost and ball finished
+        gameBoard.setLevel(2);
         gameBoard.setBrickCount(20);
         gameBoard.setBallCount(0);
         gameBoard.setBallLost(true);
         gameBoard.getPlayer().setMidPoint(new Point(200,200));
         gameBoard.getBall().setCenter(new Point(100,100));
         controller.gameChecks();
+        assertEquals(gameBoard.getLevel(),2);
         assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
         assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
         assertEquals(gameBoard.getBrickCount(),31);
@@ -693,12 +714,60 @@ class GameBoardControllerTest {
         assertFalse(gameBoard.isNotPaused());
         assertFalse(gameBoard.isEnded());
 
-        gameBoard.getPowerUp().setCollected(true);
+        //brick finished but level left
+        gameBoard.setLevel(2);
+        gameBoard.setBrickCount(0);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(false);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        controller.gameChecks();
+        assertEquals(gameBoard.getLevel(),3);
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(300,430));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(300,430));
+        assertEquals(gameBoard.getBrickCount(),31);
+        assertEquals(gameBoard.getBallCount(),3);
+        assertEquals(gameBoard.getMessageFlag(),2);
+        assertFalse(gameBoard.isBallLost());
+        assertFalse(gameBoard.isNotPaused());
+        assertFalse(gameBoard.isEnded());
+
+        //brick finished and last level
+        gameBoard.setLevel(5);
+        gameBoard.setBrickCount(0);
+        gameBoard.setBallCount(2);
+        gameBoard.setBallLost(false);
+        gameBoard.getPlayer().setMidPoint(new Point(200,200));
+        gameBoard.getBall().setCenter(new Point(100,100));
+        controller.gameChecks();
+        assertEquals(gameBoard.getLevel(),5);
+        assertEquals(gameBoard.getPlayer().getMidPoint(),new Point(200,200));
+        assertEquals(gameBoard.getBall().getCenter(),new Point(100,100));
+        assertEquals(gameBoard.getBrickCount(),0);
+        assertEquals(gameBoard.getBallCount(),2);
+        assertEquals(gameBoard.getMessageFlag(),3);
+        assertFalse(gameBoard.isBallLost());
+        assertFalse(gameBoard.isNotPaused());
+        assertTrue(gameBoard.isEnded());
+
+        //power up collected
+        gameBoard.setLevel(2);
+        gameBoard.setBrickCount(20);
+        gameBoard.setBallLost(false);
+        controller.powerUpMoveTo(new Point(100,100));
+        controller.ballMoveTo(new Point(90,100));
+        gameBoard.getPowerUp().setSpawned(true);
+        gameBoard.getPowerUp().setCollected(false);
+        gameBoard.setGodModeTimeLeft(0);
+        controller.gameChecks();
+        assertFalse(gameBoard.getPowerUp().isSpawned());
+        assertTrue(gameBoard.getPowerUp().isCollected());
+        assertEquals(gameBoard.getGodModeTimeLeft(),10);
+
+        //power uptime finished
         gameBoard.setGodModeTimeLeft(0);
         controller.gameChecks();
         assertFalse(gameBoard.getPowerUp().isCollected());
-
-        //cannot test level progression because ScoreBoard is called
     }
 
     /**
