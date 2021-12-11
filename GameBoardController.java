@@ -390,7 +390,7 @@ public class GameBoardController {
         }
         else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
 
-            if(choice[gameBoard.getLevel()-1][10]==0) {
+            if(choice[gameBoard.getLevel()-1][10]==0 && (gameBoard.getScore(gameBoard.getLevel())>0 && gameBoard.getTime(gameBoard.getLevel())>0)) {
                 gameSounds.playSoundEffect("NextLevel");
                 new ScoreBoard(owner, gameBoard.getLevel(), gameBoard.getScoreAndTime(), choice);
             }
@@ -404,7 +404,7 @@ public class GameBoardController {
                     reversePauseFlag();
             }
             else {
-                if(choice[0][10]==0&&choice[1][10]==0&&choice[2][10]==0&&choice[3][10]==0&&choice[4][10]==0) {
+                if((choice[0][10]==0&&choice[1][10]==0&&choice[2][10]==0&&choice[3][10]==0&&choice[4][10]==0) && (gameBoard.getScore(0)>0 && gameBoard.getTime(0)>0)) {
                     gameSounds.playSoundEffect("LastLevel");
                     new ScoreBoard(owner, 0, gameBoard.getScoreAndTime(), choice);
                 }

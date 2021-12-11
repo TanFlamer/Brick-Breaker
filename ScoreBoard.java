@@ -202,14 +202,9 @@ public class ScoreBoard extends JDialog implements ActionListener {
         constraints.gridy = 8;
         this.add(saveName,constraints);
 
-        if(scoreAndTime[level][0]<=0 || scoreAndTime[level][1]<=0){
-            this.dispose();
-        }
-        else {
-            this.setSize(450,300);
-            this.pack();
-            this.setVisible(true);
-        }
+        this.setSize(450,300);
+        this.pack();
+        this.setVisible(true);
     }
 
     /**
@@ -341,7 +336,11 @@ public class ScoreBoard extends JDialog implements ActionListener {
         int ranking = 0;
 
         for(Score find : newScore){
-            if(scoreAndTime[level][0]>=find.score){
+            if(scoreAndTime[level][0]>find.score){
+                ranking = find.ranking;
+                break;
+            }
+            else if(scoreAndTime[level][0]==find.score){
                 if(scoreAndTime[level][1]<find.time){
                     ranking = find.ranking;
                     break;
