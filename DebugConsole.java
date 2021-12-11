@@ -60,7 +60,7 @@ public class DebugConsole extends JDialog {
 
         this.owner = owner;
         this.gameBoard = gameEngine.getGameBoard();
-        initialize(gameSounds,gameEngine); //call debug console
+        initialize(gameSounds); //call debug console
 
         debugPanel = new DebugPanel(gameEngine);
         this.add(debugPanel,BorderLayout.CENTER); //add debug panel to center
@@ -71,9 +71,8 @@ public class DebugConsole extends JDialog {
     /**
      * This method is used to set the DebugConsole title and to add in window listeners.
      * @param gameSounds This is used to add BGM to DebugConsole.
-     * @param gameEngine This is used to load back level BGM after DebugConsole closes.
      */
-    private void initialize(GameSounds gameSounds,GameEngine gameEngine){ //call debug console
+    private void initialize(GameSounds gameSounds){ //call debug console
 
         this.setModal(true);
         this.setTitle(TITLE);
@@ -87,7 +86,7 @@ public class DebugConsole extends JDialog {
              */
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                gameSounds.setBgm("BGM"+gameEngine.getGameBoard().getLevel());
+                gameSounds.getBgm().stop();
             }
 
             /**
@@ -101,6 +100,7 @@ public class DebugConsole extends JDialog {
                 setLocation(); //set debug console location
                 Ball b = gameBoard.getBall(); //get ball
                 debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
+                gameSounds.setSongID(0);
                 gameSounds.setBgm("Debug");
             }
         });

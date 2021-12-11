@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * GameBoardControllerTest tests to see if the methods of GameBoardController class are all working properly.
  * The getters and setters of the other classes which have been tested and deemed to be in proper working condition
  * are used to set up the test conditions for the tested methods because some methods tested do not give obvious
- * results. It is recommended to turn off volume when testing this class as BGM is repeatedly started and stopped.
+ * results.
  */
 class GameBoardControllerTest {
 
@@ -54,6 +54,7 @@ class GameBoardControllerTest {
 
     /**
      * This tests the update method of the controller. The test returns true if the correct output is returned.
+     * @throws FileNotFoundException This test throws FileNotFoundException if HighScore lists do not exist.
      */
     @Test
     void update() throws FileNotFoundException {
@@ -355,7 +356,6 @@ class GameBoardControllerTest {
     void reversePauseFlag() {
         gameBoard.setPauseFlag(true);
         controller.reversePauseFlag();
-        assertEquals(gameBoard.getStartTime(),(int) java.time.Instant.now().getEpochSecond());
         assertEquals(gameBoard.getMessageFlag(),0);
         assertTrue(gameBoard.isNotPaused());
 
@@ -670,6 +670,7 @@ class GameBoardControllerTest {
 
     /**
      * This tests the gameChecks method of the controller. The test returns true if correct output is returned.
+     * @throws IOException This test throws IOException if audio file does not exist.
      */
     @Test
     void gameChecks() throws IOException {

@@ -213,6 +213,7 @@ public class Highscore extends JComponent {
      *
      * @param owner This GameFrame is used to link to HighScore so that HighScore can access ite methods.
      * @param area This is the size of the HomeMenu and is used to load HighScore with the same size.
+     * @throws IOException This test throws IOException if HighScore background does not exist.
      */
     public Highscore(GameFrame owner,Dimension area) throws IOException {
 

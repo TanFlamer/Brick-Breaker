@@ -22,6 +22,10 @@ public class GameSounds {
      * The sound effects for actions like collision.
      */
     private Clip soundEffect;
+    /**
+     * The id of the song used to control song change
+     */
+    private int songID = 0;
 
     /**
      * This method stops the current BGM and loads and plays a new BGM from file.
@@ -70,5 +74,21 @@ public class GameSounds {
      */
     public Clip getBgm() {
         return bgm;
+    }
+
+    /**
+     * This method returns the current song ID.
+     * @return The current song ID is returned.
+     */
+    public int getSongID() {
+        return songID;
+    }
+
+    /**
+     * This method sets the new song ID.
+     * @param songID This is the new song ID.
+     */
+    public void setSongID(int songID) {
+        this.songID = songID;
     }
 }

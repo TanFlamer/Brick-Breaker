@@ -264,9 +264,16 @@ public class GameBoardController {
     public void reversePauseFlag(){
         gameBoard.setPauseFlag(gameBoard.isNotPaused());
         if(gameBoard.isNotPaused()){
+
             gameBoard.setStartTime((int) java.time.Instant.now().getEpochSecond());
             gameBoard.setMessageFlag(0);
-            gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
+
+            if(gameSounds.getSongID()==gameBoard.getLevel())
+                gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
+            else {
+                gameSounds.setBgm("BGM" + gameBoard.getLevel());
+                gameSounds.setSongID(gameBoard.getLevel());
+            }
         }
         else {
             gameSounds.getBgm().stop();
@@ -456,7 +463,6 @@ public class GameBoardController {
         gameBoard.setLevel(gameBoard.getLevel()+1);
         gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetLevelData();
-        gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
     /**
@@ -474,7 +480,6 @@ public class GameBoardController {
         gameBoard.setLevel(gameBoard.getLevel()-1);
         gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetLevelData();
-        gameSounds.setBgm("BGM"+gameBoard.getLevel());
     }
 
     /**
