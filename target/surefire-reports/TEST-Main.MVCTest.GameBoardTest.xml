@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="Main.MVCTest.GameBoardTest" time="0.013" tests="38" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="Main.MVCTest.GameBoardTest" time="0.014" tests="38" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.class.path" value="C:\Users\zxtan\IdeaProjects\BrickDestroy\target\test-classes;C:\Users\zxtan\IdeaProjects\BrickDestroy\target\classes;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.2\junit-jupiter-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\zxtan\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.2\junit-jupiter-params-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="java.class.path" value="C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15\target\test-classes;C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15\target\classes;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.2\junit-jupiter-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\zxtan\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.2\junit-jupiter-params-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -15,9 +15,9 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="D:\Java\jdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="D:\Temp\Temp3\surefire1205662590884712041\surefirebooter576616942459211284.jar D:\Temp\Temp3\surefire1205662590884712041 2021-12-12T20-07-51_940-jvmRun1 surefire12878365755515971407tmp surefire_05208056519612784854tmp"/>
+    <property name="sun.java.command" value="D:\Temp\Temp3\surefire6096240752792270949\surefirebooter3835016532887655742.jar D:\Temp\Temp3\surefire6096240752792270949 2021-12-12T20-43-54_381-jvmRun1 surefire15641255472806919907tmp surefire_011610502345886833095tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Users\zxtan\IdeaProjects\BrickDestroy\target\test-classes;C:\Users\zxtan\IdeaProjects\BrickDestroy\target\classes;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.2\junit-jupiter-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\zxtan\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.2\junit-jupiter-params-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
+    <property name="surefire.test.class.path" value="C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15\target\test-classes;C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15\target\classes;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.2\junit-jupiter-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.2\junit-jupiter-api-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-commons\1.8.2\junit-platform-commons-1.8.2.jar;C:\Users\zxtan\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.2\junit-jupiter-params-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.2\junit-jupiter-engine-5.8.2.jar;C:\Users\zxtan\.m2\repository\org\junit\platform\junit-platform-engine\1.8.2\junit-platform-engine-1.8.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\zxtan"/>
     <property name="user.language" value="en"/>
@@ -25,12 +25,12 @@
     <property name="java.version.date" value="2021-01-19"/>
     <property name="java.home" value="D:\Java\jdk-15.0.2"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Users\zxtan\IdeaProjects\BrickDestroy"/>
+    <property name="basedir" value="C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15"/>
     <property name="java.vm.compressedOopsMode" value="32-bit"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="D:\Temp\Temp3\surefire1205662590884712041\surefirebooter576616942459211284.jar"/>
+    <property name="surefire.real.class.path" value="D:\Temp\Temp3\surefire6096240752792270949\surefirebooter3835016532887655742.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>
@@ -45,7 +45,7 @@
     <property name="java.io.tmpdir" value="D:\Temp\Temp3\"/>
     <property name="idea.version" value="2021.3"/>
     <property name="java.version" value="15.0.2"/>
-    <property name="user.dir" value="C:\Users\zxtan\IdeaProjects\BrickDestroy"/>
+    <property name="user.dir" value="C:\Users\zxtan\IdeaProjects\Tan_ZhunXian_IntelliJ_15"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
@@ -66,32 +66,32 @@
   <testcase name="setPlayerStartPoint" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getMessageFlag" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="setGodModeTimeLeft" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setBallStartPoint" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
-  <testcase name="setPowerUpSpawns" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="setBallStartPoint" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="setPowerUpSpawns" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
   <testcase name="setStartTime" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="getBallStartPoint" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
-  <testcase name="getBall" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="getBallStartPoint" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="getBall" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
   <testcase name="getTime" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
   <testcase name="getPlayerStartPoint" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setBallLost" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="setBallLost" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
   <testcase name="getBricks" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="getChoice" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="getChoice" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getPowerUp" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getPlayer" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getBallCount" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="setMessageFlag" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="getPowerUpSpawns" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="getPowerUpSpawns" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
   <testcase name="getBrickCount" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getGameMessages" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setEndFlag" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="setEndFlag" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="setLevel" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setScore" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setShowPauseMenu" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
-  <testcase name="isBallLost" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setBrickCount" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="setScore" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="setShowPauseMenu" classname="Main.MVCTest.GameBoardTest" time="0"/>
+  <testcase name="isBallLost" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="setBrickCount" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getLevel" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getScore" classname="Main.MVCTest.GameBoardTest" time="0"/>
-  <testcase name="setTime" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
+  <testcase name="setTime" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="getGodModeTimeLeft" classname="Main.MVCTest.GameBoardTest" time="0"/>
   <testcase name="isEnded" classname="Main.MVCTest.GameBoardTest" time="0.001"/>
 </testsuite>
