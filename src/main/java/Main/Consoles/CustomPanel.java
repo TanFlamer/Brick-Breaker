@@ -131,7 +131,7 @@ public class CustomPanel extends JPanel implements ActionListener {
     public CustomPanel(){
 
         String[] balls = {"Default","1","2","3","4","5","6","7","8","9","10"};
-        String[] levelType = {"Default","True Ordered","Ordered (Maximal)","Ordered (Moderate)","Ordered (Minimal)","Random (Minimal)","Random (Moderate)","Random (Maximal)","True Random"};
+        String[] levelType = {"Default","True Ordered","Ordered (Max)","Ordered (Mid)","Ordered (Min)","Random (Min)","Random (Mid)","Random (Max)","True Random"};
         String[] brickRows = {"1","2","3","4","5","6","7","8","9","10"};
         String[] brickInRow = {"1","2","3","4","5","6","8","10","12","15"};
         String[] Num = {"1","2","3","4","5"};

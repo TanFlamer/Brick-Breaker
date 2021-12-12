@@ -647,7 +647,7 @@ public class HomeMenu extends JComponent {
     private void drawImage(Graphics2D g2d) throws IOException {
 
         Random rnd = new Random();
-        int rand = rnd.nextInt(12);
+        int rand = rnd.nextInt(20);
 
         if(popupmenu.getComponentCount()!=0){
             popupmenu.remove(0);
