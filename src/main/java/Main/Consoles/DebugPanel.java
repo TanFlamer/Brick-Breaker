@@ -59,32 +59,32 @@ public class DebugPanel extends JPanel {
     public DebugPanel(GameEngine gameEngine){
 
         this.controller = gameEngine.getController();
-        initialize(); //initialize debug panel
+        initialize();
 
-        JButton skipLevel = makeButton("Skip Level", e -> controller.nextLevel(false)); //make new buttons
+        JButton skipLevel = makeButton("Skip Level", e -> controller.nextLevel(false));
         JButton resetBalls = makeButton("Reset Balls", e -> controller.resetBallCount());
         JButton previousLevel = makeButton("Previous Level", e -> controller.previousLevel());
         JButton resetPosition = makeButton("Reset Position", e -> controller.ballReset());
 
-        ballXSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue())); //make new sliders
-        ballYSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue())); //show and set speed of ball
+        ballXSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue()));
+        ballYSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue()));
 
-        this.add(skipLevel); //add buttons
+        this.add(skipLevel);
         this.add(resetBalls);
 
         this.add(previousLevel);
         this.add(resetPosition);
 
-        this.add(ballXSpeed); //add sliders
+        this.add(ballXSpeed);
         this.add(ballYSpeed);
     }
 
     /**
      * This method sets the DebugPanel background to white and sets the layout to GridLayout.
      */
-    private void initialize(){ //initialize debug panel
-        this.setBackground(DEF_BKG); //set background colour
-        this.setLayout(new GridLayout(3,2)); //set layout
+    private void initialize(){
+        this.setBackground(DEF_BKG);
+        this.setLayout(new GridLayout(3,2));
     }
 
     /**
@@ -93,7 +93,7 @@ public class DebugPanel extends JPanel {
      * @param e This is the action listener assigned to the JButton.
      * @return This method returns a JButton with the given string which is assigned an action listener.
      */
-    private JButton makeButton(String title, ActionListener e){ //make buttons and add listener
+    private JButton makeButton(String title, ActionListener e){
         JButton out = new JButton(title);
         out.addActionListener(e);
         return out;
@@ -106,11 +106,11 @@ public class DebugPanel extends JPanel {
      * @param e This is the action listener assigned to the JSlider.
      * @return This method returns a JSlider with the given min and max values which is assigned an action listener.
      */
-    private JSlider makeSlider(ChangeListener e){ //make sliders and add listener
+    private JSlider makeSlider(ChangeListener e){
         JSlider out = new JSlider(-4, 4);
-        out.setMajorTickSpacing(1); //set tick spacing
-        out.setSnapToTicks(true); //snap to tick
-        out.setPaintTicks(true); //paint ticks
+        out.setMajorTickSpacing(1);
+        out.setSnapToTicks(true);
+        out.setPaintTicks(true);
         out.addChangeListener(e);
         return out;
     }
@@ -120,7 +120,7 @@ public class DebugPanel extends JPanel {
      * @param x This is the current horizontal speed of the ball.
      * @param y This is the current vertical speed of the ball.
      */
-    public void setValues(int x,int y){ //show current ball speed on slider
+    public void setValues(int x,int y){
         ballXSpeed.setValue(x);
         ballYSpeed.setValue(y);
     }

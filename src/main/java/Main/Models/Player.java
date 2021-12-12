@@ -67,7 +67,7 @@ public class Player {
         max = min + area.width - width;
         top = 0;
         bottom = area.height - height;
-        playerFace = new Rectangle(new Point((int) (midPoint.getX() - (width / 2)), (int) midPoint.getY()),new Dimension(width,height)); //make rectangle player
+        playerFace = new Rectangle(new Point((int) (midPoint.getX() - (width / 2)), (int) midPoint.getY()),new Dimension(width,height));
     }
 
     /**

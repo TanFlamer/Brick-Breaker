@@ -109,30 +109,30 @@ public class GameFrame extends JFrame {
     public GameFrame() throws IOException {
         super();
 
-        gaming = false; //game loses focus
+        gaming = false;
 
-        this.setLayout(new BorderLayout()); //set layout
+        this.setLayout(new BorderLayout());
 
         gameSounds = new GameSounds();
-        highscore = new Highscore(this, new Dimension(MENU_WIDTH, MENU_HEIGHT)); //get highscore
-        homeMenu = new HomeMenu(this, new Dimension(MENU_WIDTH, MENU_HEIGHT)); //set main menu
+        highscore = new Highscore(this, new Dimension(MENU_WIDTH, MENU_HEIGHT));
+        homeMenu = new HomeMenu(this, new Dimension(MENU_WIDTH, MENU_HEIGHT));
         customConsole = new CustomConsole(this,homeMenu,gameSounds);
         infoScreen = new InfoScreen(this,homeMenu,gameSounds);
-        this.add(homeMenu, BorderLayout.CENTER); //add main menu to centre
+        this.add(homeMenu, BorderLayout.CENTER);
         gameSounds.setBgm("Menu");
         this.choice = customConsole.getChoice();
-        this.setUndecorated(true); //set frame undecorated
+        this.setUndecorated(true);
     }
 
     /**
      * This method is called when the game starts to load. The game title is set, the game screen is centered
      * and the game screen is made visible.
      */
-    public void initialize() { //initialize game
+    public void initialize() {
         this.setTitle(DEF_TITLE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
-        this.autoLocate(); //reposition screen
+        this.autoLocate();
         this.setVisible(true);
     }
 
@@ -142,13 +142,13 @@ public class GameFrame extends JFrame {
      * are added.
      * @throws IOException This constructor throws IOException if game background image is not found.
      */
-    public void enableGameBoard() throws IOException { //start game
+    public void enableGameBoard() throws IOException {
         this.dispose();
-        this.remove(homeMenu); //remove main menu
+        this.remove(homeMenu);
         brickBreaker = new BrickBreaker(this,choice,gameSounds,new Dimension(GAME_WIDTH, GAME_HEIGHT));
-        this.add(brickBreaker, BorderLayout.CENTER); //add main game
+        this.add(brickBreaker, BorderLayout.CENTER);
         this.setUndecorated(false);
-        initialize(); //initialize game
+        initialize();
         //to avoid problems with graphics focus controller is added here
         this.addWindowFocusListener(new WindowAdapter() {
             /**
@@ -156,8 +156,8 @@ public class GameFrame extends JFrame {
              * @param windowEvent This parameter is used to track the game screen.
              */
             @Override
-            public void windowGainedFocus(WindowEvent windowEvent) { //if game gains focus
-                gaming = true; //set gaming flag true
+            public void windowGainedFocus(WindowEvent windowEvent) {
+                gaming = true;
                 /*the first time the frame loses focus is because it has been disposed to install the GameBoard,
                   so went it regains the focus it's ready to play. of course calling a method such as 'onLostFocus'
                   is useful only if the GameBoard as been displayed at least once*/
@@ -168,9 +168,9 @@ public class GameFrame extends JFrame {
              * @param windowEvent This parameter is used to track the game screen.
              */
             @Override
-            public void windowLostFocus(WindowEvent windowEvent) { //if game loses focus
-                if (gaming) //if gaming flag true
-                    brickBreaker.onLostFocus(); //stop timer and action listener
+            public void windowLostFocus(WindowEvent windowEvent) {
+                if (gaming)
+                    brickBreaker.onLostFocus();
                 gameSounds.getBgm().stop();
             }
         });
@@ -179,7 +179,7 @@ public class GameFrame extends JFrame {
     /**
      * This method is used to center the game screen on the window screen.
      */
-    void autoLocate() { //reposition screen
+    void autoLocate() {
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (size.width - this.getWidth()) / 2;
         int y = (size.height - this.getHeight()) / 2;
@@ -192,8 +192,8 @@ public class GameFrame extends JFrame {
      */
     public void enableHighscoreBoard() {
         this.dispose();
-        this.remove(homeMenu); //remove main menu
-        this.add(highscore, BorderLayout.CENTER); //add main game
+        this.remove(homeMenu);
+        this.add(highscore, BorderLayout.CENTER);
         this.setUndecorated(true);
         this.setVisible(true);
         gameSounds.setBgm("Highscore");
@@ -205,8 +205,8 @@ public class GameFrame extends JFrame {
      */
     public void enableHomeMenu() {
         this.dispose();
-        this.remove(highscore); //remove main menu
-        this.add(homeMenu, BorderLayout.CENTER); //add main game
+        this.remove(highscore);
+        this.add(homeMenu, BorderLayout.CENTER);
         this.setUndecorated(true);
         this.setVisible(true);
         gameSounds.setBgm("Menu");

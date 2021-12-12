@@ -22,7 +22,6 @@ public class CustomConsole extends JDialog {
      * Title for the CustomConsole.
      */
     private static final String TITLE = "Customise Levels";
-
     /**
      * JFrame which is used to center the CustomConsole.
      */
@@ -35,7 +34,6 @@ public class CustomConsole extends JDialog {
      * HomeMenu which is repainted when CustomConsole closes.
      */
     private final HomeMenu homeMenu;
-
     /**
      * Double array of Integer to hold all player choices to send to GameBoard for level generation.
      */
@@ -89,8 +87,8 @@ public class CustomConsole extends JDialog {
              * @param windowEvent This parameter is used to track the CustomConsole window.
              */
             @Override
-            public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
-                setLocation(); //set debug console location
+            public void windowActivated(WindowEvent windowEvent) {
+                setLocation();
                 customPanel.setIndex();
                 customPanel.resetMessage();
                 gameSounds.setBgm("Custom");
@@ -103,7 +101,7 @@ public class CustomConsole extends JDialog {
     /**
      * This method is used to center the CustomConsole by using the JFrame location.
      */
-    private void setLocation(){ //set debug console location
+    private void setLocation(){
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);

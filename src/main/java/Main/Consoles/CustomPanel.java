@@ -249,9 +249,9 @@ public class CustomPanel extends JPanel implements ActionListener {
     /**
      * This method sets the CustomPanel background to white and sets the layout to GridLayout.
      */
-    private void initialize(){ //initialize debug panel
-        this.setBackground(DEF_BKG); //set background colour
-        this.setLayout(new GridLayout(18,2)); //set layout
+    private void initialize(){
+        this.setBackground(DEF_BKG);
+        this.setLayout(new GridLayout(18,2));
     }
 
     /**
@@ -259,7 +259,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * @param choice This array of strings are the choices for the JComboBoxes.
      * @return This method returns a JComboBox with the given array of strings as their options.
      */
-    private JComboBox<String> makeComboBox(String[] choice){ //make buttons and add listener
+    private JComboBox<String> makeComboBox(String[] choice){
         return new JComboBox<>(choice);
     }
 
@@ -267,7 +267,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * This method is used to make JLabels with the given string as their label and adds it to the CustomPanel.
      * @param label This string is the label for the JLabel.
      */
-    private void makeJLabels(String label){ //make buttons and add listener
+    private void makeJLabels(String label){
         JLabel out = new JLabel(label);
         this.add(out);
     }
@@ -279,7 +279,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * @param label This string is the initial label for the JLabel.
      * @return This method returns a JLabel with the given string as the initial label.
      */
-    private JLabel makeLabels(String label){ //make buttons and add listener
+    private JLabel makeLabels(String label){
         return new JLabel(label);
     }
 
@@ -288,7 +288,7 @@ public class CustomPanel extends JPanel implements ActionListener {
      * @param label This string is the label for the JButton.
      * @return This method returns a JButton with the given string as the label.
      */
-    private JButton makeJButton(String label){ //make buttons and add listener
+    private JButton makeJButton(String label){
         return new JButton(label);
     }
 
@@ -467,7 +467,7 @@ public class CustomPanel extends JPanel implements ActionListener {
         }
         else if(e.getSource()==randomise){
 
-            Random rnd = new Random(); //get random number
+            Random rnd = new Random();
             for(int i = 0; i < 5;i++){
                 choice[i][0] = rnd.nextInt(9);
                 choice[i][1] = rnd.nextInt(10);

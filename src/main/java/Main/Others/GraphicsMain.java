@@ -16,7 +16,7 @@ public class GraphicsMain {
      * This method is used to load the GameFrame into the event queue.
      * @param args This is the main class argument.
      */
-    public static void main(String[] args) { //initialize game
+    public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
                 new GameFrame().initialize();

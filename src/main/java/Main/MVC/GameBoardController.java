@@ -171,47 +171,47 @@ public class GameBoardController {
      * position. The player is then moved to this new position. By calling this method in quick succession, movement
      * can be simulated.
      */
-    public void movePlayer(){ //move player
-        double x = player.getMidPoint().getX() + player.getMoveAmount(); //get player location after move
-        double y = player.getMidPoint().getY() + player.getVerticalMoveAmount(); //get player location after move
+    public void movePlayer(){
+        double x = player.getMidPoint().getX() + player.getMoveAmount();
+        double y = player.getMidPoint().getY() + player.getVerticalMoveAmount();
         if(x < player.getMin() || x > player.getMax() || y < player.getTop() || y > player.getBottom()) //if X-coordinate exceeds min or max value
             return; //stop player from moving
-        player.setMidPoint(new Point((int)x,(int)y)); //set new player point
+        player.setMidPoint(new Point((int)x,(int)y));
         player.getPlayerFace().setLocation(player.getMidPoint().x - (int)player.getPlayerFace().getWidth()/2,player.getMidPoint().y); //set new player location
     }
 
     /**
      * This method moves player to the left by the default move amount.
      */
-    public void moveLeft(){ //move player left by default amount
+    public void moveLeft(){
         player.setMoveAmount(-DEF_MOVE_AMOUNT);
     }
 
     /**
      * This method moves player to the right by the default move amount.
      */
-    public void moveRight(){ //move player right by default amount
+    public void moveRight(){
         player.setMoveAmount(DEF_MOVE_AMOUNT);
     }
 
     /**
      * This method moves player up by the default move amount.
      */
-    public void moveUp(){ //move player right by default amount
+    public void moveUp(){
         player.setVerticalMoveAmount(-DEF_MOVE_AMOUNT);
     }
 
     /**
      * This method moves player down by the default move amount.
      */
-    public void moveDown(){ //move player right by default amount
+    public void moveDown(){
         player.setVerticalMoveAmount(DEF_MOVE_AMOUNT);
     }
 
     /**
      * This method stops the player movement by setting move amount to 0.
      */
-    public void stop(){ //move player right by default amount
+    public void stop(){
         player.setMoveAmount(0);
         player.setVerticalMoveAmount(0);
     }
@@ -228,7 +228,7 @@ public class GameBoardController {
         double w = tmp.getWidth(); //get ball width
         double h = tmp.getHeight(); //get ball height
 
-        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h); //make rectangle shape
+        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h);
         ball.setBallFace(tmp);
     }
 
@@ -301,7 +301,7 @@ public class GameBoardController {
             if(choice[gameBoard.getLevel()-1][9]==0)
                 speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
             else
-                speedY = random.nextInt(3); //random speed for ball in Y-axis, always - for up
+                speedY = random.nextInt(3); //random speed for ball in Y-axis, always + for down
         }while(speedY == 0); //continue loop if speed-Y is 0
 
         ball.setSpeedX(speedX);
@@ -380,9 +380,9 @@ public class GameBoardController {
      */
     public void gameChecks() throws FileNotFoundException {
 
-        if(gameBoard.isBallLost()){ //ball is lost
+        if(gameBoard.isBallLost()){
 
-            if(gameBoard.getBallCount() == 0){ //if ball count 0
+            if(gameBoard.getBallCount() == 0){
                 resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
@@ -510,7 +510,7 @@ public class GameBoardController {
      * the current ball has left the page border. This can occur with the bottom or top border depending on the player
      * orientation. The ball is reset with a new horizontal and vertical speed. The ball lost flag is then set to false.
      */
-    public void ballReset(){ //when ball is lost
+    public void ballReset(){
 
         if(choice[gameBoard.getLevel()-1][9]==0) {
             gameBoard.setBallStartPoint(new Point(area.width/2,area.height-20));
@@ -533,7 +533,7 @@ public class GameBoardController {
      * and the ball is then moved to this point.
      * @param p This is the new center point of the ball.
      */
-    public void ballMoveTo(Point p){ //teleport ball to point p
+    public void ballMoveTo(Point p){ //move ball to point p
         ball.setCenter(p);
 
         RectangularShape tmp = (RectangularShape) ball.getBallFace();
@@ -549,7 +549,7 @@ public class GameBoardController {
      * player and the player is then moved to this point.
      * @param p This is the new center point of the player.
      */
-    public void playerMoveTo(Point p){ //teleport player to point p
+    public void playerMoveTo(Point p){ //move player to point p
         player.setMidPoint(p);
 
         Rectangle tmp = player.getPlayerFace();
@@ -654,7 +654,7 @@ public class GameBoardController {
      *
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean ballPlayerImpact(){ //scan to see if player contains bottom side of ball
+    public boolean ballPlayerImpact(){
         return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown())||player.getPlayerFace().contains(ball.getUp()));
     }
 
@@ -671,21 +671,21 @@ public class GameBoardController {
      * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
      *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      */
-    public void findImpacts(boolean collected){ //impact method
+    public void findImpacts(boolean collected){
         if(ballPlayerImpact()){ //if player hits ball
             gameSounds.playSoundEffect("Bounce");
-            reverseY(); //reverse Y-direction
+            reverseY();
         }
         else if(impactWall(collected)){
             gameBoard.setBrickCount(gameBoard.getBrickCount()-1);
         }
         else if(impactBorder()) { //if ball impacts border
             gameSounds.playSoundEffect("Bounce");
-            reverseX(); //reverse X-direction
+            reverseX();
         }
         else if(choice[gameBoard.getLevel()-1][9]==0){
 
-            if(ball.getCenter().getY() < 0||(ball.getCenter().getY() > area.height && collected)){ //if ball hits top border
+            if(ball.getCenter().getY() < 0||(ball.getCenter().getY() > area.height && collected)){
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
@@ -696,11 +696,11 @@ public class GameBoardController {
         }
         else if(choice[gameBoard.getLevel()-1][9]==1){
 
-            if(ball.getCenter().getY() > area.height||(ball.getCenter().getY() < 0 && collected)){ //if ball hits top border
+            if(ball.getCenter().getY() > area.height||(ball.getCenter().getY() < 0 && collected)){
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(); //reverse Y-direction
             }
-            else if(ball.getCenter().getY() < 0){ //if ball hits bottom border
+            else if(ball.getCenter().getY() < 0){ //if ball hits top border
                 gameBoard.setBallCount(gameBoard.getBallCount()-1);
                 gameBoard.setBallLost(true);
             }
@@ -799,13 +799,13 @@ public class GameBoardController {
             return false;
 
         if(impact(b)) {
-            if (!b.isBroken() && b.isCrackable()) { //if not broken
+            if (!b.isBroken() && b.isCrackable()) { //if not broken and crackable
                 makeCrack(point, dir, b); //make crack at point of impact and in given direction
                 updateBrick(b); //update brick to show crack
                 return false; //signal not broken
             }
         }
-        return b.isBroken(); //signal broken
+        return b.isBroken();
     }
 
     /**
@@ -902,7 +902,7 @@ public class GameBoardController {
      * @param b This is the brick to be cracked.
      */
     private void updateBrick(Brick b){
-        GeneralPath gp = b.getCrack(); //draw crack
+        GeneralPath gp = b.getCrack(); //get crack
         gp.append(b.getBrickFace(),false); //append crack to brick
         b.setBrickFace(gp);
     }
@@ -951,7 +951,7 @@ public class GameBoardController {
         if(gameBoard.getMessageFlag()==0)
             message = String.format("Bricks: %d  Balls: %d",gameBoard.getBrickCount(),gameBoard.getBallCount());
         else if(gameBoard.getMessageFlag()==1)
-            message = "Game over"; //show game over message
+            message = "Game over";
         else if(gameBoard.getMessageFlag()==2)
             message = "Go to Next Level";
         else if(gameBoard.getMessageFlag()==3)

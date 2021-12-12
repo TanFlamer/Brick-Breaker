@@ -51,7 +51,7 @@ public class InfoScreen extends JDialog {
         this.homeMenu = homeMenu;
         initialize(gameSounds);
 
-        panel.setLayout(new GridBagLayout()); //set layout
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
         makeLabels("Welcome to Brick Destroy Version 1.0",constraints, 0);
@@ -150,7 +150,7 @@ public class InfoScreen extends JDialog {
 
         makeLabels("Level - choose which level to customise",constraints, 54);
         makeLabels("Number of Balls - controls number of ball in each level, goes from 1 to 10, default is 3",constraints, 55);
-        makeLabels("Free Movement - controls player and ball movement, considered a cheat and score and time are not counted, default is disabled",constraints, 56);//renumber
+        makeLabels("Free Movement - controls player and ball movement, considered a cheat and score and time are not counted, default is disabled",constraints, 56);
         makeLabels("Player Position - controls player starting position, top or bottom, default is bottom",constraints, 57);
         makeLabels("Level Generation - controls type of level",constraints, 58);
         makeLabels("Rows of Bricks - controls number of rows of bricks, goes from 1 to 10",constraints, 59);
@@ -228,7 +228,7 @@ public class InfoScreen extends JDialog {
         constraints.gridy = 106;
         panel.add(image,constraints);
 
-        makeLabels("--------------------------------------------",constraints, 107); //renumber
+        makeLabels("--------------------------------------------",constraints, 107);
 
         makeLabels("These are the counters for the game.",constraints, 108);
         makeLabels("They keep track of the brick and ball count, level and total score and time",constraints, 109);
@@ -256,7 +256,7 @@ public class InfoScreen extends JDialog {
 
         makeLabels("--------------------------------------------",constraints, 121);
 
-        menuPic = ImageIO.read(new File("image/GodModePowerUp.png")); //renumber
+        menuPic = ImageIO.read(new File("image/GodModePowerUp.png"));
         image = new JLabel(new ImageIcon(menuPic));
         constraints.gridx = 0;
         constraints.gridy = 122;
@@ -328,8 +328,8 @@ public class InfoScreen extends JDialog {
              * @param windowEvent This parameter is used to track the InfoScreen window.
              */
             @Override
-            public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
-                setLocation(); //set debug console location
+            public void windowActivated(WindowEvent windowEvent) {
+                setLocation();
                 gameSounds.setBgm("Info");
             }
         });
@@ -340,7 +340,7 @@ public class InfoScreen extends JDialog {
     /**
      * This method is used to center the CustomConsole by using the JFrame location.
      */
-    private void setLocation(){ //set debug console location
+    private void setLocation(){
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);
@@ -352,7 +352,7 @@ public class InfoScreen extends JDialog {
      * @param constraints The constraints on the position of the JLabel.
      * @param y The y-position of the JLabel.
      */
-    private void makeLabels(String label, GridBagConstraints constraints, int y){ //make buttons and add listener
+    private void makeLabels(String label, GridBagConstraints constraints, int y){
         constraints.gridx = 0;
         constraints.gridy = y;
         panel.add(new JLabel(label),constraints);

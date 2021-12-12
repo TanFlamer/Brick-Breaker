@@ -66,19 +66,19 @@ public class DebugConsole extends JDialog {
 
         this.owner = owner;
         this.gameBoard = gameEngine.getGameBoard();
-        initialize(gameSounds); //call debug console
+        initialize(gameSounds);
 
         debugPanel = new DebugPanel(gameEngine);
-        this.add(debugPanel,BorderLayout.CENTER); //add debug panel to center
+        this.add(debugPanel,BorderLayout.CENTER);
 
-        this.pack(); //resize debug console
+        this.pack();
     }
 
     /**
      * This method is used to set the DebugConsole title and to add in window listeners.
      * @param gameSounds This is used to add BGM to DebugConsole.
      */
-    private void initialize(GameSounds gameSounds){ //call debug console
+    private void initialize(GameSounds gameSounds){
 
         this.setModal(true);
         this.setTitle(TITLE);
@@ -102,10 +102,10 @@ public class DebugConsole extends JDialog {
              * @param windowEvent This parameter is used to track the DebugConsole window.
              */
             @Override
-            public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
-                setLocation(); //set debug console location
-                Ball b = gameBoard.getBall(); //get ball
-                debugPanel.setValues(b.getSpeedX(),b.getSpeedY()); //show current ball speed on slider
+            public void windowActivated(WindowEvent windowEvent) {
+                setLocation();
+                Ball b = gameBoard.getBall();
+                debugPanel.setValues(b.getSpeedX(),b.getSpeedY());
                 gameSounds.setSongID(0);
                 gameSounds.setBgm("Debug");
             }
@@ -116,7 +116,7 @@ public class DebugConsole extends JDialog {
     /**
      * This method is used to center the DebugConsole by using the JFrame location.
      */
-    private void setLocation(){ //set debug console location
+    private void setLocation(){
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);

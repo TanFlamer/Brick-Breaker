@@ -93,7 +93,7 @@ public class GameEngine {
         controller = new GameBoardController(owner,gameBoard,gameSounds,area);
         renderer = new GameBoardRenderer(gameBoard,area);
         debugConsole = new DebugConsole(owner,this, gameSounds);
-        menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
+        menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE);
         this.choice = choice;
         this.gameSounds = gameSounds;
         this.owner = owner;
@@ -108,45 +108,45 @@ public class GameEngine {
 
         switch(keyEvent.getKeyCode()){
 
-            case KeyEvent.VK_A: //press A
-                controller.moveLeft(); //player moves left
+            case KeyEvent.VK_A:
+                controller.moveLeft();
                 break;
 
-            case KeyEvent.VK_D: //press D
-                controller.moveRight(); //player moves right
+            case KeyEvent.VK_D:
+                controller.moveRight();
                 break;
 
-            case KeyEvent.VK_W: //press D
+            case KeyEvent.VK_W:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.moveUp(); //player moves up
+                    controller.moveUp();
                 break;
 
-            case KeyEvent.VK_S: //press D
+            case KeyEvent.VK_S:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.moveDown(); //player moves down
+                    controller.moveDown();
                 break;
 
-            case KeyEvent.VK_UP: //press D
+            case KeyEvent.VK_UP:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.minusSpeedY(); //player moves down
+                    controller.minusSpeedY();
                 break;
 
-            case KeyEvent.VK_DOWN: //press D
+            case KeyEvent.VK_DOWN:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.addSpeedY(); //player moves down
+                    controller.addSpeedY();
                 break;
 
-            case KeyEvent.VK_LEFT: //press D
+            case KeyEvent.VK_LEFT:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.minusSpeedX(); //player moves down
+                    controller.minusSpeedX();
                 break;
 
-            case KeyEvent.VK_RIGHT: //press D
+            case KeyEvent.VK_RIGHT:
                 if(choice[gameBoard.getLevel()-1][10]==1)
-                    controller.addSpeedX(); //player moves down
+                    controller.addSpeedX();
                 break;
 
-            case KeyEvent.VK_ESCAPE: //press esc
+            case KeyEvent.VK_ESCAPE:
                 if(!gameBoard.isEnded()) {
                     gameBoard.setShowPauseMenu(!gameBoard.isShowPauseMenu());
                 }
@@ -154,23 +154,23 @@ public class GameEngine {
                     controller.reversePauseFlag();
                 break;
 
-            case KeyEvent.VK_SPACE: //press space
-                if(!gameBoard.isShowPauseMenu()) //if game not paused
+            case KeyEvent.VK_SPACE:
+                if(!gameBoard.isShowPauseMenu())
                     controller.reversePauseFlag();
                 break;
 
-            case KeyEvent.VK_F1: //press f1 + alt + shift
+            case KeyEvent.VK_F1:
                 if(keyEvent.isAltDown() && keyEvent.isShiftDown()) {
                     if(gameBoard.isNotPaused()){
                         controller.reversePauseFlag();
                     }
                     if(!gameBoard.isEnded())
-                        debugConsole.setVisible(true); //show debug console
+                        debugConsole.setVisible(true);
                 }
                 break;
 
-            default: //press anything else
-                controller.stop(); //stop player
+            default:
+                controller.stop();
         }
     }
 
@@ -187,21 +187,21 @@ public class GameEngine {
      */
     public void handleMouseClick(MouseEvent mouseEvent){
 
-        Point p = mouseEvent.getPoint(); //get mouse click point
-        if(!gameBoard.isShowPauseMenu()) //if game not paused
-            return; //return
-        if(continueButtonRect.contains(p)){ //if continue pressed
-            gameBoard.setShowPauseMenu(false); //close pause menu
+        Point p = mouseEvent.getPoint();
+        if(!gameBoard.isShowPauseMenu())
+            return;
+        if(continueButtonRect.contains(p)){
+            gameBoard.setShowPauseMenu(false);
         }
-        else if(restartButtonRect.contains(p)){ //if restart pressed
+        else if(restartButtonRect.contains(p)){
             gameBoard.setMessageFlag(4);
             controller.resetLevelData();
-            gameBoard.setShowPauseMenu(false); //close pause menu
+            gameBoard.setShowPauseMenu(false);
             gameSounds.setBgm("BGM"+gameBoard.getLevel());
             gameSounds.getBgm().stop();
         }
-        else if(exitButtonRect.contains(p)){ //if exit pressed
-            System.exit(0); //close game
+        else if(exitButtonRect.contains(p)){
+            System.exit(0);
         }
     }
 
@@ -211,15 +211,15 @@ public class GameEngine {
      */
     public void handleMouseMotion(MouseEvent mouseEvent){
 
-        Point p = mouseEvent.getPoint(); //get mouse position
-        if(exitButtonRect != null && gameBoard.isShowPauseMenu()) { //if pause menu shown and exit button is drawn
+        Point p = mouseEvent.getPoint();
+        if(exitButtonRect != null && gameBoard.isShowPauseMenu()) {
             if (exitButtonRect.contains(p) || continueButtonRect.contains(p) || restartButtonRect.contains(p))
-                owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //if mouse on button, show hand cursor
-            else //else
-                owner.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
+                owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            else
+                owner.setCursor(Cursor.getDefaultCursor());
         }
-        else{ //if pause menu not shown
-            owner.setCursor(Cursor.getDefaultCursor()); //use default mouse cursor
+        else{
+            owner.setCursor(Cursor.getDefaultCursor());
         }
     }
 
@@ -264,29 +264,29 @@ public class GameEngine {
 
         Graphics2D g2d = (Graphics2D)g;
 
-        g2d.setFont(menuFont); //set menu font
+        g2d.setFont(menuFont);
 
-        int x = area.width / 8; //get position of continue button
+        int x = area.width / 8;
         int y = area.height / 4;
 
-        if(continueButtonRect == null){ //if continue button not drawn
+        if(continueButtonRect == null){
             FontRenderContext frc = g2d.getFontRenderContext();
-            continueButtonRect = menuFont.getStringBounds(CONTINUE,frc).getBounds(); //get rectangle shape button for continue
-            continueButtonRect.setLocation(x,y-continueButtonRect.height); //set location of continue button
+            continueButtonRect = menuFont.getStringBounds(CONTINUE,frc).getBounds();
+            continueButtonRect.setLocation(x,y-continueButtonRect.height);
         }
 
-        y *= 2; //get position of restart button
+        y *= 2;
 
-        if(restartButtonRect == null){ //if restart button not drawn
-            restartButtonRect = (Rectangle) continueButtonRect.clone(); //clone rectangle of continue as own shape
-            restartButtonRect.setLocation(x,y-restartButtonRect.height); //set location of restart button
+        if(restartButtonRect == null){
+            restartButtonRect = (Rectangle) continueButtonRect.clone();
+            restartButtonRect.setLocation(x,y-restartButtonRect.height);
         }
 
-        y *= 3.0/2; //get position of exit button
+        y *= 3.0/2;
 
-        if(exitButtonRect == null){ //if exit button not drawn
-            exitButtonRect = (Rectangle) continueButtonRect.clone(); //clone rectangle of continue as own
-            exitButtonRect.setLocation(x,y-exitButtonRect.height); //set location of exit button
+        if(exitButtonRect == null){
+            exitButtonRect = (Rectangle) continueButtonRect.clone();
+            exitButtonRect.setLocation(x,y-exitButtonRect.height);
         }
     }
 

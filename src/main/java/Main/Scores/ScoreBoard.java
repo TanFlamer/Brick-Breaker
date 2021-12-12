@@ -117,7 +117,7 @@ public class ScoreBoard extends JDialog implements ActionListener {
 
         initialize();
 
-        this.setLayout(new GridBagLayout()); //set layout
+        this.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
         if(level!=0) {
@@ -217,15 +217,15 @@ public class ScoreBoard extends JDialog implements ActionListener {
      */
     private void Load(LinkedList<Score> loadScore, int level) throws FileNotFoundException {
 
-        String[] hold = new String[5]; //make array of strings with 8 elements
+        String[] hold = new String[5];
 
-        File file=new File("highscores/highscore"+level+".txt"); //load location
+        File file=new File("highscores/highscore"+level+".txt");
         Scanner sc=new Scanner(file);
 
         while (sc.hasNextLine()) { //tokenize string using , and stop when list is empty
             StringTokenizer st = new StringTokenizer(sc.nextLine(), ",");
 
-            while (st.hasMoreTokens()) { //temporarily save info of treatment in each loop
+            while (st.hasMoreTokens()) {
                 for (int count = 0; count < 5; count++) {
                     hold[count] = st.nextToken();
                 }
@@ -245,12 +245,12 @@ public class ScoreBoard extends JDialog implements ActionListener {
      */
     private void Save(LinkedList<Score> saveScore, int level) throws IOException {
 
-        PrintWriter writer = new PrintWriter("highscores/highscore"+level+".txt", StandardCharsets.UTF_8); //save location (can add code to change location)
+        PrintWriter writer = new PrintWriter("highscores/highscore"+level+".txt", StandardCharsets.UTF_8);
 
         for(Score print : saveScore) { //save line by line with for loop
             writer.format("%d,%S,%S,%d,%d\n", print.ranking, print.name, print.levelType, print.time, print.score);
         }
-        writer.close(); //close writer
+        writer.close();
     }
 
     /**
@@ -261,9 +261,9 @@ public class ScoreBoard extends JDialog implements ActionListener {
      */
     private void Renumber(LinkedList<Score> holdScore){
 
-        int num = 1; //array of int to count number of treatment of each type
+        int num = 1; //start numbering ranking from 1
 
-        for(Score renum : holdScore){ //count number of treatment of each type
+        for(Score renum : holdScore){ //increment numbering for each subsequent rank
             renum.ranking = num++;
         }
     }
@@ -283,13 +283,13 @@ public class ScoreBoard extends JDialog implements ActionListener {
     private void Add(LinkedList<Score> holdScore, int ranking, String name, String levelType, int time, int score) {
 
         Score newScore = new Score(ranking,name,levelType,time,score);
-        holdScore.add(newScore); //add new entry into linked list
+        holdScore.add(newScore);
     }
 
     /**
      * This method is used to center the ScoreBoard by using the JFrame location.
      */
-    private void setLocation(){ //set debug console location
+    private void setLocation(){
         int x = ((owner.getWidth() - this.getWidth()) / 2) + owner.getX();
         int y = ((owner.getHeight() - this.getHeight()) / 2) + owner.getY();
         this.setLocation(x,y);
@@ -314,8 +314,8 @@ public class ScoreBoard extends JDialog implements ActionListener {
              * @param windowEvent This parameter is used to track the ScoreBoard window.
              */
             @Override
-            public void windowActivated(WindowEvent windowEvent) { //when debug console loaded
-                setLocation(); //set debug console location
+            public void windowActivated(WindowEvent windowEvent) {
+                setLocation();
             }
         });
 

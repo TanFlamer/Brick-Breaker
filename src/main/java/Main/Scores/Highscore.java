@@ -48,7 +48,7 @@ class Score { //class for linked list to hold all scores
     /**
      * The level type of the player.
      */
-    String levelType; //player name
+    String levelType;
 
     /**
      * This constructor is called to add new entries to the linked list.
@@ -82,7 +82,7 @@ class ScoreComp implements Comparator<Score> { //comparator to sort score in des
     @Override
     public int compare(Score comp1, Score comp2) {
 
-        if(comp1.score == comp2.score){
+        if(comp1.score == comp2.score){ //sort time in ascending order when scores are equal
             return Integer.compare(comp1.time, comp2.time);
         }
         else if (comp2.score > comp1.score){
@@ -219,7 +219,7 @@ public class Highscore extends JComponent {
      */
     public Highscore(GameFrame owner, Dimension area) throws IOException {
 
-        this.setFocusable(true); //set focusable
+        this.setFocusable(true);
         this.requestFocusInWindow();
 
         BufferedImage myPicture = ImageIO.read(new File("image/HighScoreBackground.png"));
@@ -233,16 +233,16 @@ public class Highscore extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
-                Point p = mouseEvent.getPoint(); //get mouse coordinate
-                if(backButton.contains(p)){ //if mouse inside start button
-                    owner.enableHomeMenu(); //start game
+            public void mouseClicked(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
+                if(backButton.contains(p)){
+                    owner.enableHomeMenu();
                 }
-                else if(previousButton.contains(p)){ //if mouse inside start button
+                else if(previousButton.contains(p)){
                     level--;
                     repaint();
                 }
-                else if(nextButton.contains(p)){ //if mouse inside start button
+                else if(nextButton.contains(p)){
                     level++;
                     repaint();
                 }
@@ -254,19 +254,19 @@ public class Highscore extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
-                Point p = mouseEvent.getPoint(); //get mouse coordinate
-                if(backButton.contains(p)){ //if mouse inside start button
-                    backClicked = true; //save start input
-                    repaint(backButton.x,backButton.y,backButton.width+1,backButton.height+1); //redraw start button
+            public void mousePressed(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
+                if(backButton.contains(p)){
+                    backClicked = true;
+                    repaint(backButton.x,backButton.y,backButton.width+1,backButton.height+1);
                 }
-                else if(previousButton.contains(p)){ //if mouse inside start button
-                    previousClicked = true; //save start input
-                    repaint(previousButton.x,previousButton.y,previousButton.width+1,previousButton.height+1); //redraw start button
+                else if(previousButton.contains(p)){
+                    previousClicked = true;
+                    repaint(previousButton.x,previousButton.y,previousButton.width+1,previousButton.height+1);
                 }
-                else if(nextButton.contains(p)){ //if mouse inside start button
-                    nextClicked = true; //save start input
-                    repaint(nextButton.x,nextButton.y,nextButton.width+1,nextButton.height+1); //redraw start button
+                else if(nextButton.contains(p)){
+                    nextClicked = true;
+                    repaint(nextButton.x,nextButton.y,nextButton.width+1,nextButton.height+1);
                 }
             }
 
@@ -276,18 +276,18 @@ public class Highscore extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
-                if(backClicked){ //if start button clicked
-                    backClicked = false; //reset flag
-                    repaint(backButton.x,backButton.y,backButton.width+1,backButton.height+1); //redraw start button
-                } //buttons will turn normal for a second before game starts
-                else if(previousClicked){ //if start button clicked
-                    previousClicked = false; //reset flag
-                    repaint(previousButton.x,previousButton.y,previousButton.width+1,previousButton.height+1); //redraw start button
+            public void mouseReleased(MouseEvent mouseEvent) {
+                if(backClicked){
+                    backClicked = false;
+                    repaint(backButton.x,backButton.y,backButton.width+1,backButton.height+1);
                 }
-                else if(nextClicked){ //if start button clicked
-                    nextClicked = false; //reset flag
-                    repaint(nextButton.x,nextButton.y,nextButton.width+1,nextButton.height+1); //redraw start button
+                else if(previousClicked){
+                    previousClicked = false;
+                    repaint(previousButton.x,previousButton.y,previousButton.width+1,previousButton.height+1);
+                }
+                else if(nextClicked){
+                    nextClicked = false;
+                    repaint(nextButton.x,nextButton.y,nextButton.width+1,nextButton.height+1);
                 }
             }
         });
@@ -300,20 +300,20 @@ public class Highscore extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse motion.
              */
             @Override
-            public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
-                Point p = mouseEvent.getPoint(); //get mouse coordinates
-                if(backButton.contains(p)||previousButton.contains(p)||nextButton.contains(p)) //if mouse inside either button
-                    owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
+            public void mouseMoved(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
+                if(backButton.contains(p)||previousButton.contains(p)||nextButton.contains(p))
+                    owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 else
-                    owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
+                    owner.setCursor(Cursor.getDefaultCursor());
             }
         });
 
-        menuFace = new Rectangle(new Point(0,0),area); //make menu face
+        menuFace = new Rectangle(new Point(0,0),area);
         this.setPreferredSize(area);
 
         Dimension btnDim = new Dimension(area.width / 4, area.height / 12);
-        backButton = new Rectangle(btnDim); //makes buttons
+        backButton = new Rectangle(btnDim);
         nextButton = new Rectangle(btnDim);
         previousButton = new Rectangle(btnDim);
 
@@ -328,7 +328,7 @@ public class Highscore extends JComponent {
      * This method is responsible for painting and repainting the HighScore.
      * @param g This graphics class is used to paint the HighScore.
      */
-    public void paint(Graphics g){ //draw main menu
+    public void paint(Graphics g){
         try {
             drawScoreBoard((Graphics2D)g);
         } catch (FileNotFoundException e) {
@@ -349,22 +349,20 @@ public class Highscore extends JComponent {
         painting directly into the HomeMenu rectangle,
         so the translation is made here so the other methods do not do that.
          */
-        Color prevColor = g2d.getColor(); //save previous colour
-        Font prevFont = g2d.getFont(); //save previous font
+        Color prevColor = g2d.getColor();
+        Font prevFont = g2d.getFont();
 
-        double x = menuFace.getX(); //get coordinates of menu
+        double x = menuFace.getX();
         double y = menuFace.getY();
 
         g2d.translate(x,y); //move all points for processing
 
-        //method calls
-        drawText(g2d,(level % 6 + 6) % 6); //draw menu text
-        drawButton(g2d); //draw menu button
-        //end of methods calls
+        drawText(g2d,(level % 6 + 6) % 6);
+        drawButton(g2d);
 
         g2d.translate(-x,-y); //move points back
-        g2d.setFont(prevFont); //get previous font
-        g2d.setColor(prevColor); //get previous colour
+        g2d.setFont(prevFont);
+        g2d.setColor(prevColor);
     }
 
     /**
@@ -375,50 +373,50 @@ public class Highscore extends JComponent {
      * @param level This is the level for which the current highscore list is showing for.
      * @throws FileNotFoundException This IOException is thrown if the highscore list does not exist.
      */
-    private void drawText(Graphics2D g2d, int level) throws FileNotFoundException { //draw menu text
+    private void drawText(Graphics2D g2d, int level) throws FileNotFoundException {
 
-        LinkedList<Score> newScore = new LinkedList<>(); //linked list to hold treatment plans
+        LinkedList<Score> newScore = new LinkedList<>();
 
-        Load(newScore,level); //load scores into linked list
+        Load(newScore,level);
 
         newScore.sort(new ScoreComp());
         RemoveDuplicates(newScore);
         Renumber(newScore);
 
-        g2d.setColor(TEXT_COLOR); //get text colour
-        g2d.setFont(TitleFont); //get text font
+        g2d.setColor(TEXT_COLOR);
+        g2d.setFont(TitleFont);
 
         int sX,sY;
 
         sY = (int)(menuFace.getHeight()*0.1);
 
-        sX = (int)(menuFace.getWidth()*0.28); //get coordinates of text start point
+        sX = (int)(menuFace.getWidth()*0.28);
 
         if(level==0) {
-            g2d.drawString(HIGHSCORE, sX, sY); //draw greetings
+            g2d.drawString(HIGHSCORE, sX, sY);
         }
         else {
-            g2d.drawString("LEVEL "+level+" HIGHSCORES", sX, sY); //draw greetings
+            g2d.drawString("LEVEL "+level+" HIGHSCORES", sX, sY);
         }
 
         sY += (int)(menuFace.getHeight()*0.069);
 
-        sX = (int)(menuFace.getWidth()*0.02); //get coordinates of text start point
-        g2d.drawString(RANKING,sX,sY); //draw greetings
+        sX = (int)(menuFace.getWidth()*0.02);
+        g2d.drawString(RANKING,sX,sY);
 
-        sX = (int)(menuFace.getWidth()*0.18); //get coordinates of text start point
-        g2d.drawString(NAME,sX,sY); //draw greetings
+        sX = (int)(menuFace.getWidth()*0.18);
+        g2d.drawString(NAME,sX,sY);
 
-        sX = (int)(menuFace.getWidth()*0.39); //get coordinates of text start point
-        g2d.drawString(CATEGORY,sX,sY); //draw greetings
+        sX = (int)(menuFace.getWidth()*0.39);
+        g2d.drawString(CATEGORY,sX,sY);
 
-        sX = (int)(menuFace.getWidth()*0.7); //get coordinates of text start point
-        g2d.drawString(TIME,sX,sY); //draw greetings
+        sX = (int)(menuFace.getWidth()*0.7);
+        g2d.drawString(TIME,sX,sY);
 
-        sX = (int)(menuFace.getWidth()*0.83); //get coordinates of text start point
-        g2d.drawString(SCORE,sX,sY); //draw greetings
+        sX = (int)(menuFace.getWidth()*0.83);
+        g2d.drawString(SCORE,sX,sY);
 
-        g2d.setFont(InfoFont); //get text font
+        g2d.setFont(InfoFont);
 
         int count = 0;
 
@@ -430,22 +428,22 @@ public class Highscore extends JComponent {
 
             String time = String.format("%02d:%02d",print.time/60,print.time%60);
 
-            sY += (int) menuFace.getHeight() * 0.069; //add 10% of String height between the two strings
+            sY += (int) menuFace.getHeight() * 0.069;
 
-            sX = (int)(menuFace.getWidth()*0.06); //get coordinates of text start point
-            g2d.drawString(Integer.toString(print.ranking), sX, sY); //draw credits*/
+            sX = (int)(menuFace.getWidth()*0.06);
+            g2d.drawString(Integer.toString(print.ranking), sX, sY);
 
-            sX = (int)(menuFace.getWidth()*0.16); //get coordinates of text start point
-            g2d.drawString(print.name, sX, sY); //draw credits*/
+            sX = (int)(menuFace.getWidth()*0.16);
+            g2d.drawString(print.name, sX, sY);
 
-            sX = (int)(menuFace.getWidth()*0.39); //get coordinates of text start point
-            g2d.drawString(print.levelType, sX, sY); //draw credits*/
+            sX = (int)(menuFace.getWidth()*0.39);
+            g2d.drawString(print.levelType, sX, sY);
 
-            sX = (int)(menuFace.getWidth()*0.71); //get coordinates of text start point
-            g2d.drawString(time, sX, sY); //draw credits*/
+            sX = (int)(menuFace.getWidth()*0.71);
+            g2d.drawString(time, sX, sY);
 
-            sX = (int)(menuFace.getWidth()*0.84); //get coordinates of text start point
-            g2d.drawString(Integer.toString(print.score), sX, sY); //draw credits*/
+            sX = (int)(menuFace.getWidth()*0.84);
+            g2d.drawString(Integer.toString(print.score), sX, sY);
         }
     }
 
@@ -453,38 +451,38 @@ public class Highscore extends JComponent {
      * This method is responsible for painting and repainting the buttons of Highscore.
      * @param g2d This graphics class is used to paint the buttons of Highscore.
      */
-    private void drawButton(Graphics2D g2d){ //draw menu buttons
+    private void drawButton(Graphics2D g2d){
 
         FontRenderContext frc = g2d.getFontRenderContext();
 
-        Rectangle2D btxtRect = buttonFont.getStringBounds(BACKBUTTON,frc); //get bounds of menu buttons
-        Rectangle2D ntxtRect = buttonFont.getStringBounds(NEXTBUTTON,frc); //get bounds of menu buttons
-        Rectangle2D ptxtRect = buttonFont.getStringBounds(PREVIOUSBUTTON,frc); //get bounds of menu buttons
+        Rectangle2D btxtRect = buttonFont.getStringBounds(BACKBUTTON,frc);
+        Rectangle2D ntxtRect = buttonFont.getStringBounds(NEXTBUTTON,frc);
+        Rectangle2D ptxtRect = buttonFont.getStringBounds(PREVIOUSBUTTON,frc);
 
-        g2d.setFont(buttonFont); //set button font
+        g2d.setFont(buttonFont);
 
-        int x = (menuFace.width - backButton.width) / 9; //get coordinates of text start point
+        int x = (menuFace.width - backButton.width) / 9;
         int y =(int) ((menuFace.height - backButton.height) * 0.95);
 
-        previousButton.setLocation(x,y); //set start button location
+        previousButton.setLocation(x,y);
 
-        x = (int)(previousButton.getWidth() - ptxtRect.getWidth()) / 2; //get start text location
+        x = (int)(previousButton.getWidth() - ptxtRect.getWidth()) / 2;
         y = (int)(previousButton.getHeight() - ptxtRect.getHeight()) / 2;
 
         x += previousButton.x;
         y += previousButton.y + (previousButton.height * 0.9);
 
-        if(previousClicked){ //if start button clicked
-            Color tmp = g2d.getColor(); //save current colour
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(previousButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(PREVIOUSBUTTON,x,y); //draw start text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(previousClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(previousButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(PREVIOUSBUTTON,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(previousButton); //draw default start button
-            g2d.drawString(PREVIOUSBUTTON,x,y); //draw default start text
+            g2d.draw(previousButton);
+            g2d.drawString(PREVIOUSBUTTON,x,y);
         }
 
         x = previousButton.x;
@@ -492,25 +490,25 @@ public class Highscore extends JComponent {
 
         x += 1.2 * previousButton.getWidth();
 
-        backButton.setLocation(x,y); //set start button location
+        backButton.setLocation(x,y);
 
-        x = (int)(backButton.getWidth() - btxtRect.getWidth()) / 2; //get start text location
+        x = (int)(backButton.getWidth() - btxtRect.getWidth()) / 2;
         y = (int)(backButton.getHeight() - btxtRect.getHeight()) / 2;
 
         x += backButton.x;
         y += backButton.y + (backButton.height * 0.85);
 
-        if(backClicked){ //if start button clicked
-            Color tmp = g2d.getColor(); //save current colour
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(backButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(BACKBUTTON,x,y); //draw start text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(backClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(backButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(BACKBUTTON,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(backButton); //draw default start button
-            g2d.drawString(BACKBUTTON,x,y); //draw default start text
+            g2d.draw(backButton);
+            g2d.drawString(BACKBUTTON,x,y);
         }
 
         x = backButton.x;
@@ -518,25 +516,25 @@ public class Highscore extends JComponent {
 
         x += 1.2 * backButton.getWidth();
 
-        nextButton.setLocation(x,y); //set start button location
+        nextButton.setLocation(x,y);
 
-        x = (int)(nextButton.getWidth() - ntxtRect.getWidth()) / 2; //get start text location
+        x = (int)(nextButton.getWidth() - ntxtRect.getWidth()) / 2;
         y = (int)(nextButton.getHeight() - ntxtRect.getHeight()) / 2;
 
         x += nextButton.x;
         y += nextButton.y + (nextButton.height * 0.85);
 
-        if(nextClicked){ //if start button clicked
-            Color tmp = g2d.getColor(); //save current colour
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(nextButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(NEXTBUTTON,x,y); //draw start text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(nextClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(nextButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(NEXTBUTTON,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(nextButton); //draw default start button
-            g2d.drawString(NEXTBUTTON,x,y); //draw default start text
+            g2d.draw(nextButton);
+            g2d.drawString(NEXTBUTTON,x,y);
         }
     }
 
@@ -550,15 +548,15 @@ public class Highscore extends JComponent {
      */
     private void Load(LinkedList<Score> loadScore, int level) throws FileNotFoundException {
 
-        String[] hold = new String[5]; //make array of strings with 8 elements
+        String[] hold = new String[5];
 
-        File file=new File("highscores/highscore"+level+".txt"); //load location
+        File file=new File("highscores/highscore"+level+".txt");
         Scanner sc=new Scanner(file);
 
         while(sc.hasNextLine()){ //tokenize string using , and stop when list is empty
             StringTokenizer st = new StringTokenizer(sc.nextLine(),",");
 
-            while (st.hasMoreTokens()) { //temporarily save info of treatment in each loop
+            while (st.hasMoreTokens()) {
                 for (int count = 0; count<5; count++){
                     hold[count] = st.nextToken();
                 }
@@ -576,9 +574,9 @@ public class Highscore extends JComponent {
      */
     private void Renumber(LinkedList<Score> holdScore){
 
-        int num = 1; //array of int to count number of treatment of each type
+        int num = 1; //start numbering ranking from 1
 
-        for(Score renum : holdScore){ //count number of treatment of each type
+        for(Score renum : holdScore){ //increment numbering for each subsequent rank
             renum.ranking = num++;
         }
     }

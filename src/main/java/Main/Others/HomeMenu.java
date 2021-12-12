@@ -76,15 +76,15 @@ public class HomeMenu extends JComponent {
     /**
      * Venetian Red border colour
      */
-    private static final Color BORDER_COLOR = new Color(134, 4, 148); //Venetian Red
+    private static final Color BORDER_COLOR = new Color(134, 4, 148);
     /**
      * School bus yellow dash border colour
      */
-    private static final Color DASH_BORDER_COLOR = new Color(8, 39, 243);//school bus yellow
+    private static final Color DASH_BORDER_COLOR = new Color(8, 39, 243);
     /**
      * Purple text colour
      */
-    private static final Color TEXT_COLOR = new Color(130, 7, 127, 255);//purple
+    private static final Color TEXT_COLOR = new Color(130, 7, 127, 255);
     /**
      * Brighter green clicked button colour
      */
@@ -208,7 +208,7 @@ public class HomeMenu extends JComponent {
      */
     public HomeMenu(GameFrame owner,Dimension area) throws IOException {
 
-        this.setFocusable(true); //set focusable
+        this.setFocusable(true);
         this.requestFocusInWindow();
 
         BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerBackground.png"));
@@ -222,23 +222,23 @@ public class HomeMenu extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
-                Point p = mouseEvent.getPoint(); //get mouse coordinate
-                if(startButton.contains(p)){ //if mouse inside start button
+            public void mouseClicked(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
+                if(startButton.contains(p)){
                     try {
-                        owner.enableGameBoard(); //start game
+                        owner.enableGameBoard();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                else if(menuButton.contains(p)){ //if mouse inside exit button
+                else if(menuButton.contains(p)){
                     System.out.println("Goodbye " + System.getProperty("user.name"));
-                    System.exit(0); //exit game
+                    System.exit(0);
                 }
-                else if(customButton.contains(p)){ //if mouse inside exit button
+                else if(customButton.contains(p)){
                     owner.enableCustomConsole();
                 }
-                else if(scoreButton.contains(p)){ //if mouse inside exit button
+                else if(scoreButton.contains(p)){
                     owner.enableHighscoreBoard();
                 }
                 else if(imageButton.contains(p)) {
@@ -256,27 +256,27 @@ public class HomeMenu extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mousePressed(MouseEvent mouseEvent) { //if mouse is held down
-                Point p = mouseEvent.getPoint(); //get mouse coordinate
-                if(startButton.contains(p)){ //if mouse inside start button
-                    startClicked = true; //save start input
-                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
+            public void mousePressed(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
+                if(startButton.contains(p)){
+                    startClicked = true;
+                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1);
                 }
-                else if(menuButton.contains(p)){ //if mouse inside exit button
-                    menuClicked = true; //save exit input
-                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
+                else if(menuButton.contains(p)){
+                    menuClicked = true;
+                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1);
                 }
-                else if(customButton.contains(p)){ //if mouse inside exit button
-                    customClicked = true; //save exit input
-                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1); //redraw exit button
+                else if(customButton.contains(p)){
+                    customClicked = true;
+                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1);
                 }
-                else if(scoreButton.contains(p)){ //if mouse inside exit button
-                    scoreClicked = true; //save exit input
-                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
+                else if(scoreButton.contains(p)){
+                    scoreClicked = true;
+                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1);
                 }
-                else if(infoButton.contains(p)){ //if mouse inside exit button
-                    infoClicked = true; //save exit input
-                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1); //redraw exit button
+                else if(infoButton.contains(p)){
+                    infoClicked = true;
+                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1);
                 }
                 else if(imageButton.contains(p)){
                     imageClicked = true;
@@ -289,26 +289,26 @@ public class HomeMenu extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse.
              */
             @Override
-            public void mouseReleased(MouseEvent mouseEvent) { //if mouse released
-                if(startClicked){ //if start button clicked
-                    startClicked = false; //reset flag
-                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1); //redraw start button
-                } //buttons will turn normal for a second before game starts
-                else if(menuClicked){ //if exit button clicked
-                    menuClicked = false; //reset flag
-                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1); //redraw exit button
+            public void mouseReleased(MouseEvent mouseEvent) {
+                if(startClicked){
+                    startClicked = false;
+                    repaint(startButton.x,startButton.y,startButton.width+1,startButton.height+1);
                 }
-                else if(customClicked){ //if exit button clicked
-                    customClicked = false; //reset flag
-                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1); //redraw exit button
+                else if(menuClicked){
+                    menuClicked = false;
+                    repaint(menuButton.x,menuButton.y,menuButton.width+1,menuButton.height+1);
                 }
-                else if(scoreClicked){ //if exit button clicked
-                    scoreClicked = false; //reset flag
-                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1); //redraw exit button
+                else if(customClicked){
+                    customClicked = false;
+                    repaint(customButton.x,customButton.y,customButton.width+1,customButton.height+1);
                 }
-                else if(infoClicked){ //if exit button clicked
-                    infoClicked = false; //reset flag
-                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1); //redraw exit button
+                else if(scoreClicked){
+                    scoreClicked = false;
+                    repaint(scoreButton.x,scoreButton.y,scoreButton.width+1,scoreButton.height+1);
+                }
+                else if(infoClicked){
+                    infoClicked = false;
+                    repaint(infoButton.x,infoButton.y,infoButton.width+1,infoButton.height+1);
                 }
                 else if(imageClicked){
                     imageClicked = false;
@@ -324,20 +324,20 @@ public class HomeMenu extends JComponent {
              * @param mouseEvent This parameter is used to track the mouse motion.
              */
             @Override
-            public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
-                Point p = mouseEvent.getPoint(); //get mouse coordinates
+            public void mouseMoved(MouseEvent mouseEvent) {
+                Point p = mouseEvent.getPoint();
                 if(startButton.contains(p) || menuButton.contains(p) || customButton.contains(p) || scoreButton.contains(p) || imageButton.contains(p) || infoButton.contains(p)) //if mouse inside either button
-                    owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //turn mouse cursor into hand cursor
+                    owner.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 else
-                    owner.setCursor(Cursor.getDefaultCursor()); //else use default mouse cursor
+                    owner.setCursor(Cursor.getDefaultCursor());
             }
         });
 
-        menuFace = new Rectangle(new Point(0,0),area); //make menu face
+        menuFace = new Rectangle(new Point(0,0),area);
         this.setPreferredSize(area);
 
         Dimension btnDim = new Dimension(area.width / 3, area.height / 12);
-        startButton = new Rectangle(btnDim); //makes buttons
+        startButton = new Rectangle(btnDim);
         menuButton = new Rectangle(btnDim);
 
         customButton = new Rectangle(btnDim);
@@ -346,10 +346,9 @@ public class HomeMenu extends JComponent {
         imageButton = new Rectangle(new Dimension(90,90));
         infoButton = new Rectangle( new Dimension(area.width / 4, area.height / 6));
 
-        //border stroke lines
         borderStoke = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,0,DASHES,0);
         borderStoke_noDashes = new BasicStroke(BORDER_SIZE,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
-        //text fonts
+
         greetingsFont = new Font("Noto Mono",Font.BOLD,25);
         gameTitleFont = new Font("Noto Mono",Font.BOLD,40);
         creditsFont = new Font("Noto Mono",Font.BOLD,18);
@@ -361,7 +360,7 @@ public class HomeMenu extends JComponent {
      * This method is responsible for painting and repainting the HomeMenu.
      * @param g This graphics class is used to paint the HomeMenu.
      */
-    public void paint(Graphics g){ //draw main menu
+    public void paint(Graphics g){
         try {
             drawMenu((Graphics2D)g);
         } catch (IOException e) {
@@ -376,29 +375,27 @@ public class HomeMenu extends JComponent {
      */
     public void drawMenu(Graphics2D g2d) throws IOException {
 
-        drawContainer(g2d); //draw main menu
+        drawContainer(g2d);
         /*
         all the following method calls need a relative
         painting directly into the HomeMenu rectangle,
         so the translation is made here so the other methods do not do that.
          */
-        Color prevColor = g2d.getColor(); //save previous colour
-        Font prevFont = g2d.getFont(); //save previous font
+        Color prevColor = g2d.getColor();
+        Font prevFont = g2d.getFont();
 
-        double x = menuFace.getX(); //get coordinates of menu
+        double x = menuFace.getX();
         double y = menuFace.getY();
 
         g2d.translate(x,y); //move all points for processing
 
-        //method calls
-        drawText(g2d); //draw menu text
-        drawButton(g2d); //draw menu button
+        drawText(g2d);
+        drawButton(g2d);
         drawImage(g2d);
-        //end of methods calls
 
         g2d.translate(-x,-y); //move points back
-        g2d.setFont(prevFont); //get previous font
-        g2d.setColor(prevColor); //get previous colour
+        g2d.setFont(prevFont);
+        g2d.setColor(prevColor);
     }
 
     /**
@@ -407,121 +404,118 @@ public class HomeMenu extends JComponent {
      */
     private void drawContainer(Graphics2D g2d) {
 
-        Color prev = g2d.getColor(); //save previous colour
+        Color prev = g2d.getColor();
+        Stroke tmp = g2d.getStroke();
 
         g2d.drawImage(newImage,0,0,null);
 
-        Stroke tmp = g2d.getStroke(); //save previous line style (stroke)
+        g2d.setStroke(borderStoke_noDashes);
+        g2d.setColor(DASH_BORDER_COLOR);
+        g2d.draw(menuFace);
 
-        g2d.setStroke(borderStoke_noDashes); //set new line style (stroke)
-        g2d.setColor(DASH_BORDER_COLOR); //set new colour
-        g2d.draw(menuFace); //draw outline of menu with current colour and stroke
+        g2d.setStroke(borderStoke);
+        g2d.setColor(BORDER_COLOR);
+        g2d.draw(menuFace);
 
-        g2d.setStroke(borderStoke); //set new line style (stroke)
-        g2d.setColor(BORDER_COLOR); //set new colour
-        g2d.draw(menuFace); //draw outline of menu with current colour and stroke
-
-        g2d.setStroke(tmp); //get previous line style (stroke)
-
-        g2d.setColor(prev); //get previous colour
+        g2d.setStroke(tmp);
+        g2d.setColor(prev);
     }
 
     /**
      * This method is responsible for painting and repainting the text of the HomeMenu.
      * @param g2d This graphics class is used to paint the text of the HomeMenu.
      */
-    private void drawText(Graphics2D g2d){ //draw menu text
+    private void drawText(Graphics2D g2d){
 
-        g2d.setColor(TEXT_COLOR); //get text colour
+        g2d.setColor(TEXT_COLOR);
 
         FontRenderContext frc = g2d.getFontRenderContext();
 
-        Rectangle2D greetingsRect = greetingsFont.getStringBounds(GREETINGS,frc); //get bounds of menu text
+        Rectangle2D greetingsRect = greetingsFont.getStringBounds(GREETINGS,frc);
         Rectangle2D gameTitleRect = gameTitleFont.getStringBounds(GAME_TITLE,frc);
         Rectangle2D creditsRect = creditsFont.getStringBounds(CREDITS,frc);
 
         int sX,sY;
 
-        sX = (int)(menuFace.getWidth() - greetingsRect.getWidth()) / 2; //get coordinates of text start point
+        sX = (int)(menuFace.getWidth() - greetingsRect.getWidth()) / 2;
         sY = (int)(menuFace.getHeight() / 5);
 
-        g2d.setFont(greetingsFont); //get text font
-        g2d.drawString(GREETINGS,sX,sY); //draw greetings
+        g2d.setFont(greetingsFont);
+        g2d.drawString(GREETINGS,sX,sY);
 
-        sX = (int)(menuFace.getWidth() - gameTitleRect.getWidth()) / 2; //get coordinates of text start point
-        sY += (int) gameTitleRect.getHeight() * 0.8;//add 10% of String height between the two strings
+        sX = (int)(menuFace.getWidth() - gameTitleRect.getWidth()) / 2;
+        sY += (int) gameTitleRect.getHeight() * 0.8;
 
-        g2d.setFont(gameTitleFont); //get text font
-        g2d.drawString(GAME_TITLE,sX,sY); //draw game title
+        g2d.setFont(gameTitleFont);
+        g2d.drawString(GAME_TITLE,sX,sY);
 
-        sX = (int)(menuFace.getWidth() - creditsRect.getWidth()) / 2; //get coordinates of text start point
-        sY += (int) creditsRect.getHeight() * 1.1; //add 10% of String height between the two strings
+        sX = (int)(menuFace.getWidth() - creditsRect.getWidth()) / 2;
+        sY += (int) creditsRect.getHeight() * 1.1;
 
-        g2d.setFont(creditsFont); //get text font
-        g2d.drawString(CREDITS,sX,sY); //draw credits
+        g2d.setFont(creditsFont);
+        g2d.drawString(CREDITS,sX,sY);
 
-        //left side
-        g2d.setFont(textFont); //get text font
+        g2d.setFont(textFont);
 
-        sX = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        sX = (menuFace.width - startButton.width) / 12;
         sY =(int) ((menuFace.height - startButton.height) * 0.6);
 
         sX = sX - 15;
         sY += imageButton.height + 18;
-        g2d.drawString("Random Level",sX,sY); //draw credits
+        g2d.drawString("Random Level",sX,sY);
 
         sX = sX + 18;
         sY += 15;
-        g2d.drawString("Showcase",sX,sY); //draw credits
+        g2d.drawString("Showcase",sX,sY);
 
-        sX = (menuFace.width - startButton.width) / 12 + 5; //get coordinates of text start point
+        sX = (menuFace.width - startButton.width) / 12 + 5;
         sY =(int) ((menuFace.height - startButton.height) * 0.6) - 5;
-        g2d.drawString("Click me!",sX,sY); //draw credits
+        g2d.drawString("Click me!",sX,sY);
 
-        sX = (menuFace.width - startButton.width) / 12 + 2 * startButton.width + 10; //get coordinates of text start point
+        sX = (menuFace.width - startButton.width) / 12 + 2 * startButton.width + 10;
         sY =(int) ((menuFace.height - startButton.height) * 0.6) + startButton.height + 8;
-        g2d.drawString("Click me!",sX,sY); //draw credits
+        g2d.drawString("Click me!",sX,sY);
     }
 
     /**
      * This method is responsible for painting and repainting the buttons of the HomeMenu.
      * @param g2d This graphics class is used to paint the buttons of the HomeMenu.
      */
-    private void drawButton(Graphics2D g2d){ //draw menu buttons
+    private void drawButton(Graphics2D g2d){
 
         FontRenderContext frc = g2d.getFontRenderContext();
 
-        Rectangle2D txtRect = buttonFont.getStringBounds(START_TEXT,frc); //get bounds of menu buttons
+        Rectangle2D txtRect = buttonFont.getStringBounds(START_TEXT,frc);
         Rectangle2D mTxtRect = buttonFont.getStringBounds(MENU_TEXT,frc);
 
         Rectangle2D hTxtRect = buttonFont.getStringBounds(SCORE_TEXT,frc);
         Rectangle2D cTxtRect = buttonFont.getStringBounds(CUSTOM_TEXT,frc);
         Rectangle2D iTxtRect = buttonFont.getStringBounds(INFO_TEXT,frc);
 
-        g2d.setFont(buttonFont); //set button font
+        g2d.setFont(buttonFont);
 
-        int x = (menuFace.width - startButton.width) / 2; //get coordinates of text start point
+        int x = (menuFace.width - startButton.width) / 2;
         int y =(int) ((menuFace.height - startButton.height) * 0.6);
 
-        startButton.setLocation(x,y); //set start button location
+        startButton.setLocation(x,y);
 
-        x = (int)(startButton.getWidth() - txtRect.getWidth()) / 2; //get start text location
+        x = (int)(startButton.getWidth() - txtRect.getWidth()) / 2;
         y = (int)(startButton.getHeight() - txtRect.getHeight()) / 2;
 
         x += startButton.x;
         y += startButton.y + (startButton.height * 0.9);
 
-        if(startClicked){ //if start button clicked
-            Color tmp = g2d.getColor(); //save current colour
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(startButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(START_TEXT,x,y); //draw start text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(startClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(startButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(START_TEXT,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(startButton); //draw default start button
-            g2d.drawString(START_TEXT,x,y); //draw default start text
+            g2d.draw(startButton);
+            g2d.drawString(START_TEXT,x,y);
         }
 
         x = startButton.x;
@@ -529,26 +523,25 @@ public class HomeMenu extends JComponent {
 
         y *= 1.2;
 
-        customButton.setLocation(x,y); //set exit button location
+        customButton.setLocation(x,y);
 
-        x = (int)(customButton.getWidth() - cTxtRect.getWidth()) / 2; //get custom text location
+        x = (int)(customButton.getWidth() - cTxtRect.getWidth()) / 2;
         y = (int)(customButton.getHeight() - cTxtRect.getHeight()) / 2;
 
         x += customButton.x;
         y += customButton.y + (startButton.height * 0.9);
 
-        if(customClicked){ //if exit button clicked
-            Color tmp = g2d.getColor(); //save current colour
-
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(customButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(CUSTOM_TEXT,x,y); //draw exit text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(customClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(customButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(CUSTOM_TEXT,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(customButton); //draw default exit button
-            g2d.drawString(CUSTOM_TEXT,x,y); //draw default exit text
+            g2d.draw(customButton);
+            g2d.drawString(CUSTOM_TEXT,x,y);
         }
 
         x = customButton.x;
@@ -556,26 +549,25 @@ public class HomeMenu extends JComponent {
 
         y *= 1.18;
 
-        scoreButton.setLocation(x,y); //set exit button location
+        scoreButton.setLocation(x,y);
 
-        x = (int)(scoreButton.getWidth() - hTxtRect.getWidth()) / 2; //get exit text location
+        x = (int)(scoreButton.getWidth() - hTxtRect.getWidth()) / 2;
         y = (int)(scoreButton.getHeight() - hTxtRect.getHeight()) / 2;
 
         x += scoreButton.x;
         y += scoreButton.y + (startButton.height * 0.9);
 
-        if(scoreClicked){ //if exit button clicked
-            Color tmp = g2d.getColor(); //save current colour
-
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(scoreButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(SCORE_TEXT,x,y); //draw exit text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(scoreClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(scoreButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(SCORE_TEXT,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(scoreButton); //draw default exit button
-            g2d.drawString(SCORE_TEXT,x,y); //draw default exit text
+            g2d.draw(scoreButton);
+            g2d.drawString(SCORE_TEXT,x,y);
         }
 
         x = scoreButton.x;
@@ -583,60 +575,58 @@ public class HomeMenu extends JComponent {
 
         y *= 1.15;
 
-        menuButton.setLocation(x,y); //set exit button location
+        menuButton.setLocation(x,y);
 
-        x = (int)(menuButton.getWidth() - mTxtRect.getWidth()) / 2; //get exit text location
+        x = (int)(menuButton.getWidth() - mTxtRect.getWidth()) / 2;
         y = (int)(menuButton.getHeight() - mTxtRect.getHeight()) / 2;
 
         x += menuButton.x;
         y += menuButton.y + (startButton.height * 0.9);
 
-        if(menuClicked){ //if exit button clicked
-            Color tmp = g2d.getColor(); //save current colour
-
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(menuButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(MENU_TEXT,x,y); //draw exit text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(menuClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(menuButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(MENU_TEXT,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(menuButton); //draw default exit button
-            g2d.drawString(MENU_TEXT,x,y); //draw default exit text
+            g2d.draw(menuButton);
+            g2d.drawString(MENU_TEXT,x,y);
         }
 
-        x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        x = (menuFace.width - startButton.width) / 12;
         y =(int) ((menuFace.height - startButton.height) * 0.6);
 
         x += 2 * startButton.width - 5;
         y += 2 * startButton.height - 12;
 
-        infoButton.setLocation(x,y); //set exit button location
+        infoButton.setLocation(x,y);
 
-        x = (int)(infoButton.getWidth() - iTxtRect.getWidth()) / 2; //get exit text location
+        x = (int)(infoButton.getWidth() - iTxtRect.getWidth()) / 2;
         y = (int)(infoButton.getHeight() - iTxtRect.getHeight()) / 2;
 
         x += infoButton.x;
         y += infoButton.y + (startButton.height * 0.9);
 
-        if(infoClicked){ //if exit button clicked
-            Color tmp = g2d.getColor(); //save current colour
-
-            g2d.setColor(CLICKED_BUTTON_COLOR); //get button clicked colour
-            g2d.draw(infoButton); //draw button border to make it look brighter
-            g2d.setColor(CLICKED_TEXT); //get text clicked colour
-            g2d.drawString(INFO_TEXT,x,y); //draw exit text to make it look brighter
-            g2d.setColor(tmp); //get previous colour
+        if(infoClicked){
+            Color tmp = g2d.getColor();
+            g2d.setColor(CLICKED_BUTTON_COLOR);
+            g2d.draw(infoButton);
+            g2d.setColor(CLICKED_TEXT);
+            g2d.drawString(INFO_TEXT,x,y);
+            g2d.setColor(tmp);
         }
         else{
-            g2d.draw(infoButton); //draw default exit button
-            g2d.drawString(INFO_TEXT,x,y); //draw default exit text
+            g2d.draw(infoButton);
+            g2d.drawString(INFO_TEXT,x,y);
         }
 
-        x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        x = (menuFace.width - startButton.width) / 12;
         y =(int) ((menuFace.height - startButton.height) * 0.6);
 
-        imageButton.setLocation(x,y); //set exit button location
+        imageButton.setLocation(x,y);
     }
 
     /**
@@ -659,7 +649,7 @@ public class HomeMenu extends JComponent {
         BufferedImage myPicture = ImageIO.read(new File("image/ImageShowcase/BrickDestroy"+ rand +".png"));
         Image newImage = myPicture.getScaledInstance(90, 90, Image.SCALE_DEFAULT);
 
-        int x = (menuFace.width - startButton.width) / 12; //get coordinates of text start point
+        int x = (menuFace.width - startButton.width) / 12;
         int y =(int) ((menuFace.height - startButton.height) * 0.6);
 
         g2d.drawImage(newImage,x,y,this);

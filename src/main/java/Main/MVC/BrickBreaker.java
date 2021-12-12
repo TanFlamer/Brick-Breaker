@@ -50,7 +50,6 @@ public class BrickBreaker extends JComponent {
         this.engine = engine;
         this.initialize();
 
-        // Game loop.
         gameTimer = new Timer(10,e ->{
             try {
                 engine.update();
@@ -70,10 +69,10 @@ public class BrickBreaker extends JComponent {
     /**
      * This method is used to add listeners to the JFrame to receive player inputs for the game.
      */
-    private void initialize() { //initialize JFrame
-        this.setPreferredSize(area); //set frame size
-        this.setFocusable(true); //set focusable
-        this.requestFocusInWindow(); //request focus
+    private void initialize() {
+        this.setPreferredSize(area);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
 
         this.addKeyListener(new KeyAdapter() {
 
@@ -91,7 +90,7 @@ public class BrickBreaker extends JComponent {
              * @param keyEvent The key released by the player.
              */
             @Override
-            public void keyReleased(KeyEvent keyEvent) { //if key released, stop player
+            public void keyReleased(KeyEvent keyEvent) {
                 engine.handleReleaseEvent();
             }
         });
@@ -103,7 +102,7 @@ public class BrickBreaker extends JComponent {
              * @param mouseEvent This parameter is used to track mouse clicks.
              */
             @Override
-            public void mouseClicked(MouseEvent mouseEvent) { //if mouse clicked
+            public void mouseClicked(MouseEvent mouseEvent) {
                 engine.handleMouseClick(mouseEvent);
             }
         });
@@ -115,7 +114,7 @@ public class BrickBreaker extends JComponent {
              * @param mouseEvent This parameter is used to track mouse movement.
              */
             @Override
-            public void mouseMoved(MouseEvent mouseEvent) { //if mouse moved
+            public void mouseMoved(MouseEvent mouseEvent) {
                 engine.handleMouseMotion(mouseEvent);
             }
         });

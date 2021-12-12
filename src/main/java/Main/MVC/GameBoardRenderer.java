@@ -82,7 +82,7 @@ public class GameBoardRenderer implements Renderer {
     public GameBoardRenderer(GameBoard gameBoard,Dimension area) throws IOException {
         this.gameBoard = gameBoard;
         this.area = area;
-        menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE); //menu font
+        menuFont = new Font("Monospaced",Font.PLAIN,TEXT_SIZE);
         BufferedImage myPicture = ImageIO.read(new File("image/BrickBreakerGameBackground.png"));
         newImage = myPicture.getScaledInstance((int)area.getWidth(),(int)area.getHeight(), Image.SCALE_DEFAULT);
     }
@@ -105,9 +105,9 @@ public class GameBoardRenderer implements Renderer {
 
         drawMessages(g2d);
 
-        for(Brick b : gameBoard.getBricks()[gameBoard.getLevel()-1]) { //loop through bricks
+        for(Brick b : gameBoard.getBricks()[gameBoard.getLevel()-1]) {
             if(!b.isBroken())
-                drawBrick(b, g2d); //colour brick
+                drawBrick(b, g2d);
         }
 
         if(!gameBoard.getPowerUp().isCollected() && gameBoard.getPowerUp().isSpawned()){
@@ -117,18 +117,18 @@ public class GameBoardRenderer implements Renderer {
         drawBall(gameBoard.getBall(),g2d);
         drawPlayer(gameBoard.getPlayer(),g2d);
 
-        if(gameBoard.isShowPauseMenu()) //if pause menu shown
-            drawMenu(g2d); //colour pause menu
+        if(gameBoard.isShowPauseMenu())
+            drawMenu(g2d);
     }
 
     /**
      * This method is used to clear the background by filling it with white colour.
      * @param g2d This parameter is used to control the graphics such as colour.
      */
-    private void clear(Graphics2D g2d){ //clear colour
+    private void clear(Graphics2D g2d){
 
-        g2d.setColor(BG_COLOR); //get white colour
-        g2d.fillRect(0,0, area.width, area.height); //fill frame with white colour
+        g2d.setColor(BG_COLOR);
+        g2d.fillRect(0,0, area.width, area.height);
     }
 
     /**
@@ -138,11 +138,11 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawBrick(Brick brick,Graphics2D g2d){
 
-        g2d.setColor(brick.getInner()); //get brick inner colour
-        g2d.fill(brick.getBrickFace()); //fill brick with inner colour
+        g2d.setColor(brick.getInner());
+        g2d.fill(brick.getBrickFace());
 
-        g2d.setColor(brick.getBorder()); //get brick border colour
-        g2d.draw(brick.getBrickFace()); //draw brick border with colour
+        g2d.setColor(brick.getBorder());
+        g2d.draw(brick.getBrickFace());
     }
 
     /**
@@ -152,13 +152,13 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawBall(Ball ball, Graphics2D g2d){
 
-        Shape s = ball.getBallFace(); //get ball face
+        Shape s = ball.getBallFace();
 
-        g2d.setColor(ball.getInner()); //set colour as inner colour
-        g2d.fill(s); //fill inner ball with colour
+        g2d.setColor(ball.getInner());
+        g2d.fill(s);
 
-        g2d.setColor(ball.getBorder()); //set colour as border colour
-        g2d.draw(s); //draw ball border with colour
+        g2d.setColor(ball.getBorder());
+        g2d.draw(s);
     }
 
     /**
@@ -168,13 +168,13 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawPlayer(Player p, Graphics2D g2d){
 
-        Shape s = p.getPlayerFace(); //get player shape
+        Shape s = p.getPlayerFace();
 
-        g2d.setColor(p.getInner()); //get player inner colour
-        g2d.fill(s); //fill player with inner colour
+        g2d.setColor(p.getInner());
+        g2d.fill(s);
 
-        g2d.setColor(p.getBorder()); //get player border colour
-        g2d.draw(s); //draw player border with colour
+        g2d.setColor(p.getBorder());
+        g2d.draw(s);
     }
 
     /**
@@ -184,26 +184,26 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawMessages(Graphics2D g2d){
 
-        Font tmpFont = g2d.getFont(); //hold current font
+        Font tmpFont = g2d.getFont();
 
-        g2d.setFont(new Font("Monospaced",Font.BOLD,16)); //set menu font
-        g2d.setColor(Color.BLACK); //set blue colour
+        g2d.setFont(new Font("Monospaced",Font.BOLD,16));
+        g2d.setColor(Color.BLACK);
 
         if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==0 && gameBoard.getGameMessages(0)!=null) {
-            g2d.drawString(gameBoard.getGameMessages(0), 210, 225); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(1), 210, 240); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(2), 210, 255); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(3), 210, 270); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(4), 210, 285); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(5), 210, 300); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(0), 210, 225);
+            g2d.drawString(gameBoard.getGameMessages(1), 210, 240);
+            g2d.drawString(gameBoard.getGameMessages(2), 210, 255);
+            g2d.drawString(gameBoard.getGameMessages(3), 210, 270);
+            g2d.drawString(gameBoard.getGameMessages(4), 210, 285);
+            g2d.drawString(gameBoard.getGameMessages(5), 210, 300);
         }
         else if(gameBoard.getChoice()[gameBoard.getLevel()-1][9]==1 && gameBoard.getGameMessages(0)!=null){
-            g2d.drawString(gameBoard.getGameMessages(0), 210, 150); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(1), 210, 165); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(2), 210, 180); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(3), 210, 195); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(4), 210, 210); //set message colour as blue
-            g2d.drawString(gameBoard.getGameMessages(5), 210, 225); //set message colour as blue
+            g2d.drawString(gameBoard.getGameMessages(0), 210, 150);
+            g2d.drawString(gameBoard.getGameMessages(1), 210, 165);
+            g2d.drawString(gameBoard.getGameMessages(2), 210, 180);
+            g2d.drawString(gameBoard.getGameMessages(3), 210, 195);
+            g2d.drawString(gameBoard.getGameMessages(4), 210, 210);
+            g2d.drawString(gameBoard.getGameMessages(5), 210, 225);
         }
         g2d.setFont(tmpFont);
     }
@@ -229,26 +229,26 @@ public class GameBoardRenderer implements Renderer {
      * This method is used to draw the pause menu.
      * @param g2d This parameter is used to control the graphics such as colour, composite and font.
      */
-    private void drawMenu(Graphics2D g2d){ //colour pause menu
-        obscureGameBoard(g2d); //fill pause menu with black colour
-        drawPauseMenu(g2d); //draw pause menu
+    private void drawMenu(Graphics2D g2d){
+        obscureGameBoard(g2d);
+        drawPauseMenu(g2d);
     }
 
     /**
      * This method is used to add black composite to the pause menu.
      * @param g2d This parameter is used to control the graphics such as colour, composite and font.
      */
-    private void obscureGameBoard(Graphics2D g2d){ //fill pause menu with black colour
+    private void obscureGameBoard(Graphics2D g2d){
 
-        Composite tmp = g2d.getComposite(); //hold current composite
+        Composite tmp = g2d.getComposite();
 
-        AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.55f); //get alpha composite
-        g2d.setComposite(ac); //set alpha composite
+        AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.55f);
+        g2d.setComposite(ac);
 
-        g2d.setColor(Color.BLACK); //get black colour
-        g2d.fillRect(0,0,area.width,area.height); //fill frame with black colour
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0,0,area.width,area.height);
 
-        g2d.setComposite(tmp); //reset composite
+        g2d.setComposite(tmp);
     }
 
     /**
@@ -257,34 +257,34 @@ public class GameBoardRenderer implements Renderer {
      */
     private void drawPauseMenu(Graphics2D g2d){
 
-        Font tmpFont = g2d.getFont(); //hold current font
+        Font tmpFont = g2d.getFont();
 
-        g2d.setFont(menuFont); //set menu font
-        g2d.setColor(MENU_COLOR); //set menu colour
+        g2d.setFont(menuFont);
+        g2d.setColor(MENU_COLOR);
 
-        if(strLen == 0){ //if string length is 0
+        if(strLen == 0){
             FontRenderContext frc = g2d.getFontRenderContext();
-            strLen = menuFont.getStringBounds(PAUSE,frc).getBounds().width; //get width of bound string
+            strLen = menuFont.getStringBounds(PAUSE,frc).getBounds().width;
         }
 
-        int x = (area.width - strLen) / 2; //get position of pause menu
+        int x = (area.width - strLen) / 2;
         int y = area.height / 10;
 
-        g2d.drawString(PAUSE,x,y); //draw pause menu
+        g2d.drawString(PAUSE,x,y);
 
-        x = area.width / 8; //get position of continue button
+        x = area.width / 8;
         y = area.height / 4;
 
-        g2d.drawString(CONTINUE,x,y); //draw continue button
+        g2d.drawString(CONTINUE,x,y);
 
-        y *= 2; //get position of restart button
+        y *= 2;
 
-        g2d.drawString(RESTART,x,y); //draw restart button
+        g2d.drawString(RESTART,x,y);
 
-        y *= 3.0/2; //get position of exit button
+        y *= 3.0/2;
 
-        g2d.drawString(EXIT,x,y); //draw exit button
+        g2d.drawString(EXIT,x,y);
 
-        g2d.setFont(tmpFont); //reset font
+        g2d.setFont(tmpFont);
     }
 }
