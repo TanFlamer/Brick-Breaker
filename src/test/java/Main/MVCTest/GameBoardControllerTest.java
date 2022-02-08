@@ -1120,7 +1120,7 @@ class GameBoardControllerTest {
      */
     @Test
     void wallReset() {
-        /*gameBoard.setLevel(3);
+        gameBoard.setLevel(3);
         gameBoard.setBrickCount(20);
         gameBoard.setBallCount(1);
         for(int i = 0; i < gameBoard.getBricks()[2].length; i++){
@@ -1136,7 +1136,7 @@ class GameBoardControllerTest {
         for(int i = 0; i < gameBoard.getBricks()[2].length; i++){
             assertEquals(gameBoard.getBricks()[2][i].getStrength(),gameBoard.getBricks()[2][i].getFullStrength());
             assertFalse(gameBoard.getBricks()[2][i].isBroken());
-        }*/
+        }
     }
 
     /**
@@ -1155,7 +1155,7 @@ class GameBoardControllerTest {
      */
     @Test
     void repair() {
-        /*gameBoard.setLevel(3);
+        gameBoard.setLevel(3);
         for(int i = 0; i < gameBoard.getBricks()[2].length; i++){
             gameBoard.getBricks()[2][i].setStrength(0);
             gameBoard.getBricks()[2][i].setBroken(true);
@@ -1169,7 +1169,7 @@ class GameBoardControllerTest {
         for(int i = 0; i < gameBoard.getBricks()[2].length; i++){
             assertEquals(gameBoard.getBricks()[2][i].getStrength(),gameBoard.getBricks()[2][i].getFullStrength());
             assertFalse(gameBoard.getBricks()[2][i].isBroken());
-        }*/
+        }
     }
 
     /**
@@ -1249,7 +1249,7 @@ class GameBoardControllerTest {
     @Test
     void findImpact() {
         //brick left impact
-        /*controller.ballMoveTo(new Point(-2,10));
+        controller.ballMoveTo(new Point(-2,10));
         assertEquals(controller.findImpact(gameBoard.getBall(),gameBoard.getBricks()[0][0]),300);
 
         //brick right impact
@@ -1277,7 +1277,7 @@ class GameBoardControllerTest {
         assertEquals(controller.findImpact(gameBoard.getBall(),gameBoard.getBricks()[0][0]),0);
 
         controller.ballMoveTo(new Point(30,-2));
-        assertEquals(controller.findImpact(gameBoard.getBall(),gameBoard.getBricks()[0][0]),0);*/
+        assertEquals(controller.findImpact(gameBoard.getBall(),gameBoard.getBricks()[0][0]),0);
     }
 
     /**
@@ -1287,7 +1287,7 @@ class GameBoardControllerTest {
     @Test
     void setImpact() {
         //first impact with clay brick which breaks
-        /*assertTrue(controller.setImpact(new Point(0,10),10,gameBoard.getBricks()[1][0]));
+        assertTrue(controller.setImpact(new Point(0,10),10,gameBoard.getBricks()[1][0]));
 
         //second impact with clay brick which is already broken
         assertFalse(controller.setImpact(new Point(0,10),10,gameBoard.getBricks()[1][0]));
@@ -1296,6 +1296,6 @@ class GameBoardControllerTest {
         assertFalse(controller.setImpact(new Point(60,10),10,gameBoard.getBricks()[1][1]));
 
         //second impact with cement which breaks
-        assertTrue(controller.setImpact(new Point(60,10),10,gameBoard.getBricks()[1][1]));*/
+        assertTrue(controller.setImpact(new Point(60,10),10,gameBoard.getBricks()[1][1]));
     }
 }

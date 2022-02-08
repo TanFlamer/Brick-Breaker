@@ -101,7 +101,7 @@ public class GameBoardController {
     /**
      * This is the double array of Bricks to hold the bricks generated for all 5 levels.
      */
-    private final Brick[][][] bricks;
+    private final Brick[][] bricks;
     /**
      * Player to manipulate movement.
      */
@@ -294,11 +294,9 @@ public class GameBoardController {
      */
     public void setBallSpeed(){
         int speedX,speedY;
-
         do{
             speedX = random.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
         }while(speedX == 0); //continue loop if speed-X is 0
-
         do{
             if(choice[gameBoard.getLevel()-1][9]==0)
                 speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
@@ -333,10 +331,10 @@ public class GameBoardController {
     public void calculateScoreAndTime(){
 
         gameBoard.setScore(0,returnPreviousLevelsScore());
-        for(Brick[] brick: bricks[gameBoard.getLevel()-1]){
-            for(Brick b: brick)
-                if(b.isBroken())
-                    gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
+        for(Brick b: bricks[gameBoard.getLevel()-1]){
+            if(b.isBroken()){
+                gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
+            }
         }
         gameBoard.setScore(gameBoard.getLevel(),gameBoard.getScore(0) - returnPreviousLevelsScore());
 
@@ -616,9 +614,8 @@ public class GameBoardController {
      * and setting their broken flag to false. The brick count and ball count is also reset.
      */
     public void wallReset(){
-        for(Brick[] brick : bricks[gameBoard.getLevel()-1])
-            for(Brick b: brick)
-                repair(b); //reset brick to full strength
+        for(Brick b : bricks[gameBoard.getLevel()-1])
+            repair(b); //reset brick to full strength
         gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
         resetBallCount();
     }
@@ -724,59 +721,32 @@ public class GameBoardController {
      *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
      */
     private boolean impactWall(boolean collected){ //method to check impact with wall
-
-        int width = bricks[gameBoard.getLevel()-1][0][0].getBrickFace().getBounds().width;
-        int height = 20;
-        int brickRow = 600 / width;
-        int evenRow = bricks[gameBoard.getLevel()-1][0].length / brickRow;
-        int oddRow = bricks[gameBoard.getLevel()-1][1].length / (brickRow + 1);
-        int impact = 0;
-        Brick b = null;
-
-        if(choice[gameBoard.getLevel()-1][9]==0){
-            if(ball.getCenter().y < (evenRow + oddRow) * height){
-                if((ball.getCenter().y/height)%2==0)
-                    b = bricks[gameBoard.getLevel()-1][0][ball.getCenter().x / width + brickRow * ((ball.getCenter().y / height) / 2)];
-                else
-                    b = bricks[gameBoard.getLevel()-1][1][(ball.getCenter().x - width / 2) / width + (brickRow + 1) * ((ball.getCenter().y / height - 1) / 2)];
-                impact = findImpact(ball, b);
+        for(Brick b : bricks[gameBoard.getLevel()-1]){
+            //Vertical Impact
+            switch (findImpact(ball,b)) {
+                case UP_IMPACT -> {
+                    if(!collected)
+                        reverseY();
+                    return setImpact(ball.getDown(),UP,b);
+                }
+                case DOWN_IMPACT -> {
+                    if(!collected)
+                        reverseY();
+                    return setImpact(ball.getUp(),DOWN,b);
+                } //Horizontal Impact
+                case LEFT_IMPACT -> {
+                    if(!collected)
+                        reverseX();
+                    return setImpact(ball.getRight(),LEFT,b);
+                }
+                case RIGHT_IMPACT -> {
+                    if(!collected)
+                        reverseX();
+                    return setImpact(ball.getLeft(),RIGHT,b);
+                }
             }
         }
-        else if(choice[gameBoard.getLevel()-1][9]==1){
-            if(ball.getCenter().y > 450 - ((evenRow + oddRow) * height)){
-                if((450 - ball.getCenter().y/height)%2==0)
-                    b = bricks[gameBoard.getLevel() - 1][0][(brickRow - ball.getCenter().x / width) + brickRow * (((450 - ball.getCenter().y) / height) / 2)];
-                else
-                    b = bricks[gameBoard.getLevel() - 1][1][((brickRow + 1) - (ball.getCenter().x - width / 2) / width) + (brickRow + 1) * (((450 - ball.getCenter().y) / height - 1) / 2)];
-                impact = findImpact(ball, b);
-            }
-        }
-
-        switch (impact) {
-            case UP_IMPACT -> {
-                if (!collected)
-                    reverseY();
-                return setImpact(ball.getDown(), UP, b);
-            }
-            case DOWN_IMPACT -> {
-                if (!collected)
-                    reverseY();
-                return setImpact(ball.getUp(), DOWN, b);
-            } //Horizontal Impact
-            case LEFT_IMPACT -> {
-                if (!collected)
-                    reverseX();
-                return setImpact(ball.getRight(), LEFT, b);
-            }
-            case RIGHT_IMPACT -> {
-                if (!collected)
-                    reverseX();
-                return setImpact(ball.getLeft(), RIGHT, b);
-            }
-            default -> {
-                return false;
-            }
-        }
+        return false;
     }
 
     /**

@@ -105,10 +105,9 @@ public class GameBoardRenderer implements Renderer {
 
         drawMessages(g2d);
 
-        for(Brick[] brick : gameBoard.getBricks()[gameBoard.getLevel()-1]) {
-            for(Brick b: brick)
-                if(!b.isBroken())
-                    drawBrick(b, g2d);
+        for(Brick b : gameBoard.getBricks()[gameBoard.getLevel()-1]) {
+            if(!b.isBroken())
+                drawBrick(b, g2d);
         }
 
         if(!gameBoard.getPowerUp().isCollected() && gameBoard.getPowerUp().isSpawned()){
