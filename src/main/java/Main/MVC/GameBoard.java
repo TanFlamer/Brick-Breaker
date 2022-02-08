@@ -36,7 +36,7 @@ public class GameBoard {
     /**
      * This is the double array of Bricks to hold the bricks generated for all 5 levels.
      */
-    private final Brick[][] bricks;
+    private final Brick[][][] bricks;
     /**
      * Double array of integer to record player scores and times.
      */
@@ -137,7 +137,7 @@ public class GameBoard {
      * This method returns the double array of Bricks.
      * @return The double array of Bricks is returned.
      */
-    public Brick[][] getBricks() {
+    public Brick[][][] getBricks() {
         return bricks;
     }
     /**

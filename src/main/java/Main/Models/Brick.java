@@ -76,7 +76,6 @@ public class Brick {
      *             the new brick.
      */
     public Brick(int brickID, int x, int y, int width, int height, Dimension area){
-
         getBrickInfo(brickID,x,y,width,height);
         this.broken = false;
         this.strength = fullStrength;
