@@ -52,6 +52,10 @@ public class DebugPanel extends JPanel {
      */
     private final GameBoardController controller;
 
+    private final JButton resetBalls;
+
+    private final JButton resetPosition;
+
     /**
      * This constructor is used to initialize the DebugPanel and add the JButtons and JSliders.
      * @param gameEngine GameEngine to fetch the controller to add functionality to the debug options.
@@ -62,12 +66,13 @@ public class DebugPanel extends JPanel {
         initialize();
 
         JButton skipLevel = makeButton("Skip Level", e -> controller.nextLevel(false));
-        JButton resetBalls = makeButton("Reset Balls", e -> controller.resetBallCount());
         JButton previousLevel = makeButton("Previous Level", e -> controller.previousLevel());
-        JButton resetPosition = makeButton("Reset Position", e -> controller.ballReset());
 
-        ballXSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedX(ballXSpeed.getValue()));
-        ballYSpeed = makeSlider(e -> gameEngine.getGameBoard().getBall().setSpeedY(ballYSpeed.getValue()));
+        resetBalls = makeButton("Reset Balls", e -> controller.resetBallCount());
+        resetPosition = makeButton("Reset Position", e -> controller.ballReset());
+
+        ballXSpeed = makeSlider(e -> gameEngine.getGameBoard().getBalls()[0].setSpeedX(ballXSpeed.getValue()));
+        ballYSpeed = makeSlider(e -> gameEngine.getGameBoard().getBalls()[0].setSpeedY(ballYSpeed.getValue()));
 
         this.add(skipLevel);
         this.add(resetBalls);
@@ -123,5 +128,15 @@ public class DebugPanel extends JPanel {
     public void setValues(int x,int y){
         ballXSpeed.setValue(x);
         ballYSpeed.setValue(y);
+    }
+
+    public void enableSlider(boolean bool){
+        ballXSpeed.setEnabled(bool);
+        ballYSpeed.setEnabled(bool);
+    }
+
+    public void enableButton(boolean bool){
+        resetBalls.setEnabled(bool);
+        resetPosition.setEnabled(bool);
     }
 }

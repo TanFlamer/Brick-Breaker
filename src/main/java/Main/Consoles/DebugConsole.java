@@ -56,6 +56,8 @@ public class DebugConsole extends JDialog {
      */
     private final GameBoard gameBoard;
 
+    private final int[][] choice;
+
     /**
      * This constructor is used to load the DebugPanel into the DebugConsole and to add in window listeners.
      * @param owner JFrame which is used to center the DebugConsole.
@@ -66,6 +68,7 @@ public class DebugConsole extends JDialog {
 
         this.owner = owner;
         this.gameBoard = gameEngine.getGameBoard();
+        this.choice = gameBoard.getChoice();
         initialize(gameSounds);
 
         debugPanel = new DebugPanel(gameEngine);
@@ -104,8 +107,16 @@ public class DebugConsole extends JDialog {
             @Override
             public void windowActivated(WindowEvent windowEvent) {
                 setLocation();
-                Ball b = gameBoard.getBall();
-                debugPanel.setValues(b.getSpeedX(),b.getSpeedY());
+                debugPanel.enableButton(choice[gameBoard.getLevel()-1][11]==0);
+                Ball b = gameBoard.getBalls()[0];
+                if(!b.isLost()) {
+                    debugPanel.enableSlider(true);
+                    debugPanel.setValues(b.getSpeedX(), b.getSpeedY());
+                }
+                else {
+                    debugPanel.enableSlider(false);
+                    debugPanel.setValues(0, 0);
+                }
                 gameSounds.setSongID(0);
                 gameSounds.setBgm("Debug");
             }

@@ -109,7 +109,7 @@ public class GameBoardController {
     /**
      * Ball to manipulate movement and collision.
      */
-    private final Ball ball;
+    private final Ball[] balls;
     /**
      * Power up to manipulate position, spawn and collection.
      */
@@ -138,7 +138,7 @@ public class GameBoardController {
         this.owner = owner;
         this.bricks = gameBoard.getBricks();
         this.player = gameBoard.getPlayer();
-        this.ball = gameBoard.getBall();
+        this.balls = gameBoard.getBalls();
         this.powerUp = gameBoard.getPowerUp();
         this.choice = gameBoard.getChoice();
         this.area = area;
@@ -158,7 +158,7 @@ public class GameBoardController {
             powerUpRandomSpawn();
             movePlayer();
             moveBall();
-            findImpacts(powerUp.isCollected());
+            findImpacts();
             calculateScoreAndTime();
             gameChecks();
         }
@@ -222,46 +222,58 @@ public class GameBoardController {
      * in quick succession, movement can be simulated.
      */
     public void moveBall(){ //move ball according to speed
-        RectangularShape tmp = (RectangularShape) ball.getBallFace();
-        ball.setCenter(new Point((int)(ball.getCenter().getX() + ball.getSpeedX()),(int)(ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
+        for(Ball ball: balls) {
+            if(!ball.isLost()) {
+                RectangularShape tmp = (RectangularShape) ball.getBallFace();
+                ball.setCenter(new Point((int) (ball.getCenter().getX() + ball.getSpeedX()), (int) (ball.getCenter().getY() + ball.getSpeedY()))); //set ball at new location according to speed
 
-        double w = tmp.getWidth(); //get ball width
-        double h = tmp.getHeight(); //get ball height
+                double w = tmp.getWidth(); //get ball width
+                double h = tmp.getHeight(); //get ball height
 
-        tmp.setFrame((ball.getCenter().getX() -(w / 2)),(ball.getCenter().getY() - (h / 2)),w,h);
-        ball.setBallFace(tmp);
+                tmp.setFrame((ball.getCenter().getX() - (w / 2)), (ball.getCenter().getY() - (h / 2)), w, h);
+                ball.setBallFace(tmp);
+            }
+        }
     }
 
     /**
      * This method adds horizontal speed to the ball until max horizontal speed.
      */
     public void addSpeedX(){
-        if(gameBoard.getBall().getSpeedX()<4)
-            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()+1);
+        for(Ball ball: balls) {
+            if (ball.getSpeedX() < 4 && !ball.isLost())
+                ball.setSpeedX(ball.getSpeedX() + 1);
+        }
     }
 
     /**
      * This method minus horizontal speed from the ball until min horizontal speed.
      */
     public void minusSpeedX(){
-        if(gameBoard.getBall().getSpeedX()>-4)
-            gameBoard.getBall().setSpeedX(gameBoard.getBall().getSpeedX()-1);
+        for(Ball ball: balls) {
+            if (ball.getSpeedX() > -4 && !ball.isLost())
+                ball.setSpeedX(ball.getSpeedX() - 1);
+        }
     }
 
     /**
      * This method adds vertical speed to the ball until max vertical speed.
      */
     public void addSpeedY(){
-        if(gameBoard.getBall().getSpeedY()<4)
-            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()+1);
+        for(Ball ball: balls) {
+            if (ball.getSpeedY() < 4 && !ball.isLost())
+                ball.setSpeedY(ball.getSpeedY() + 1);
+        }
     }
 
     /**
      * This method minus vertical speed from the ball until min vertical speed.
      */
     public void minusSpeedY(){
-        if(gameBoard.getBall().getSpeedY()>-4)
-            gameBoard.getBall().setSpeedY(gameBoard.getBall().getSpeedY()-1);
+        for(Ball ball: balls) {
+            if (ball.getSpeedY() > -4 && !ball.isLost())
+                ball.setSpeedY(ball.getSpeedY() - 1);
+        }
     }
 
     /**
@@ -295,32 +307,36 @@ public class GameBoardController {
     public void setBallSpeed(){
         int speedX,speedY;
 
-        do{
-            speedX = random.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
-        }while(speedX == 0); //continue loop if speed-X is 0
+        for(Ball ball: balls) {
+            if(!ball.isLost()) {
+                do {
+                    speedX = random.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
+                } while (speedX == 0); //continue loop if speed-X is 0
 
-        do{
-            if(choice[gameBoard.getLevel()-1][9]==0)
-                speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
-            else
-                speedY = random.nextInt(3); //random speed for ball in Y-axis, always + for down
-        }while(speedY == 0); //continue loop if speed-Y is 0
+                do {
+                    if (choice[gameBoard.getLevel() - 1][9] == 0)
+                        speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
+                    else
+                        speedY = random.nextInt(3); //random speed for ball in Y-axis, always + for down
+                } while (speedY == 0); //continue loop if speed-Y is 0
 
-        ball.setSpeedX(speedX);
-        ball.setSpeedY(speedY);
+                ball.setSpeedX(speedX);
+                ball.setSpeedY(speedY);
+            }
+        }
     }
 
     /**
      * This method reverses the horizontal speed of the ball to simulate collision and deflection.
      */
-    public void reverseX(){
+    public void reverseX(Ball ball){
         ball.setSpeedX(-ball.getSpeedX());
     }
 
     /**
      * This method reverses the vertical speed of the ball to simulate collision and deflection.
      */
-    public void reverseY(){
+    public void reverseY(Ball ball){
         ball.setSpeedY(-ball.getSpeedY());
     }
 
@@ -382,22 +398,31 @@ public class GameBoardController {
      */
     public void gameChecks() throws FileNotFoundException {
 
-        if(gameBoard.isBallLost()){
+        if(choice[gameBoard.getLevel()-1][11] == 0 && balls[0].isLost()){
 
             if(gameBoard.getBallCount() == 0){
                 resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
             }
-            else {
+            else
                 ballReset();
-                gameSounds.playSoundEffect("BallLost");
-            }
 
             if(gameBoard.isNotPaused())
                 reversePauseFlag();
         }
-        else if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
+        else if (choice[gameBoard.getLevel()-1][11] == 1) {
+
+            if(gameBoard.getBallCount() == 0){
+                resetLevelData();
+                gameBoard.setMessageFlag(1);
+                gameSounds.playSoundEffect("GameOver");
+                if(gameBoard.isNotPaused())
+                    reversePauseFlag();
+            }
+        }
+
+        if(gameBoard.getBrickCount() == 0){ //if level complete / brick count 0
 
             if(choice[gameBoard.getLevel()-1][10]==0 && (gameBoard.getScore(gameBoard.getLevel())>0 && gameBoard.getTime(gameBoard.getLevel())>0)) {
                 gameSounds.playSoundEffect("NextLevel");
@@ -422,18 +447,20 @@ public class GameBoardController {
             }
         }
 
-        if(powerUpCollected() && powerUp.isSpawned()&& !powerUp.isCollected()){
-            ball.setCollected(true);
-            gameSounds.playSoundEffect("Pickup");
-            powerUp.setCollected(true);
-            powerUp.setSpawned(false);
-            gameBoard.setGodModeTimeLeft(10);
-        }
+        for(Ball ball: balls) {
+            if (powerUpCollected(ball) && powerUp.isSpawned() && !powerUp.isCollected()) {
+                ball.setCollected(true);
+                gameSounds.playSoundEffect("Pickup");
+                powerUp.setCollected(true);
+                powerUp.setSpawned(false);
+                gameBoard.setGodModeTimeLeft(10);
+            }
 
-        if(powerUp.isCollected()){
-            if(gameBoard.getGodModeTimeLeft()==0){
-                powerUp.setCollected(false);
-                ball.setCollected(false);
+            if (powerUp.isCollected() && ball.isCollected()) {
+                if (gameBoard.getGodModeTimeLeft() == 0) {
+                    powerUp.setCollected(false);
+                    ball.setCollected(false);
+                }
             }
         }
     }
@@ -450,7 +477,6 @@ public class GameBoardController {
         resetTotalScoreAndTime();
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
-        ball.setCollected(false);
         gameBoard.setPowerUpSpawns(0);
     }
 
@@ -517,6 +543,28 @@ public class GameBoardController {
      */
     public void ballReset(){
 
+        int ballCount;
+
+        if(choice[gameBoard.getLevel()-1][11]==0)
+            ballCount = 1;
+        else {
+            if(choice[gameBoard.getLevel()-1][8]==0)
+                ballCount = 3;
+            else
+                ballCount = choice[gameBoard.getLevel()-1][8];
+        }
+
+        for(Ball ball: balls) {
+            ball.setLost(true);
+            ball.setCollected(false);
+            ball.setSpeedX(0);
+            ball.setSpeedY(0);
+            ball.setCenter(new Point(300,225));
+        }
+
+        for(int i = 0; i < ballCount; i++)
+            balls[i].setLost(false);
+
         if(choice[gameBoard.getLevel()-1][9]==0) {
             gameBoard.setBallStartPoint(new Point(area.width/2,area.height-20));
             gameBoard.setPlayerStartPoint(new Point(area.width/2,area.height-20));
@@ -530,7 +578,6 @@ public class GameBoardController {
         playerMoveTo(gameBoard.getPlayerStartPoint());
 
         setBallSpeed();
-        gameBoard.setBallLost(false);
     }
 
     /**
@@ -539,14 +586,18 @@ public class GameBoardController {
      * @param p This is the new center point of the ball.
      */
     public void ballMoveTo(Point p){ //move ball to point p
-        ball.setCenter(p);
+        for(Ball ball: balls) {
+            if(!ball.isLost()) {
+                ball.setCenter(p);
 
-        RectangularShape tmp = (RectangularShape) ball.getBallFace();
-        double w = tmp.getWidth();
-        double h = tmp.getHeight();
+                RectangularShape tmp = (RectangularShape) ball.getBallFace();
+                double w = tmp.getWidth();
+                double h = tmp.getHeight();
 
-        tmp.setFrame((ball.getCenter().getX() - (w / 2)),(ball.getCenter().getY() - (h / 2)),w,h);
-        ball.setBallFace(tmp);
+                tmp.setFrame((ball.getCenter().getX() - (w / 2)), (ball.getCenter().getY() - (h / 2)), w, h);
+                ball.setBallFace(tmp);
+            }
+        }
     }
 
     /**
@@ -610,7 +661,7 @@ public class GameBoardController {
      * inside the power up.
      * @return This method returns a boolean to signal if the power up is collected.
      */
-    public boolean powerUpCollected(){
+    public boolean powerUpCollected(Ball ball){
         return (powerUp.getPowerUp().contains(ball.getCenter())||powerUp.getPowerUp().contains(ball.getUp())||powerUp.getPowerUp().contains(ball.getDown())||powerUp.getPowerUp().contains(ball.getLeft())||powerUp.getPowerUp().contains(ball.getRight()));
     }
 
@@ -660,7 +711,7 @@ public class GameBoardController {
      *
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
-    public boolean ballPlayerImpact(){
+    public boolean ballPlayerImpact(Ball ball){
         return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown())||player.getPlayerFace().contains(ball.getUp()));
     }
 
@@ -673,44 +724,44 @@ public class GameBoardController {
      * with the bottom page border, vertical direction of ball is reversed. Finally, if ball leaves the bottom page
      * border on bottom player orientation or leaves the top page border on top player orientation, ball is lost,
      * ball count decreases and player and ball position are reset.
-     *
-     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
-     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      */
-    public void findImpacts(boolean collected){
-        if(ballPlayerImpact()){ //if player hits ball
-            gameSounds.playSoundEffect("Bounce");
-            reverseY();
-        }
-        else if(impactWall(collected)){
-            gameBoard.setBrickCount(gameBoard.getBrickCount()-1);
-        }
-        else if(impactBorder()) { //if ball impacts border
-            gameSounds.playSoundEffect("Bounce");
-            reverseX();
-        }
-        else if(choice[gameBoard.getLevel()-1][9]==0){
-
-            if(ball.getCenter().getY() < 0||(ball.getCenter().getY() > area.height && collected)){
+    public void findImpacts(){
+        for(Ball ball: balls) {
+            if (ballPlayerImpact(ball)) { //if player hits ball
                 gameSounds.playSoundEffect("Bounce");
-                reverseY(); //reverse Y-direction
-            }
-            else if(ball.getCenter().getY() > area.height){ //if ball hits bottom border
-                gameBoard.setBallCount(gameBoard.getBallCount()-1);
-                gameBoard.setBallLost(true);
-            }
-        }
-        else if(choice[gameBoard.getLevel()-1][9]==1){
-
-            if(ball.getCenter().getY() > area.height||(ball.getCenter().getY() < 0 && collected)){
+                reverseY(ball);
+            } else if (impactWall(ball)) {
+                gameBoard.setBrickCount(gameBoard.getBrickCount() - 1);
+            } else if (impactBorder(ball)) { //if ball impacts border
                 gameSounds.playSoundEffect("Bounce");
-                reverseY(); //reverse Y-direction
-            }
-            else if(ball.getCenter().getY() < 0){ //if ball hits top border
-                gameBoard.setBallCount(gameBoard.getBallCount()-1);
-                gameBoard.setBallLost(true);
+                reverseX(ball);
+            } else if (choice[gameBoard.getLevel() - 1][9] == 0) {
+
+                if (ball.getCenter().getY() < 0 || (ball.getCenter().getY() > area.height && ball.isCollected())) {
+                    gameSounds.playSoundEffect("Bounce");
+                    reverseY(ball); //reverse Y-direction
+                } else if (ball.getCenter().getY() > area.height) { //if ball hits bottom border
+                    ballLost(ball);
+                }
+            } else if (choice[gameBoard.getLevel() - 1][9] == 1) {
+
+                if (ball.getCenter().getY() > area.height || (ball.getCenter().getY() < 0 && ball.isCollected())) {
+                    gameSounds.playSoundEffect("Bounce");
+                    reverseY(ball); //reverse Y-direction
+                } else if (ball.getCenter().getY() < 0) { //if ball hits top border
+                    ballLost(ball);
+                }
             }
         }
+    }
+
+    public void ballLost(Ball ball){
+        gameSounds.playSoundEffect("BallLost");
+        ball.setCenter(new Point(300,225));
+        ball.setSpeedX(0);
+        ball.setSpeedY(0);
+        ball.setLost(true);
+        gameBoard.setBallCount(gameBoard.getBallCount()-1);
     }
 
     /**
@@ -721,12 +772,10 @@ public class GameBoardController {
      * If power up has been collected then ball deflection is disabled and bricks are destroyed instantly on collision
      * with the ball.
      *
-     * @param collected This boolean is used to check if the power up has been collected. If it is, then deflection
-     *                  of the ball is disabled and bricks are destroyed on touch with the ball.
      * @return This method returns a boolean to signify if the brick impacted by the ball is unbroken at the start
      *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
      */
-    private boolean impactWall(boolean collected){ //method to check impact with wall
+    private boolean impactWall(Ball ball){ //method to check impact with wall
 
         Point[] points = {ball.getUp(),ball.getDown(),ball.getLeft(),ball.getRight()};
 
@@ -753,7 +802,7 @@ public class GameBoardController {
                         b = bricks[gameBoard.getLevel() - 1][1][odd];
                 }
                 if(b!=null)
-                    if(returnImpact(findImpact(ball, b), collected, b))
+                    if(returnImpact(findImpact(ball,b),b,ball))
                         return true;
             }
         }
@@ -771,7 +820,7 @@ public class GameBoardController {
                         b = bricks[gameBoard.getLevel()-1][1][odd];
                 }
                 if(b!=null)
-                    if (returnImpact(findImpact(ball, b), collected, b))
+                    if (returnImpact(findImpact(ball,b),b,ball))
                         return true;
             }
         }
@@ -794,26 +843,26 @@ public class GameBoardController {
         return ((600 +  width / 2 - point.x) / width) + (brickRow + 1) * ((((450 - point.y) / 20) - 1) / 2);
     }
 
-    private boolean returnImpact(int impact, boolean collected, Brick b){
+    private boolean returnImpact(int impact, Brick b, Ball ball){
         switch (impact) {
             case UP_IMPACT -> {
-                if (!collected)
-                    reverseY();
+                if (!ball.isCollected())
+                    reverseY(ball);
                 return setImpact(ball.getDown(), UP, b);
             }
             case DOWN_IMPACT -> {
-                if (!collected)
-                    reverseY();
+                if (!ball.isCollected())
+                    reverseY(ball);
                 return setImpact(ball.getUp(), DOWN, b);
             } //Horizontal Impact
             case LEFT_IMPACT -> {
-                if (!collected)
-                    reverseX();
+                if (!ball.isCollected())
+                    reverseX(ball);
                 return setImpact(ball.getRight(), LEFT, b);
             }
             case RIGHT_IMPACT -> {
-                if (!collected)
-                    reverseX();
+                if (!ball.isCollected())
+                    reverseX(ball);
                 return setImpact(ball.getLeft(), RIGHT, b);
             }
             default -> {
@@ -826,7 +875,7 @@ public class GameBoardController {
      * This method is used to check for any impacts of the ball and the left and right page border.
      * @return This method returns a boolean to signify if the ball is leaving the left or right page border.
      */
-    private boolean impactBorder(){ //if ball impacts left or right border
+    private boolean impactBorder(Ball ball){ //if ball impacts left or right border
         Point2D p = ball.getCenter();
         return ((p.getX() < 0) ||(p.getX() > area.width));
     }

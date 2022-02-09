@@ -115,7 +115,7 @@ public class GameBoardRenderer implements Renderer {
             drawPowerUp(gameBoard.getPowerUp(),g2d);
         }
 
-        drawBall(gameBoard.getBall(),g2d);
+        drawBall(gameBoard.getBalls(),g2d);
         drawPlayer(gameBoard.getPlayer(),g2d);
 
         if(gameBoard.isShowPauseMenu())
@@ -148,21 +148,25 @@ public class GameBoardRenderer implements Renderer {
 
     /**
      * This method is used to draw the ball by filling inner colour and drawing outer colour.
-     * @param ball This parameter tells the method what colour to use for the ball.
+     * @param balls This parameter holds all the available balls.
      * @param g2d This parameter is used to control the graphics such as colour.
      */
-    private void drawBall(Ball ball, Graphics2D g2d){
+    private void drawBall(Ball[] balls, Graphics2D g2d){
 
-        Shape s = ball.getBallFace();
+        for(Ball ball: balls) {
+            if(!ball.isLost()) {
+                Shape s = ball.getBallFace();
 
-        if(!ball.isCollected())
-            g2d.setColor(ball.getInner());
-        else
-            g2d.setColor(ball.getPowerUp());
-        g2d.fill(s);
+                if (!ball.isCollected())
+                    g2d.setColor(ball.getInner());
+                else
+                    g2d.setColor(ball.getPowerUp());
+                g2d.fill(s);
 
-        g2d.setColor(ball.getBorder());
-        g2d.draw(s);
+                g2d.setColor(ball.getBorder());
+                g2d.draw(s);
+            }
+        }
     }
 
     /**

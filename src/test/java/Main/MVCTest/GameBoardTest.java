@@ -57,7 +57,7 @@ class GameBoardTest {
      */
     @Test
     void getBall() {
-        assertNotNull(gameBoard.getBall());
+        assertNotNull(gameBoard.getBalls());
     }
 
     /**
@@ -194,14 +194,6 @@ class GameBoardTest {
     }
 
     /**
-     * This tests the getter for the ball lost flag.
-     */
-    @Test
-    void isBallLost() {
-        assertFalse(gameBoard.isBallLost());
-    }
-
-    /**
      * This tests the getter for the not of the game pause flag.
      */
     @Test
@@ -305,15 +297,6 @@ class GameBoardTest {
     void setStartTime() {
         gameBoard.setStartTime(10);
         assertEquals(gameBoard.getStartTime(),10);
-    }
-
-    /**
-     * This tests the setter for ball lost flag using the tested getter.
-     */
-    @Test
-    void setBallLost() {
-        gameBoard.setBallLost(true);
-        assertTrue(gameBoard.isBallLost());
     }
 
     /**

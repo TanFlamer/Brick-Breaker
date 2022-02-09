@@ -52,7 +52,7 @@ public class GameBoard {
     /**
      * This is the ball used in the game.
      */
-    private final Ball ball;
+    private final Ball[] balls;
     /**
      * This is the power up in the game.
      */
@@ -92,10 +92,6 @@ public class GameBoard {
      */
     private boolean showPauseMenu = false;
     /**
-     * This is the flag to signal if ball is lost.
-     */
-    private boolean ballLost = false;
-    /**
      * This is the flag to signal if game is paused.
      */
     private boolean pauseFlag = true;
@@ -126,11 +122,13 @@ public class GameBoard {
     public GameBoard(int[][] choice,Dimension area) {
         this.choice = choice;
         player = new Player(new Point(area.width/2,area.height-20),150,10,area);
-        ball = new Ball(new Point(area.width/2,area.height-20),BALL_DIAMETER);
         powerUp = new GodModePowerUp(new Point(area.width/2,area.height/2),POWER_UP_DIAMETER);
         bricks = (new LevelGeneration(choice,area,LEVELS_COUNT)).makeCustomLevels(new Rectangle(0,0,area.width,area.height));
         scoreAndTime = new int[LEVELS_COUNT+1][2];
         gameMessages = new String[6];
+        balls = new Ball[10];
+        for(int i = 0; i < 10; i++)
+            balls[i] = new Ball(new Point(area.width/2,area.height-20),BALL_DIAMETER);
     }
 
     /**
@@ -151,8 +149,8 @@ public class GameBoard {
      * This method returns the ball.
      * @return The ball is returned.
      */
-    public Ball getBall() {
-        return ball;
+    public Ball[] getBalls() {
+        return balls;
     }
     /**
      * This method returns the choices of the player in the CustomConsole.
@@ -329,20 +327,6 @@ public class GameBoard {
     /**
      * This method returns the ball lost flag.
      * @return The ball lost flag is returned.
-     */
-    public boolean isBallLost() {
-        return ballLost;
-    }
-    /**
-     * This method changes the ball lost flag.
-     * @param ballLost This is the new ball lost flag.
-     */
-    public void setBallLost(boolean ballLost) {
-        this.ballLost = ballLost;
-    }
-    /**
-     * This method returns the not of the game pause flag.
-     * @return The not of the game pause flag is returned.
      */
     public boolean isNotPaused() {
         return !pauseFlag;
