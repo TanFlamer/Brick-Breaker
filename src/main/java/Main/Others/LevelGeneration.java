@@ -73,7 +73,7 @@ public class LevelGeneration {
      * @param level This is the level number and is used to check the level custom choices.
      * @return The method returns an array of Bricks which is used for the generation of a custom level.
      */
-    private Brick[] makeAllLevel(Rectangle drawArea, int brickRow, int level){
+    private Brick[][] makeAllLevel(Rectangle drawArea, int brickRow, int level){
 
         int randRow,randBrickRow;
 
@@ -100,39 +100,67 @@ public class LevelGeneration {
         double brickLength = drawArea.getWidth() / randBrickRow;
         double brickHeight = 20;
 
-        Brick[] tmp  = new Brick[(randRow * randBrickRow) + (randRow / 2)];
+        Brick[][] tmp  = new Brick[2][];
+        Brick[] even = new Brick[(randRow+1)/2 * randBrickRow];
+        Brick[] odd = new Brick[randRow/2 * (randBrickRow+1)];
 
         Dimension brickSize = new Dimension((int) brickLength, (int) brickHeight);
+        int brickTotal = (randRow * randBrickRow) + (randRow / 2);
 
-        for(int i = 0; i < tmp.length; i++){
+        for(int i = 0; i < brickTotal; i++){
 
             Point p = getBrickLocation(drawArea,i,randBrickRow,(int)brickLength,(int)brickHeight,level);
+            int twoRows = 2 * randBrickRow + 1;
+            int evenRow = (i / twoRows) * randBrickRow;
+            int oddRow = (i / twoRows) * (randBrickRow+1);
 
             if((choice[level][0]-1)/4==0){
 
-                if(choice[level][0]%4==0||choice[level][0]%4==3){
-                    tmp[i] = makeBrick(p,brickSize,brickRand[i%4]);
+                if(i % twoRows < randBrickRow){ //even row
+
+                    if(choice[level][0]%4==0||choice[level][0]%4==3)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,brickRand[i%4]);
+                    else if(choice[level][0]%4==1)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,brickChoice[i%(choice[level][3]+1)]+1);
+                    else if(choice[level][0]%4==2)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,brickRand[i%(choice[level][3]+1)]);
                 }
-                else if(choice[level][0]%4==1){
-                    tmp[i] = makeBrick(p,brickSize,brickChoice[i%(choice[level][3]+1)]+1);
-                }
-                else if(choice[level][0]%4==2){
-                    tmp[i] = makeBrick(p,brickSize,brickRand[i%(choice[level][3]+1)]);
+                else{ //odd row
+
+                    int posX = i % twoRows - randBrickRow; //get position of brick on odd row
+                    if(choice[level][0]%4==0||choice[level][0]%4==3)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,brickRand[i%4]);
+                    else if(choice[level][0]%4==1)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,brickChoice[i%(choice[level][3]+1)]+1);
+                    else if(choice[level][0]%4==2)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,brickRand[i%(choice[level][3]+1)]);
                 }
             }
             else if((choice[level][0]-1)/4==1){
 
-                if(choice[level][0]%4==0||choice[level][0]%4==3){
-                    tmp[i] = makeBrick(p,brickSize,random.nextInt(4)+1);
+                if(i % twoRows < randBrickRow){ //even row
+
+                    if(choice[level][0]%4==0||choice[level][0]%4==3)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,random.nextInt(4)+1);
+                    else if(choice[level][0]%4==1)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,brickChoice[random.nextInt(choice[level][3]+1)]+1);
+                    else if(choice[level][0]%4==2)
+                        even[evenRow + i % twoRows] = makeBrick(p,brickSize,brickRand[random.nextInt(choice[level][3]+1)]);
                 }
-                else if(choice[level][0]%4==1){
-                    tmp[i] = makeBrick(p,brickSize,brickChoice[random.nextInt(choice[level][3]+1)]+1);
-                }
-                else if(choice[level][0]%4==2){
-                    tmp[i] = makeBrick(p,brickSize,brickRand[random.nextInt(choice[level][3]+1)]);
+                else{ //odd row
+
+                    int posX = i % twoRows - randBrickRow; //get position of brick on odd row
+                    if(choice[level][0]%4==0||choice[level][0]%4==3)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,random.nextInt(4)+1);
+                    else if(choice[level][0]%4==1)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,brickChoice[random.nextInt(choice[level][3]+1)]+1);
+                    else if(choice[level][0]%4==2)
+                        odd[oddRow + posX] = makeBrick(p,brickSize,brickRand[random.nextInt(choice[level][3]+1)]);
                 }
             }
         }
+        tmp[0] = even;
+        tmp[1] = odd;
         return tmp;
     }
 
@@ -147,7 +175,7 @@ public class LevelGeneration {
      *                 brick length can be determined by dividing the number of bricks.
      * @return This method returns an array of Clay Bricks for the first default level.
      */
-    private Brick[] makeSingleTypeLevel(Rectangle drawArea){
+    private Brick[][] makeSingleTypeLevel(Rectangle drawArea){
         return makeChessboardLevel(drawArea, CLAY, CLAY, 0);
     }
 
@@ -164,7 +192,7 @@ public class LevelGeneration {
      * @param level This is the level number and is used to check the level orientation.
      * @return This method returns an array of Bricks for the other 3 default levels.
      */
-    private Brick[] makeChessboardLevel(Rectangle drawArea, int typeA, int typeB, int level){
+    private Brick[][] makeChessboardLevel(Rectangle drawArea, int typeA, int typeB, int level){
 
         int brickOnLine = 30 / 3; //number of bricks on single line (number of bricks/number of lines)
 
@@ -174,24 +202,29 @@ public class LevelGeneration {
         double brickLen = drawArea.getWidth() / brickOnLine; //get brick length (width of area/number of bricks)
         double brickHgt = brickLen / 3; //get brick height (brick length/brick size ratio)
 
-        Brick[] tmp  = new Brick[30+(3/2)]; //array of Bricks which account for extra brick in odd rows
+        Brick[][] tmp  = new Brick[2][]; //array of Bricks which account for extra brick in odd rows
+        Brick[] even = new Brick[20];
+        Brick[] odd = new Brick[11];
 
         Dimension brickSize = new Dimension((int) brickLen,(int) brickHgt);
 
         int twoRows = 2 * brickOnLine + 1;
 
-        for(int i = 0; i < tmp.length; i++){
+        for(int i = 0; i < 31; i++){
 
             Point p = getBrickLocation(drawArea,i,brickOnLine,(int)brickLen,(int)brickHgt,level);
+            int rowNum = (i / twoRows) * brickOnLine;
 
             if(i % twoRows < brickOnLine){ //even row
-                tmp[i] = ((i % twoRows) % 2 == 0) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+                even[rowNum + i % twoRows] = ((i % twoRows) % 2 == 0) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
             }
             else{ //odd row
                 int posX = i % twoRows - brickOnLine; //get position of brick on odd row
-                tmp[i] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
+                odd[rowNum + posX] = ((posX > centerLeft && posX <= centerRight) || posX == 10) ? makeBrick(p,brickSize,typeA) : makeBrick(p,brickSize,typeB);
             }
         }
+        tmp[0] = even;
+        tmp[1] = odd;
         return tmp;
     }
 
@@ -250,9 +283,9 @@ public class LevelGeneration {
      *                 brick length can be determined by dividing the number of bricks.
      * @return The method returns a double array of Bricks which contain the bricks generated for all 4 level.
      */
-    public Brick[][] makeCustomLevels(Rectangle drawArea){
+    public Brick[][][] makeCustomLevels(Rectangle drawArea){
 
-        Brick[][] tmp = makeDefaultLevels(drawArea); //get default levels
+        Brick[][][] tmp = makeDefaultLevels(drawArea); //get default levels
 
         int [] brickNum = {1,2,3,4,5,6,8,10,12,15};
 
@@ -273,8 +306,8 @@ public class LevelGeneration {
      *                 brick length can be determined by dividing the number of bricks.
      * @return The method returns a double array of Bricks which contain the bricks generated for all default 4 level.
      */
-    private Brick[][] makeDefaultLevels(Rectangle drawArea){
-        Brick[][] tmp = new Brick[levelCount][]; //5 levels with 31 bricks each
+    private Brick[][][] makeDefaultLevels(Rectangle drawArea){
+        Brick[][][] tmp = new Brick[levelCount][][]; //5 levels with 31 bricks each
         tmp[0] = makeSingleTypeLevel(drawArea);
         tmp[1] = makeChessboardLevel(drawArea, CLAY,CEMENT,1);
         tmp[2] = makeChessboardLevel(drawArea, CLAY,STEEL,2);

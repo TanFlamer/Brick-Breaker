@@ -101,7 +101,7 @@ public class GameBoardController {
     /**
      * This is the double array of Bricks to hold the bricks generated for all 5 levels.
      */
-    private final Brick[][] bricks;
+    private final Brick[][][] bricks;
     /**
      * Player to manipulate movement.
      */
@@ -294,9 +294,11 @@ public class GameBoardController {
      */
     public void setBallSpeed(){
         int speedX,speedY;
+
         do{
             speedX = random.nextInt(5) - 2; //random speed for ball in X-axis, - for left, + for right
         }while(speedX == 0); //continue loop if speed-X is 0
+
         do{
             if(choice[gameBoard.getLevel()-1][9]==0)
                 speedY = -random.nextInt(3); //random speed for ball in Y-axis, always - for up
@@ -331,10 +333,10 @@ public class GameBoardController {
     public void calculateScoreAndTime(){
 
         gameBoard.setScore(0,returnPreviousLevelsScore());
-        for(Brick b: bricks[gameBoard.getLevel()-1]){
-            if(b.isBroken()){
-                gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
-            }
+        for(Brick[] brick: bricks[gameBoard.getLevel()-1]){
+            for(Brick b: brick)
+                if(b.isBroken())
+                    gameBoard.setScore(0,gameBoard.getScore(0) + b.getScore());
         }
         gameBoard.setScore(gameBoard.getLevel(),gameBoard.getScore(0) - returnPreviousLevelsScore());
 
@@ -421,6 +423,7 @@ public class GameBoardController {
         }
 
         if(powerUpCollected() && powerUp.isSpawned()&& !powerUp.isCollected()){
+            ball.setCollected(true);
             gameSounds.playSoundEffect("Pickup");
             powerUp.setCollected(true);
             powerUp.setSpawned(false);
@@ -430,6 +433,7 @@ public class GameBoardController {
         if(powerUp.isCollected()){
             if(gameBoard.getGodModeTimeLeft()==0){
                 powerUp.setCollected(false);
+                ball.setCollected(false);
             }
         }
     }
@@ -446,6 +450,7 @@ public class GameBoardController {
         resetTotalScoreAndTime();
         powerUp.setCollected(false);
         powerUp.setSpawned(false);
+        ball.setCollected(false);
         gameBoard.setPowerUpSpawns(0);
     }
 
@@ -468,7 +473,7 @@ public class GameBoardController {
             resetLevelScoreAndTime();
 
         gameBoard.setLevel(gameBoard.getLevel()+1);
-        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1][0].length+bricks[gameBoard.getLevel()-1][1].length);
         resetLevelData();
     }
 
@@ -485,7 +490,7 @@ public class GameBoardController {
         resetLevelScoreAndTime();
         wallReset();
         gameBoard.setLevel(gameBoard.getLevel()-1);
-        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1][0].length+bricks[gameBoard.getLevel()-1][1].length);
         resetLevelData();
     }
 
@@ -614,9 +619,10 @@ public class GameBoardController {
      * and setting their broken flag to false. The brick count and ball count is also reset.
      */
     public void wallReset(){
-        for(Brick b : bricks[gameBoard.getLevel()-1])
-            repair(b); //reset brick to full strength
-        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1].length);
+        for(Brick[] brick : bricks[gameBoard.getLevel()-1])
+            for(Brick b: brick)
+                repair(b); //reset brick to full strength
+        gameBoard.setBrickCount(bricks[gameBoard.getLevel()-1][0].length+bricks[gameBoard.getLevel()-1][1].length);
         resetBallCount();
     }
 
@@ -721,32 +727,99 @@ public class GameBoardController {
      *         of the collision but is broken by the impact with the ball. This is so that brick count can be deceased.
      */
     private boolean impactWall(boolean collected){ //method to check impact with wall
-        for(Brick b : bricks[gameBoard.getLevel()-1]){
-            //Vertical Impact
-            switch (findImpact(ball,b)) {
-                case UP_IMPACT -> {
-                    if(!collected)
-                        reverseY();
-                    return setImpact(ball.getDown(),UP,b);
+
+        Point[] points = {ball.getUp(),ball.getDown(),ball.getLeft(),ball.getRight()};
+
+        int width = bricks[gameBoard.getLevel()-1][0][0].getBrickFace().getBounds().width;
+        int brickRow = 600 / width;
+
+        int evenLength = bricks[gameBoard.getLevel()-1][0].length;
+        int oddLength = bricks[gameBoard.getLevel()-1][1].length;
+
+        int evenRow = evenLength / brickRow;
+        int oddRow = oddLength / (brickRow + 1);
+
+        if(choice[gameBoard.getLevel()-1][9]==0 && ball.getUp().y < (evenRow + oddRow) * 20){
+            for(Point point: points){
+                Brick b = null;
+                if((point.y / 20) % 2 == 0) {
+                    int even = getUpEvenBlock(point,width,brickRow);
+                    if(even < evenLength)
+                        b = bricks[gameBoard.getLevel() - 1][0][even];
                 }
-                case DOWN_IMPACT -> {
-                    if(!collected)
-                        reverseY();
-                    return setImpact(ball.getUp(),DOWN,b);
-                } //Horizontal Impact
-                case LEFT_IMPACT -> {
-                    if(!collected)
-                        reverseX();
-                    return setImpact(ball.getRight(),LEFT,b);
+                else if((point.y / 20) % 2 == 1) {
+                    int odd = getUpOddBlock(point,width,brickRow);
+                    if(odd < oddLength)
+                        b = bricks[gameBoard.getLevel() - 1][1][odd];
                 }
-                case RIGHT_IMPACT -> {
-                    if(!collected)
-                        reverseX();
-                    return setImpact(ball.getLeft(),RIGHT,b);
+                if(b!=null)
+                    if(returnImpact(findImpact(ball, b), collected, b))
+                        return true;
+            }
+        }
+        else if(choice[gameBoard.getLevel()-1][9]==1 && ball.getDown().y > 450 - ((evenRow + oddRow) * 20)){
+            for(Point point: points){
+                Brick b = null;
+                if(((450 - point.y)/20)%2 == 0) {
+                    int even = getDownEvenBlock(point, width, brickRow);
+                    if(even < evenLength)
+                        b = bricks[gameBoard.getLevel()-1][0][even];
                 }
+                else if(((450 - point.y)/20)%2 == 1) {
+                    int odd = getDownOddBlock(point, width, brickRow);
+                    if(odd < oddLength)
+                        b = bricks[gameBoard.getLevel()-1][1][odd];
+                }
+                if(b!=null)
+                    if (returnImpact(findImpact(ball, b), collected, b))
+                        return true;
             }
         }
         return false;
+    }
+
+    private int getUpEvenBlock(Point point, int width, int brickRow){
+        return point.x / width + brickRow * ((point.y / 20) / 2);
+    }
+
+    private int getUpOddBlock(Point point, int width, int brickRow){
+        return (point.x + width / 2) / width + (brickRow + 1) * (((point.y / 20) - 1) / 2);
+    }
+
+    private int getDownEvenBlock(Point point, int width, int brickRow){
+        return ((600 - point.x) / width) + brickRow * (((450 - point.y) / 20) / 2);
+    }
+
+    private int getDownOddBlock(Point point, int width, int brickRow){
+        return ((600 +  width / 2 - point.x) / width) + (brickRow + 1) * ((((450 - point.y) / 20) - 1) / 2);
+    }
+
+    private boolean returnImpact(int impact, boolean collected, Brick b){
+        switch (impact) {
+            case UP_IMPACT -> {
+                if (!collected)
+                    reverseY();
+                return setImpact(ball.getDown(), UP, b);
+            }
+            case DOWN_IMPACT -> {
+                if (!collected)
+                    reverseY();
+                return setImpact(ball.getUp(), DOWN, b);
+            } //Horizontal Impact
+            case LEFT_IMPACT -> {
+                if (!collected)
+                    reverseX();
+                return setImpact(ball.getRight(), LEFT, b);
+            }
+            case RIGHT_IMPACT -> {
+                if (!collected)
+                    reverseX();
+                return setImpact(ball.getLeft(), RIGHT, b);
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
     /**

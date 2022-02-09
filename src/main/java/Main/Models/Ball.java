@@ -59,6 +59,12 @@ public class Ball {
      */
     private final Color border = inner.darker().darker();
 
+    private final Color powerUp = Color.red;
+
+    private boolean lost;
+
+    private boolean collected;
+
     /**
      * This constructor creates a ball at the given center point and given diameter. The other 4 points of the ball are
      * defined relative to the center point.
@@ -73,6 +79,8 @@ public class Ball {
         this.left = new Point(center.x - diameter/2,center.y);
         this.right = new Point(center.x + diameter/2,center.y);
         this.ballFace = new Ellipse2D.Double(center.x - (double) diameter/2,center.y - (double) diameter/2,diameter,diameter);
+        this.lost = false;
+        this.collected = false;
     }
 
     /**
@@ -198,5 +206,25 @@ public class Ball {
      */
     public Point getRight() {
         return right;
+    }
+
+    public boolean isLost() {
+        return lost;
+    }
+
+    public void setLost(boolean lost) {
+        this.lost = lost;
+    }
+
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void setCollected(boolean collected) {
+        this.collected = collected;
+    }
+
+    public Color getPowerUp() {
+        return powerUp;
     }
 }
