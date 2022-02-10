@@ -61,6 +61,8 @@ public class Ball {
 
     private final Color powerUp = Color.red;
 
+    private final Color first = Color.WHITE;
+
     private boolean lost;
 
     private boolean collected;
@@ -226,5 +228,9 @@ public class Ball {
 
     public Color getPowerUp() {
         return powerUp;
+    }
+
+    public Color getFirst() {
+        return first;
     }
 }

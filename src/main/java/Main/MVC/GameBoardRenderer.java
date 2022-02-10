@@ -157,9 +157,11 @@ public class GameBoardRenderer implements Renderer {
             if(!ball.isLost()) {
                 Shape s = ball.getBallFace();
 
-                if (!ball.isCollected())
+                if(!ball.isCollected() && ball == balls[0])
+                    g2d.setColor(ball.getFirst());
+                else if(!ball.isCollected() && ball != balls[0])
                     g2d.setColor(ball.getInner());
-                else
+                else if(ball.isCollected())
                     g2d.setColor(ball.getPowerUp());
                 g2d.fill(s);
 

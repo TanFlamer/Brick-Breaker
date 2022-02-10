@@ -544,6 +544,8 @@ public class GameBoardController {
     public void ballReset(){
 
         int ballCount;
+        int orientation = choice[gameBoard.getLevel()-1][9];
+        int key = 1 - 2 * orientation;
 
         if(choice[gameBoard.getLevel()-1][11]==0)
             ballCount = 1;
@@ -565,14 +567,8 @@ public class GameBoardController {
         for(int i = 0; i < ballCount; i++)
             balls[i].setLost(false);
 
-        if(choice[gameBoard.getLevel()-1][9]==0) {
-            gameBoard.setBallStartPoint(new Point(area.width/2,area.height-20));
-            gameBoard.setPlayerStartPoint(new Point(area.width/2,area.height-20));
-        }
-        else if (choice[gameBoard.getLevel()-1][9]==1){
-            gameBoard.setBallStartPoint(new Point(area.width/2,20));
-            gameBoard.setPlayerStartPoint(new Point(area.width/2,10));
-        }
+        gameBoard.setBallStartPoint(new Point(area.width/2,((area.height * (1-orientation))-20)*key));
+        gameBoard.setPlayerStartPoint(new Point(area.width/2,(((area.height-10) * (1-orientation))-10)*key));
 
         ballMoveTo(gameBoard.getBallStartPoint());
         playerMoveTo(gameBoard.getPlayerStartPoint());
@@ -726,29 +722,25 @@ public class GameBoardController {
      * ball count decreases and player and ball position are reset.
      */
     public void findImpacts(){
+        int orientation = choice[gameBoard.getLevel()-1][9];
         for(Ball ball: balls) {
             if (ballPlayerImpact(ball)) { //if player hits ball
                 gameSounds.playSoundEffect("Bounce");
                 reverseY(ball);
-            } else if (impactWall(ball)) {
+            }
+            else if (impactWall(ball)) {
                 gameBoard.setBrickCount(gameBoard.getBrickCount() - 1);
-            } else if (impactBorder(ball)) { //if ball impacts border
+            }
+            else if (impactBorder(ball)) { //if ball impacts border
                 gameSounds.playSoundEffect("Bounce");
                 reverseX(ball);
-            } else if (choice[gameBoard.getLevel() - 1][9] == 0) {
-
-                if (ball.getCenter().getY() < 0 || (ball.getCenter().getY() > area.height && ball.isCollected())) {
+            }
+            else {
+                if((orientation == 0 && (ball.getCenter().getY() < 0 || (ball.getCenter().getY() > area.height && ball.isCollected()))) || (orientation == 1 && (ball.getCenter().getY() > area.height || (ball.getCenter().getY() < 0 && ball.isCollected())))){
                     gameSounds.playSoundEffect("Bounce");
                     reverseY(ball); //reverse Y-direction
-                } else if (ball.getCenter().getY() > area.height) { //if ball hits bottom border
-                    ballLost(ball);
                 }
-            } else if (choice[gameBoard.getLevel() - 1][9] == 1) {
-
-                if (ball.getCenter().getY() > area.height || (ball.getCenter().getY() < 0 && ball.isCollected())) {
-                    gameSounds.playSoundEffect("Bounce");
-                    reverseY(ball); //reverse Y-direction
-                } else if (ball.getCenter().getY() < 0) { //if ball hits top border
+                else if ((orientation == 0 && ball.getCenter().getY() > area.height) || (orientation == 1 && ball.getCenter().getY() < 0)){
                     ballLost(ball);
                 }
             }
@@ -787,60 +779,26 @@ public class GameBoardController {
 
         int evenRow = evenLength / brickRow;
         int oddRow = oddLength / (brickRow + 1);
+        int totalRow = evenRow + oddRow;
 
-        if(choice[gameBoard.getLevel()-1][9]==0 && ball.getUp().y < (evenRow + oddRow) * 20){
+        int orientation = choice[gameBoard.getLevel()-1][9];
+        int key = 2 * orientation - 1;
+
+        if((points[orientation].y < totalRow * 20 && orientation == 0)||(points[orientation].y > 450 - (totalRow * 20) && orientation == 1)){
             for(Point point: points){
                 Brick b = null;
-                if((point.y / 20) % 2 == 0) {
-                    int even = getUpEvenBlock(point,width,brickRow);
-                    if(even < evenLength)
-                        b = bricks[gameBoard.getLevel() - 1][0][even];
-                }
-                else if((point.y / 20) % 2 == 1) {
-                    int odd = getUpOddBlock(point,width,brickRow);
-                    if(odd < oddLength)
-                        b = bricks[gameBoard.getLevel() - 1][1][odd];
-                }
-                if(b!=null)
-                    if(returnImpact(findImpact(ball,b),b,ball))
-                        return true;
-            }
-        }
-        else if(choice[gameBoard.getLevel()-1][9]==1 && ball.getDown().y > 450 - ((evenRow + oddRow) * 20)){
-            for(Point point: points){
-                Brick b = null;
-                if(((450 - point.y)/20)%2 == 0) {
-                    int even = getDownEvenBlock(point, width, brickRow);
-                    if(even < evenLength)
-                        b = bricks[gameBoard.getLevel()-1][0][even];
-                }
-                else if(((450 - point.y)/20)%2 == 1) {
-                    int odd = getDownOddBlock(point, width, brickRow);
-                    if(odd < oddLength)
-                        b = bricks[gameBoard.getLevel()-1][1][odd];
-                }
+                int parity = ((((450 * orientation) - point.y) * key) / 20) % 2;
+                int block = ((((600 * orientation) - point.x) * key + (parity * width/2)) / width) + (brickRow + parity) * ((((((450 * orientation) - point.y) * key) / 20) - parity) / 2);
+
+                if((parity == 0 && block < evenLength)||(parity == 1 && block < oddLength))
+                    b = bricks[gameBoard.getLevel()-1][parity][block];
+
                 if(b!=null)
                     if (returnImpact(findImpact(ball,b),b,ball))
                         return true;
             }
         }
         return false;
-    }
-
-    private int getUpEvenBlock(Point point, int width, int brickRow){
-        return point.x / width + brickRow * ((point.y / 20) / 2);
-    }
-
-    private int getUpOddBlock(Point point, int width, int brickRow){
-        return (point.x + width / 2) / width + (brickRow + 1) * (((point.y / 20) - 1) / 2);
-    }
-
-    private int getDownEvenBlock(Point point, int width, int brickRow){
-        return ((600 - point.x) / width) + brickRow * (((450 - point.y) / 20) / 2);
-    }
-
-    private int getDownOddBlock(Point point, int width, int brickRow){
-        return ((600 +  width / 2 - point.x) / width) + (brickRow + 1) * ((((450 - point.y) / 20) - 1) / 2);
     }
 
     private boolean returnImpact(int impact, Brick b, Ball ball){
