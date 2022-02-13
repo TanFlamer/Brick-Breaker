@@ -291,6 +291,7 @@ public class GameBoardController {
                 gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
             else {
                 gameSounds.setBgm("BGM" + gameBoard.getLevel());
+                gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
                 gameSounds.setSongID(gameBoard.getLevel());
             }
         }
@@ -404,6 +405,8 @@ public class GameBoardController {
                 resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
+                gameSounds.setBgm("BGM" + gameBoard.getLevel());
+                gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
             }
             else
                 ballReset();
@@ -417,6 +420,8 @@ public class GameBoardController {
                 resetLevelData();
                 gameBoard.setMessageFlag(1);
                 gameSounds.playSoundEffect("GameOver");
+                gameSounds.setBgm("BGM" + gameBoard.getLevel());
+                gameSounds.getBgm().loop(Clip.LOOP_CONTINUOUSLY);
                 if(gameBoard.isNotPaused())
                     reversePauseFlag();
             }
@@ -708,7 +713,7 @@ public class GameBoardController {
      * @return A boolean to signify if impact between the ball and player has occurred is returned.
      */
     public boolean ballPlayerImpact(Ball ball){
-        return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown())||player.getPlayerFace().contains(ball.getUp()));
+        return player.getPlayerFace().contains(ball.getCenter()) && (player.getPlayerFace().contains(ball.getDown()) || player.getPlayerFace().contains(ball.getUp()));
     }
 
     /**
@@ -731,16 +736,16 @@ public class GameBoardController {
             else if (impactWall(ball)) {
                 gameBoard.setBrickCount(gameBoard.getBrickCount() - 1);
             }
-            else if (impactBorder(ball)) { //if ball impacts border
+            else if (ball.getLeft().getX() < 0 || ball.getRight().getX() > area.width) { //if ball impacts border
                 gameSounds.playSoundEffect("Bounce");
                 reverseX(ball);
             }
             else {
-                if((orientation == 0 && (ball.getCenter().getY() < 0 || (ball.getCenter().getY() > area.height && ball.isCollected()))) || (orientation == 1 && (ball.getCenter().getY() > area.height || (ball.getCenter().getY() < 0 && ball.isCollected())))){
+                if((orientation == 0 && (ball.getUp().getY() < 0 || (ball.getDown().getY() > area.height && ball.isCollected()))) || (orientation == 1 && (ball.getDown().getY() > area.height || (ball.getUp().getY() < 0 && ball.isCollected())))){
                     gameSounds.playSoundEffect("Bounce");
                     reverseY(ball); //reverse Y-direction
                 }
-                else if ((orientation == 0 && ball.getCenter().getY() > area.height) || (orientation == 1 && ball.getCenter().getY() < 0)){
+                else if ((orientation == 0 && ball.getDown().getY() > area.height) || (orientation == 1 && ball.getUp().getY() < 0)){
                     ballLost(ball);
                 }
             }
@@ -769,7 +774,9 @@ public class GameBoardController {
      */
     private boolean impactWall(Ball ball){ //method to check impact with wall
 
-        Point[] points = {ball.getUp(),ball.getDown(),ball.getLeft(),ball.getRight()};
+        Point[] vertical = {ball.getUp(),ball.getCenter(),ball.getDown()};
+        Point[] horizontal = {ball.getLeft(),ball.getCenter(),ball.getRight()};
+        Point[] points = {vertical[Integer.signum(ball.getSpeedY())+1],horizontal[Integer.signum(ball.getSpeedY())+1]};
 
         int width = bricks[gameBoard.getLevel()-1][0][0].getBrickFace().getBounds().width;
         int brickRow = 600 / width;
@@ -784,21 +791,19 @@ public class GameBoardController {
         int orientation = choice[gameBoard.getLevel()-1][9];
         int key = 2 * orientation - 1;
 
-        if((points[orientation].y < totalRow * 20 && orientation == 0)||(points[orientation].y > 450 - (totalRow * 20) && orientation == 1)){
-            for(Point point: points){
-                Brick b = null;
+        boolean[] collision = new boolean[2];
+
+        int cycle = 0;
+        for (Point point: points) {
+            if(points[cycle].getY() < (450 * orientation) + (totalRow * 20 * (1-orientation)) && points[cycle].getY() > (450 - (totalRow * 20)) * orientation) {
                 int parity = ((((450 * orientation) - point.y) * key) / 20) % 2;
-                int block = ((((600 * orientation) - point.x) * key + (parity * width/2)) / width) + (brickRow + parity) * ((((((450 * orientation) - point.y) * key) / 20) - parity) / 2);
-
-                if((parity == 0 && block < evenLength)||(parity == 1 && block < oddLength))
-                    b = bricks[gameBoard.getLevel()-1][parity][block];
-
-                if(b!=null)
-                    if (returnImpact(findImpact(ball,b),b,ball))
-                        return true;
+                int block = ((((600 * orientation) - point.x) * key + (parity * width / 2)) / width) + (brickRow + parity) * ((((((450 * orientation) - point.y) * key) / 20) - parity) / 2);
+                Brick b = bricks[gameBoard.getLevel()-1][parity][block];
+                collision[cycle] = returnImpact(findImpact(ball, b), b, ball);
+                cycle++;
             }
         }
-        return false;
+        return collision[0] || collision[1];
     }
 
     private boolean returnImpact(int impact, Brick b, Ball ball){
@@ -827,15 +832,6 @@ public class GameBoardController {
                 return false;
             }
         }
-    }
-
-    /**
-     * This method is used to check for any impacts of the ball and the left and right page border.
-     * @return This method returns a boolean to signify if the ball is leaving the left or right page border.
-     */
-    private boolean impactBorder(Ball ball){ //if ball impacts left or right border
-        Point2D p = ball.getCenter();
-        return ((p.getX() < 0) ||(p.getX() > area.width));
     }
 
     /**
